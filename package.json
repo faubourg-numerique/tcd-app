@@ -18,6 +18,7 @@
     "bootstrap": "^5.3.3",
 =======
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "bootstrap-vue": "^2.23.1",
 >>>>>>> 20687bc3d4cda76d9b5813d9f0618f900bfdf3c7
     "pinia": "^2.1.7",
