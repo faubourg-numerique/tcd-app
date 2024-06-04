@@ -1,16 +1,13 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 1px;
   font-weight: normal;
 }
-
 
 @media (hover: hover) {
   a:hover {
     background-color: hsla(0, 0%, 100%, 0.2);
   }
 }
-
