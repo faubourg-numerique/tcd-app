@@ -14,5 +14,5 @@ import MenuBar from '@/components/MenuBar.vue'
 </template>
 
 <style scoped>
-/* Styles spécifiques à votre composant principal */
+
 </style>
