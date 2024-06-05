@@ -3,7 +3,7 @@
       <div class="container-fluid">
         <RouterLink class="navbar-brand d-flex align-items-center" to="/">
           <img alt="Vue logo" class="logo" src="@/assets/images.jpg" width="50" height="50" />
-          <span class="ms-2" style="font-size: small;">Territoires Connectés et Durables</span>
+          <span class="ms-2 d-none d-sm-inline text-danger">Territoires Connectés et Durables</span>
         </RouterLink>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -34,22 +34,20 @@
   </script>
   
   <style scoped>
-  .logo {
+  .navbar-brand img {
     margin-right: 10px;
   }
-  .navbar-brand span {
-    font-weight: bold;
-    color: #d9534f; 
-  }
-  .navbar-nav .nav-link {
+  
+  .navbar-nav .nav-item .nav-link {
     color: #333;
-    padding: 0 15px;
   }
-  .navbar-nav .nav-link:hover {
+  
+  .navbar-nav .nav-item .nav-link:hover {
     color: #0056b3;
   }
-  .navbar-nav .nav-item.d-flex {
-    padding: 0 15px;
+  
+  .navbar-nav .nav-item span {
+    color: #333;
   }
   </style>
-  
+  Explication d
