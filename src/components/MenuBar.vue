@@ -12,17 +12,24 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <RouterLink class="nav-link" to="/">Tableau de bord</RouterLink>
+              <RouterLink class="nav-link" to="/"> Tableau de bord </RouterLink>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Mes responsabilités
+              </a>
+              <ul class="dropdown-menu">
+                <li><RouterLink class="dropdown-item bi bi-houses-fill" to="/rubrique1"> Bâtiments</RouterLink></li>
+                <li><RouterLink class="dropdown-item bi bi-lightbulb-fill" to="/rubrique2"> Eclairage</RouterLink></li>
+                <li><RouterLink class="dropdown-item bi bi-trash3-fill" to="/rubrique3"> P.A.V.</RouterLink></li>
+                <li><RouterLink class="dropdown-item bi bi-water" to="/rubrique4">  Cours d’eau</RouterLink></li>
+              </ul>
             </li>
             <li class="nav-item">
-              <RouterLink class="nav-link" to="/">Mes responsabilités</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/">Mon territoire</RouterLink>
+              <RouterLink class="nav-link" to="/"> Mon territoire </RouterLink>
             </li>
             <li class="nav-item d-flex align-items-center">
-              <i class="bi bi-person-circle me-2"></i>
-              <span>Vincent.demortier</span>
+              <span class="bi bi-person-circle me-2">Vincent.demortier </span>
             </li>
           </ul>
         </div>
