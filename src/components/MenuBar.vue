@@ -38,7 +38,10 @@
                 >
               </li>
               <li>
-                <RouterLink class="dropdown-item bi bi-lightbulb-fill" to="/rubrique2">
+                <RouterLink
+                  class="dropdown-item bi bi-lightbulb-fill"
+                  to="/responsability/streetlights"
+                >
                   Eclairage</RouterLink
                 >
               </li>
