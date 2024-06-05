@@ -6,10 +6,10 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+
       name: 'Dashboard',
       component: Tdc_dashboardView 
     },
-
   ]
 })
 
