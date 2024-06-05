@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Tdc_dashboardView from '../views/Tdc_dashboardView.vue'
+import StreetlightView from '../views/StreetlightView.vue'
 import OauthCallback from '@/components/OauthCallback.vue'
 import { useOauthStore } from '../stores/oauth-store'
 
@@ -9,8 +10,14 @@ const router = createRouter({
     {
       path: '/',
 
-      name: 'Dashboard',
+      name: 'dashboard',
       component: Tdc_dashboardView
+    },
+    {
+      path: '/responsability/streetlights',
+
+      name: 'streetlights',
+      component: StreetlightView
     },
     {
       path: '/oauth2/callback',
