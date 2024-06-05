@@ -12,3 +12,7 @@ import MenuBar from '@/components/MenuBar.vue'
 
   <RouterView />
 </template>
+
+<style scoped>
+
+</style>
