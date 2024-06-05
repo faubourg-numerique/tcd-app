@@ -1,4 +1,4 @@
-import { ref, type Ref, reactive } from "vue";
+import { ref, type Ref } from "vue";
 import { defineStore } from "pinia";
 
 import axios, { type AxiosInstance } from "axios";
