@@ -2,73 +2,97 @@
 import { ref, onMounted } from 'vue'
 import { type AxiosResponse } from 'axios'
 import { useOauthStore } from '../stores/oauth-store'
+import { useStreetlight } from '@/stores/streetlight-store'
+import { useCity } from '../stores/city-store'
+import { useZone } from '../stores/zone-store'
 
-const streetlights = ref([{ status: 'on', id: '' }])
-const useOauthStoreInstance = useOauthStore()
+const zoneStore = useZone()
+const streetLightStore = useStreetlight()
+const cityStore = useCity()
+
+const citySelected = ref('')
+const zoneSelected = ref('')
+
+onMounted(() => {
+  cityStore.getCities()
+})
+
+const handleChangeSelectCities = async (event: Event): Promise<void> => {
+  const target = event.target as HTMLSelectElement
+  citySelected.value = target.value
+
+  await zoneStore.getZones(citySelected.value)
+  console.log(zoneStore.zones.length)
+}
+
+const handleChangeSelectZones = async (event: Event): Promise<void> => {
+  const target = event.target as HTMLSelectElement
+  zoneSelected.value = target.value
+  await streetLightStore.getStreetLight(citySelected.value, zoneSelected.value)
+}
 
 const submitForm = (index: number): void => {
   setTimeout(() => {
     const data = {
-      value: streetlights.value[index].status
+      value: streetLightStore.streetlights[index].powerState
     }
-    useOauthStoreInstance.backend
-      .patch(
-        '/cities/' +
-          import.meta.env.VITE_DEFAULT_CITY_ENTITY_ID +
-          '/zone/' +
-          import.meta.env.VITE_DEFAULT_ZONE_ENTITY_ID +
-          '/streetlights/' +
-          streetlights.value[index].id,
-        data
-      )
-      .then((response: AxiosResponse) => {
-        console.log('Réponse du serveur:', response.data)
-      })
+    streetLightStore.patchStreetLight(
+      data,
+      citySelected.value,
+      zoneSelected.value,
+      streetLightStore.streetlights[index].id
+    )
   }, 100)
 }
 
-const getStreetLight = () => {
-  useOauthStore()
-    .backend.get(
-      '/cities/' +
-        import.meta.env.VITE_DEFAULT_CITY_ENTITY_ID +
-        '/zone/' +
-        import.meta.env.VITE_DEFAULT_ZONE_ENTITY_ID +
-        '/streetlights'
-    )
-    .then((response: AxiosResponse) => {
-      streetlights.value = []
-
-      for (let i = 0; i < response.data.length; i++) {
-        streetlights.value.push(response.data[i])
-      }
-    })
-    .catch((error: Error) => {
-      console.error('Erreur lors de la requête GET:', error)
-    })
+const toggleStatus = (streetLightObject: { powerState: string }) => {
+  streetLightObject.powerState = streetLightObject.powerState === 'on' ? 'off' : 'on'
 }
-
-const toggleStatus = (streetLightObject: { status: string }) => {
-  streetLightObject.status = streetLightObject.status === 'on' ? 'off' : 'on'
-}
-onMounted(getStreetLight)
 </script>
 
 <template>
-  <div class="container-fluid">
+  <!--<div v-if="cities.length <= 0">-->
+  <div>
+    <form class="bg-white p-4 rounded text-center border streetlightForm" @submit.prevent="">
+      <div class="form-group">
+        <label for="citySelection" class="form-label">Sélectionnez une ville</label>
+        <select id="citySelection" class="form-select" @change="handleChangeSelectCities">
+          <option value="" disabled selected>Sélectionnez une ville</option>
+          <option v-for="city in cityStore.cities" :key="city.id" :value="city.id">
+            {{ city.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group" v-if="zoneStore.zones.length <= 0">
+        <label for="zoneSelection" class="form-label">Sélectionnez une zone</label>
+        <select id="zoneSelection" class="form-select" @change="handleChangeSelectZones">
+          <option value="" disabled selected>Sélectionnez une zone</option>
+          <option v-for="zone in zoneStore.zones" :key="zone.id" :value="zone.id">
+            {{ zone.name }}
+          </option>
+        </select>
+      </div>
+    </form>
+  </div>
+  <div class="container-fluid" v-if="cityStore.cities.length <= 0">
     <div class="row">
-      <div v-for="(streetLightObject, index) in streetlights" :key="index" class="col-md mb-4">
+      <div
+        v-for="(streetLightObject, index) in streetLightStore.streetlights"
+        :key="index"
+        class="col-md mb-4"
+      >
         <form class="bg-white p-1 rounded text-center border streetlightForm" @submit.prevent="">
           <div class="input-group d-block max-auto">
             <label :for="'statusLight' + index" class="fs-1" role="button">
               <font-awesome-icon
-                v-if="streetLightObject.status === 'on'"
+                v-if="streetLightObject.powerState === 'on'"
                 :icon="['fas', 'lightbulb']"
               />
               <font-awesome-icon v-else :icon="['far', 'lightbulb']" />
             </label>
             <p class="fs-6">
-              {{ streetLightObject.status }}
+              {{ streetLightObject.powerState }}
             </p>
             <p class="fs-6">
               {{ streetLightObject.id }}
@@ -77,13 +101,19 @@ onMounted(getStreetLight)
               :id="'statusLight' + index"
               type="checkbox"
               class="d-none"
-              :checked="streetLightObject.status === 'on'"
+              :checked="streetLightObject.powerState === 'on'"
               @click="submitForm(index)"
               @change="toggleStatus(streetLightObject)"
             />
           </div>
         </form>
       </div>
+    </div>
+  </div>
+  <div class="container-fluid" v-else>
+    <div class="center">
+      <p class="text-center"></p>
+      <p class="text-center">Oops sorry but you didn't select everything</p>
     </div>
   </div>
 </template>
