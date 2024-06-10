@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useStreetlight } from '@/stores/streetlight-store'
 import { useCity } from '../stores/city-store'
 import { useZone } from '../stores/zone-store'
@@ -88,7 +88,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
               {{ streetLightObject.powerState }}
             </p>
             <p class="fs-6">
-              {{ streetLightObject.id }}
+              {{ streetLightObject.name }}
             </p>
             <input
               :id="'statusLight' + index"
