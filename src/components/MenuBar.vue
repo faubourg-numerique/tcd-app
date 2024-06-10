@@ -33,12 +33,18 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <RouterLink class="dropdown-item bi bi-houses-fill" to="/rubrique1">
+                <RouterLink
+                  class="dropdown-item bi bi-houses-fill"
+                  to="/responsability/thermostats"
+                >
                   Bâtiments</RouterLink
                 >
               </li>
               <li>
-                <RouterLink class="dropdown-item bi bi-lightbulb-fill" to="/rubrique2">
+                <RouterLink
+                  class="dropdown-item bi bi-lightbulb-fill"
+                  to="/responsability/streetlights"
+                >
                   Eclairage</RouterLink
                 >
               </li>
