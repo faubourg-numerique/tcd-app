@@ -13,13 +13,11 @@ export const useStreetlight = defineStore('streetLIght', () => {
   const getStreetLight = async (cityId: String, zoneId: String) => {
     $reset()
     if (cityId === undefined || zoneId === undefined) {
-      streetlights.value = []
+      return
     }
     useOauthStore()
       .backend.get('/cities/' + cityId + '/zones/' + zoneId + '/streetlights')
       .then((response: AxiosResponse) => {
-        console.log(response.data)
-
         streetlights.value = response.data
       })
       .catch((error: Error) => {
@@ -35,12 +33,10 @@ export const useStreetlight = defineStore('streetLIght', () => {
   ) => {
     useOauthStore()
       .backend.patch(
-        '/cities/' + cityId + '/zone/' + zoneId + '/streetlights/' + streetlightId,
+        '/cities/' + cityId + '/zones/' + zoneId + '/streetlights/' + streetlightId,
         data
       )
-      .then((response: AxiosResponse) => {
-        console.log('Réponse du serveur:', response.data)
-      })
+      .then((response: AxiosResponse) => {})
   }
 
   $reset()

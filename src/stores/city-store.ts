@@ -6,6 +6,8 @@ import { defineStore } from 'pinia'
 export const useCity = defineStore('city', () => {
   const cities = ref([{ id: '', name: '' }])
 
+  const citySelected = ref('')
+
   const $reset = () => {
     cities.value = []
   }
@@ -27,6 +29,7 @@ export const useCity = defineStore('city', () => {
   return {
     cities,
     $reset,
-    getCities
+    getCities,
+    citySelected
   }
 })

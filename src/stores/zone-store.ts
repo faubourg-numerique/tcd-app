@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 
 export const useZone = defineStore('zone', () => {
   const zones = ref([{ powerState: 'on', id: '', name: '', hasZone: '' }])
+  const zoneSelected = ref('')
 
   const $reset = () => {
     zones.value = []
@@ -28,6 +29,7 @@ export const useZone = defineStore('zone', () => {
   return {
     zones,
     $reset,
-    getZones
+    getZones,
+    zoneSelected
   }
 })

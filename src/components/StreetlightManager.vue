@@ -8,27 +8,21 @@ const zoneStore = useZone()
 const streetLightStore = useStreetlight()
 const cityStore = useCity()
 
-const citySelected = ref('')
-const zoneSelected = ref('')
-
-console.log(zoneStore.zones)
-
 onMounted(() => {
   cityStore.getCities()
 })
 
 const handleChangeSelectCities = async (event: Event): Promise<void> => {
   const target = event.target as HTMLSelectElement
-  citySelected.value = target.value
+  cityStore.citySelected = target.value
 
-  await zoneStore.getZones(citySelected.value)
-  console.log(zoneStore.zones.length)
+  await zoneStore.getZones(cityStore.citySelected)
 }
 
 const handleChangeSelectZones = async (event: Event): Promise<void> => {
   const target = event.target as HTMLSelectElement
-  zoneSelected.value = target.value
-  await streetLightStore.getStreetLight(citySelected.value, zoneSelected.value)
+  zoneStore.zoneSelected = target.value
+  await streetLightStore.getStreetLight(cityStore.citySelected, zoneStore.zoneSelected)
 }
 
 const submitForm = (index: number): void => {
@@ -38,8 +32,8 @@ const submitForm = (index: number): void => {
     }
     streetLightStore.patchStreetLight(
       data,
-      citySelected.value,
-      zoneSelected.value,
+      cityStore.citySelected,
+      zoneStore.zoneSelected,
       streetLightStore.streetlights[index].id
     )
   }, 100)
@@ -112,7 +106,9 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
   <div class="container-fluid" v-else>
     <div class="center">
       <p class="text-center"></p>
-      <p class="text-center">Oups désolé, mais tu n'as pas tout sélectionné.</p>
+      <p class="text-center">
+        Oups désolé, mais tu n'as pas tout sélectionné ou il n'y a aucun lampadaire.
+      </p>
     </div>
   </div>
 </template>
