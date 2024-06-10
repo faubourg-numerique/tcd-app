@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { type AxiosResponse } from 'axios'
-import { useOauthStore } from '../stores/oauth-store'
 import { useStreetlight } from '@/stores/streetlight-store'
 import { useCity } from '../stores/city-store'
 import { useZone } from '../stores/zone-store'
@@ -114,7 +112,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
   <div class="container-fluid" v-else>
     <div class="center">
       <p class="text-center"></p>
-      <p class="text-center">Oops sorry but you didn't select everything</p>
+      <p class="text-center">Oups désolé, mais tu n'as pas tout sélectionné.</p>
     </div>
   </div>
 </template>
