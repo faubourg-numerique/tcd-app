@@ -12,15 +12,18 @@ export const useZone = defineStore('zone', () => {
 
   const getZones = async (cityId: String) => {
     $reset()
-    useOauthStore()
+    await useOauthStore()
       .backend.get('/cities/' + cityId + '/zones')
       .then((response: AxiosResponse) => {
         zones.value = response.data
+        return
       })
       .catch((error: Error) => {
         console.error('Erreur lors de la requête GET:', error)
       })
   }
+
+  $reset()
 
   return {
     zones,

@@ -13,6 +13,8 @@ const cityStore = useCity()
 const citySelected = ref('')
 const zoneSelected = ref('')
 
+console.log(zoneStore.zones)
+
 onMounted(() => {
   cityStore.getCities()
 })
@@ -51,8 +53,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
 </script>
 
 <template>
-  <!--<div v-if="cities.length <= 0">-->
-  <div>
+  <div class="m-4">
     <form class="bg-white p-4 rounded text-center border streetlightForm" @submit.prevent="">
       <div class="form-group">
         <label for="citySelection" class="form-label">Sélectionnez une ville</label>
@@ -64,7 +65,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
         </select>
       </div>
 
-      <div class="form-group" v-if="zoneStore.zones.length <= 0">
+      <div class="form-group" v-if="zoneStore.zones.length > 0">
         <label for="zoneSelection" class="form-label">Sélectionnez une zone</label>
         <select id="zoneSelection" class="form-select" @change="handleChangeSelectZones">
           <option value="" disabled selected>Sélectionnez une zone</option>
@@ -75,7 +76,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
       </div>
     </form>
   </div>
-  <div class="container-fluid" v-if="cityStore.cities.length <= 0">
+  <div class="container-fluid" v-if="streetLightStore.streetlights.length > 0">
     <div class="row">
       <div
         v-for="(streetLightObject, index) in streetLightStore.streetlights"

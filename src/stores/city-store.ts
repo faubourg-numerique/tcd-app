@@ -22,6 +22,8 @@ export const useCity = defineStore('city', () => {
       })
   }
 
+  $reset()
+
   return {
     cities,
     $reset,

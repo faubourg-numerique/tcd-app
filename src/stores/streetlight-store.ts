@@ -43,6 +43,8 @@ export const useStreetlight = defineStore('streetLIght', () => {
       })
   }
 
+  $reset()
+
   return {
     streetlights,
     $reset,
