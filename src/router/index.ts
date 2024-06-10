@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Tdc_dashboardView from '../views/Tdc_dashboardView.vue'
+import Tdc_dashboardView from '../views/MainDashboard.vue'
 import StreetlightView from '../views/StreetlightView.vue'
 import ThermostatView from '../views/ThermostatView.vue'
 import OauthCallback from '@/components/OauthCallback.vue'

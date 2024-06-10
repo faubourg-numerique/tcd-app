@@ -42,7 +42,7 @@ onMounted(() => {
       </div>
 
       <div class="mb-3 w-50 text-center form-group">
-        <p>{{ data.name }}</p>
+        <p class="textRed">{{ data.name }}</p>
         <input
           :id="'statusThermostat' + index"
           type="submit"
@@ -58,6 +58,10 @@ onMounted(() => {
 .thermostatForm {
   height: 100%;
   border-color: red !important;
+}
+
+.textRed {
+  color: red;
 }
 .form-group {
   flex: 1;

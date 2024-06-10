@@ -87,7 +87,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
             <p class="fs-6">
               {{ streetLightObject.powerState }}
             </p>
-            <p class="fs-6">
+            <p class="fs-6 textRed">
               {{ streetLightObject.name }}
             </p>
             <input
@@ -116,5 +116,9 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
 <style scoped>
 .streetlightForm {
   border-color: red !important;
+}
+
+.textRed {
+  color: red;
 }
 </style>
