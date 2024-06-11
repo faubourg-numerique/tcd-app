@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Tdc_dashboardView from '../views/MainDashboard.vue'
 import StreetlightView from '../views/StreetlightView.vue'
 import ThermostatView from '../views/ThermostatView.vue'
 import OauthCallback from '@/components/OauthCallback.vue'
 import { useOauthStore } from '../stores/oauth-store'
+import MainDashboard from '@/views/MainDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,7 +12,7 @@ const router = createRouter({
       path: '/',
 
       name: 'dashboard',
-      component: Tdc_dashboardView
+      component: MainDashboard
     },
     {
       path: '/responsability/streetlights',
