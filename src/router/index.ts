@@ -1,23 +1,53 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import StreetlightView from '../views/StreetlightView.vue'
+import ThermostatView from '../views/ThermostatView.vue'
+import OauthCallback from '@/components/OauthCallback.vue'
+import { useOauthStore } from '../stores/oauth-store'
+import MainDashboard from '@/views/MainDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+
+      name: 'dashboard',
+      component: MainDashboard
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      path: '/responsability/streetlights',
+
+      name: 'streetlights',
+      component: StreetlightView
+    },
+    {
+      path: '/responsability/thermostats',
+
+      name: 'thermostats',
+      component: ThermostatView
+    },
+    {
+      path: '/oauth2/callback',
+      name: 'callback',
+      component: OauthCallback
     }
   ]
+})
+
+router.beforeEach((to) => {
+  const oauthStore = useOauthStore()
+
+  if (!oauthStore.isConnected && to.name != 'callback') {
+    const linkRedirect =
+      import.meta.env.VITE_IDENTITY_MANAGER_URL +
+      '/oauth2/authorize?client_id=' +
+      import.meta.env.VITE_IDENTITY_MANAGER_APP_CLIENT_ID +
+      '&response_type=token&redirect_uri=' +
+      import.meta.env.VITE_IDENTITY_MANAGER_APP_REDIRECT_URI +
+      '&state=false'
+    window.location.href = linkRedirect
+    return false
+  }
 })
 
 export default router
