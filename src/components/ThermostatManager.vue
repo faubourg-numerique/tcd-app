@@ -55,6 +55,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.form-thermostat-container {
+  min-width: 480px;
+}
 .thermostatForm {
   height: 100%;
   border-color: red !important;

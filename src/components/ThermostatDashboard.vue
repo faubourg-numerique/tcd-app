@@ -42,7 +42,7 @@ const thermostat1DashboardPanel4Url = import.meta.env
 
 <style scoped>
 .container-iframe-thermostat {
-  min-width: 27%;
+  min-width: 400px;
   min-height: 30vh;
 }
 
