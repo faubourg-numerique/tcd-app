@@ -7,12 +7,12 @@ const thermostat1DashboardPanel2Url = import.meta.env
 </script>
 
 <template>
-  <div class="w-90 main-div-dashboard m-3">
-    <div class="row h-100">
-      <div class="col-7">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7 col-sm-12">
         <iframe class="h-100 w-100" :src="mapMainDashboard" frameborder="0"></iframe>
       </div>
-      <div class="col">
+      <div class="col-md-5 col-sm-12">
         <div class="w-100">
           <iframe class="h-100 w-100" :src="thermostat1DashboardPanel1Url" frameborder="0"></iframe>
         </div>
