@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "mainTitle": "Connected and Sustainable Territories",
+    "Dashboard": "Dashboard",
+    "myResponsibilities": "My Responsibilities",
+    "myTerritory": "My Territory",
+    "Watercourse": "Watercourse",
+    "PAV": "P.A.V.",
+    "Lighting": "Lighting",
+    "Buildings": "Buildings"
+  },
+  "manager": {
+    "selectACity": "Select a City",
+    "selectAZone": "Select a Zone",
+    "streetlight": {
+      "on": "on",
+      "off": "off",
+      "error": "Oops sorry, but you haven't selected everything or there are no streetlights."
+    },
+    "thermostat": {
+      "titleForm": "Temperature"
+    }
+  }
+}

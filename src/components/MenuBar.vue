@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <RouterLink class="navbar-brand d-flex align-items-center" to="/">
         <img alt="Vue logo" class="logo" src="@/assets/images.jpg" width="50" height="50" />
-        <span class="ms-2 d-none d-sm-inline text-danger">Territoires Connectés et Durables</span>
+        <span class="ms-2 d-none d-sm-inline text-danger">{{ $t('nav.mainTitle') }}</span>
       </RouterLink>
       <button
         class="navbar-toggler"
@@ -19,7 +19,7 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/"> Tableau de bord </RouterLink>
+            <RouterLink class="nav-link" to="/">{{ $t('nav.Dashboard') }}</RouterLink>
           </li>
           <li class="nav-item dropdown">
             <a
@@ -29,7 +29,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Mes responsabilités
+              {{ $t('nav.myResponsibilities') }}
             </a>
             <ul class="dropdown-menu">
               <li>
@@ -37,7 +37,7 @@
                   class="dropdown-item bi bi-houses-fill"
                   to="/responsability/thermostats"
                 >
-                  Bâtiments</RouterLink
+                  {{ $t('nav.Buildings') }}</RouterLink
                 >
               </li>
               <li>
@@ -45,23 +45,23 @@
                   class="dropdown-item bi bi-lightbulb-fill"
                   to="/responsability/streetlights"
                 >
-                  Eclairage</RouterLink
+                  {{ $t('nav.Lighting') }}</RouterLink
                 >
               </li>
               <li>
                 <RouterLink class="dropdown-item bi bi-trash3-fill" to="/rubrique3">
-                  P.A.V.</RouterLink
+                  {{ $t('nav.PAV') }}</RouterLink
                 >
               </li>
               <li>
                 <RouterLink class="dropdown-item bi bi-water" to="/rubrique4">
-                  Cours d’eau</RouterLink
+                  {{ $t('nav.Watercourse') }}</RouterLink
                 >
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/"> Mon territoire </RouterLink>
+            <RouterLink class="nav-link" to="/">{{ $t('nav.myTerritory') }}</RouterLink>
           </li>
           <li class="nav-item d-flex align-items-center">
             <span class="bi bi-person-circle me-2">{{ useOauthStore().name }} </span>

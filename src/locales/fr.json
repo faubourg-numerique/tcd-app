@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "mainTitle": "Territoires Connectés et Durables",
+    "Dashboard": "Tableau de bord",
+    "myResponsibilities": "Mes responsabilités",
+    "myTerritory": "mon territoire",
+    "Watercourse": "Cours d'eau",
+    "PAV": "P.A.V.",
+    "Lighting": "Eclairage",
+    "Buildings": "Bâtiments"
+  },
+  "manager": {
+    "selectACity": "Sélectionnez une ville",
+    "selectAZone": "Sélectionnez une zone",
+    "streetlight": {
+      "on": "allumée",
+      "off": "éteinte",
+      "error": "Oups désolé, mais tu n'as pas tout sélectionné ou il n'y a aucun lampadaire."
+    },
+    "thermostat":{
+        "titleForm":"température"
+    }
+  }
+}
