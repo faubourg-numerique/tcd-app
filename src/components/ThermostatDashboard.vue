@@ -1,12 +1,25 @@
 <script setup lang="ts">
-const thermostat1DashboardPanel1Url = import.meta.env
-  .VITE_THERMOSTAT_1_DASHBOARD_PANEL_1_URL as string
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
+const thermostat1DashboardPanel1Url =
+  import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_1_URL.replace(
+    '$customText',
+    t('dashboard.thermostat.temperature')
+  ) as string
 const thermostat1DashboardPanel2Url = import.meta.env
   .VITE_THERMOSTAT_1_DASHBOARD_PANEL_2_URL as string
-const thermostat1DashboardPanel3Url = import.meta.env
-  .VITE_THERMOSTAT_1_DASHBOARD_PANEL_3_URL as string
-const thermostat1DashboardPanel4Url = import.meta.env
-  .VITE_THERMOSTAT_1_DASHBOARD_PANEL_4_URL as string
+const thermostat1DashboardPanel3Url =
+  import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_3_URL.replace(
+    '$customText',
+    t('dashboard.thermostat.temperature')
+  ) as string
+const thermostat1DashboardPanel4Url =
+  import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_4_URL.replace(
+    '$customText',
+    t('dashboard.thermostat.temperature')
+  ) as string
 </script>
 
 <template>

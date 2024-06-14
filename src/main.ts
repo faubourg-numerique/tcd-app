@@ -1,4 +1,5 @@
 import './assets/main.css'
+const userLanguage = window.navigator.language
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -25,7 +26,8 @@ library.add(far)
 library.add(fab)
 
 const i18n = createI18n({
-  locale: 'en',
+  legacy: false,
+  locale: userLanguage,
   messages: {
     en: en,
     fr: fr

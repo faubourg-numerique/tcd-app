@@ -20,5 +20,11 @@
     "thermostat":{
         "titleForm":"température"
     }
+  },
+  "dashboard": {
+    "thermostat": {
+      "temperature": "température",
+      "electricity": "électricité"
+    }
   }
 }
