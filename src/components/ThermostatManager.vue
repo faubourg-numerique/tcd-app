@@ -20,7 +20,7 @@ onMounted(() => {
   <div
     v-for="(data, index) in thermostatStore.thermostats"
     :key="index"
-    class="form-thermostat-container col-md m-3"
+    class="form-thermostat-container col-md mt-3 mb-3 w-100"
   >
     <form
       class="container border thermostatForm rounded d-flex flex-column align-items-center"
@@ -56,7 +56,7 @@ onMounted(() => {
 
 <style scoped>
 .form-thermostat-container {
-  min-width: 480px;
+  min-width: 300px;
 }
 .thermostatForm {
   height: 100%;

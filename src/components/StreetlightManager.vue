@@ -48,9 +48,9 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
   <div class="m-4">
     <form class="bg-white p-4 rounded text-center border streetlightForm" @submit.prevent="">
       <div class="form-group">
-        <label for="citySelection" class="form-label">Sélectionnez une ville</label>
+        <label for="citySelection" class="form-label">{{ $t('manager.selectACity') }}</label>
         <select id="citySelection" class="form-select" @change="handleChangeSelectCities">
-          <option value="" disabled selected>Sélectionnez une ville</option>
+          <option value="" disabled selected>{{ $t('manager.selectACity') }}</option>
           <option v-for="city in cityStore.cities" :key="city.id" :value="city.id">
             {{ city.name }}
           </option>
@@ -58,9 +58,9 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
       </div>
 
       <div class="form-group" v-if="zoneStore.zones.length > 0">
-        <label for="zoneSelection" class="form-label">Sélectionnez une zone</label>
+        <label for="zoneSelection" class="form-label">{{ $t('manager.selectAZone') }}</label>
         <select id="zoneSelection" class="form-select" @change="handleChangeSelectZones">
-          <option value="" disabled selected>Sélectionnez une zone</option>
+          <option value="" disabled selected>{{ $t('manager.selectAZone') }}</option>
           <option v-for="zone in zoneStore.zones" :key="zone.id" :value="zone.id">
             {{ zone.name }}
           </option>
@@ -85,7 +85,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
               <font-awesome-icon v-else :icon="['far', 'lightbulb']" />
             </label>
             <p class="fs-6">
-              {{ streetLightObject.powerState }}
+              {{ $t('manager.streetlight.' + streetLightObject.powerState) }}
             </p>
             <p class="fs-6 textRed">
               {{ streetLightObject.name }}
@@ -107,7 +107,7 @@ const toggleStatus = (streetLightObject: { powerState: string }) => {
     <div class="center">
       <p class="text-center"></p>
       <p class="text-center">
-        Oups désolé, mais tu n'as pas tout sélectionné ou il n'y a aucun lampadaire.
+        {{ $t('manager.streetlight.error') }}
       </p>
     </div>
   </div>
