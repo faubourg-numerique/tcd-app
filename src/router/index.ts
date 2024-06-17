@@ -4,6 +4,7 @@ import ThermostatView from '../views/ThermostatView.vue'
 import OauthCallback from '@/components/OauthCallback.vue'
 import { useOauthStore } from '../stores/oauth-store'
 import MainDashboard from '@/views/MainDashboardView.vue'
+import WaitingRole from '@/views/WaitingRole.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,11 @@ const router = createRouter({
       path: '/oauth2/callback',
       name: 'callback',
       component: OauthCallback
+    },
+    {
+      path: '/waiting',
+      name: 'waiting',
+      component: WaitingRole
     }
   ]
 })

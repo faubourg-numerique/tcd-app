@@ -17,8 +17,8 @@
       "off": "éteinte",
       "error": "Oups désolé, mais tu n'as pas tout sélectionné ou il n'y a aucun lampadaire."
     },
-    "thermostat":{
-        "titleForm":"température"
+    "thermostat": {
+      "titleForm": "température"
     }
   },
   "dashboard": {
@@ -26,5 +26,9 @@
       "temperature": "température",
       "electricity": "électricité"
     }
+  },
+  "waitingRole": {
+    "mainTitle": "Vous n'avez pas de droit",
+    "mainText": "Veuillez patienter l'arrivée du support technique ou contactez-le directement."
   }
 }

@@ -16,7 +16,11 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <div
+        v-if="useOauthStore().countRightRole() > 0"
+        class="collapse navbar-collapse justify-content-end"
+        id="navbarNav"
+      >
         <ul class="navbar-nav">
           <li class="nav-item">
             <RouterLink class="nav-link" to="/">{{ $t('nav.Dashboard') }}</RouterLink>
