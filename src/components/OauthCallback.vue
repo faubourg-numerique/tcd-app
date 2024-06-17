@@ -25,7 +25,7 @@ onMounted(async () => {
   const response: AxiosResponse = await axios.get(
     import.meta.env.VITE_IDENTITY_MANAGER_URL + '/user?access_token=' + token
   )
-  console.log(response.data)
+  
   oauthStore.name = response.data.username
   oauthStore.isConnected = true
   oauthStore.roles = response.data.roles

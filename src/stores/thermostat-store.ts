@@ -2,9 +2,10 @@ import { ref } from 'vue'
 import { type AxiosResponse } from 'axios'
 import { useOauthStore } from './oauth-store'
 import { defineStore } from 'pinia'
+import type { Thermostat } from '@/model/Thermostat'
 
 export const useThermostat = defineStore('thermostat', () => {
-  const thermostats = ref([{ temperature: 0, id: '', name: '' }])
+  const thermostats = ref<Thermostat[]>()
 
   const $reset = () => {
     thermostats.value = []
@@ -22,7 +23,6 @@ export const useThermostat = defineStore('thermostat', () => {
     await useOauthStore()
       .backend.get('/thermostats')
       .then((response: AxiosResponse) => {
-        console.log(response.data)
         thermostats.value = response.data
       })
       .catch((error: Error) => {

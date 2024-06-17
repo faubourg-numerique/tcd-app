@@ -2,9 +2,10 @@ import { ref } from 'vue'
 import { type AxiosResponse } from 'axios'
 import { useOauthStore } from './oauth-store'
 import { defineStore } from 'pinia'
+import type { City } from '@/model/City'
 
 export const useCity = defineStore('city', () => {
-  const cities = ref([{ id: '', name: '' }])
+  const cities = ref<City[]>([])
 
   const citySelected = ref('')
 
