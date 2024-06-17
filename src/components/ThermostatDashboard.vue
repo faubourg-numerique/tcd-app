@@ -18,7 +18,7 @@ const thermostat1DashboardPanel3Url =
 const thermostat1DashboardPanel4Url =
   import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_4_URL.replace(
     '$customText',
-    t('dashboard.thermostat.temperature')
+    t('dashboard.thermostat.electricity')
   ) as string
 </script>
 

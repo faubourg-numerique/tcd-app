@@ -28,6 +28,7 @@ library.add(fab)
 const i18n = createI18n({
   legacy: false,
   locale: userLanguage,
+  fallbackLocale: 'en',
   messages: {
     en: en,
     fr: fr
