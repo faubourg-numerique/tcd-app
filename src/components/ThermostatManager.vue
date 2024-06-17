@@ -5,10 +5,12 @@ import { useThermostat } from '@/stores/thermostat-store'
 const thermostatStore = useThermostat()
 
 const submitForm = (submitIndex: number) => {
-  const data = {
-    value: thermostatStore.thermostats[submitIndex].temperature
+  if (thermostatStore && thermostatStore.thermostats) {
+    const data = {
+      value: thermostatStore.thermostats[submitIndex].temperature
+    }
+    thermostatStore.patchThermostat(data, 'test', thermostatStore.thermostats[submitIndex].id)
   }
-  thermostatStore.patchThermostat(data, 'test', thermostatStore.thermostats[submitIndex].id)
 }
 
 onMounted(() => {

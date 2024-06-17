@@ -2,9 +2,10 @@ import { ref } from 'vue'
 import { type AxiosResponse } from 'axios'
 import { useOauthStore } from './oauth-store'
 import { defineStore } from 'pinia'
+import type { Zone } from '@/model/Zone'
 
 export const useZone = defineStore('zone', () => {
-  const zones = ref([{ powerState: 'on', id: '', name: '', hasZone: '' }])
+  const zones = ref<Zone[]>([])
   const zoneSelected = ref('')
 
   const $reset = () => {

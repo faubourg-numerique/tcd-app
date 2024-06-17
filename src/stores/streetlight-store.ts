@@ -2,9 +2,10 @@ import { ref } from 'vue'
 import { type AxiosResponse } from 'axios'
 import { useOauthStore } from './oauth-store'
 import { defineStore } from 'pinia'
+import type { Streetlight } from '@/model/Streetlight'
 
 export const useStreetlight = defineStore('streetLIght', () => {
-  const streetlights = ref([{ powerState: 'on', id: '', name: '', hasZone: '' }])
+  const streetlights = ref<Streetlight[]>([])
 
   const $reset = () => {
     streetlights.value = []
