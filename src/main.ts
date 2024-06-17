@@ -20,10 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import { ref, onMounted, nextTick } from 'vue';
-import axios from 'axios';
-import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
+import 'leaflet/dist/leaflet.css'
 
 library.add(fas)
 library.add(far)
