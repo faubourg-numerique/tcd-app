@@ -7,6 +7,7 @@ import { LMap, LTileLayer, LMarker , LPolygon } from "@vue-leaflet/vue-leaflet";
 const mapMainDashboard = import.meta.env.VITE_MAP_MAIN_DASHBOARD as string;
 const thermostat1DashboardPanel1Url = import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_1_URL as string;
 const thermostat1DashboardPanel2Url = import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_2_URL as string;
+const dataUrl = import.meta.env.VITE_API_URL as string ; 
 
 const markers = ref([]); 
 const zones = ref ([]) ; 
@@ -14,7 +15,7 @@ const zones = ref ([]) ;
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:9000/data-map');
+    const response = await axios.get(dataUrl+'data-map');
     const data = response.data;
     console.log(data) ;
     
