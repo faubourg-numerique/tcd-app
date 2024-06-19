@@ -33,7 +33,7 @@ async function authenticate() {
     const response = await axios.get(import.meta.env.VITE_IDENTITY_MANAGER_URL + "/user?access_token=" + route.query.token);
     const defaultRoleNames = import.meta.env.VITE_DEFAULT_ROLE_NAMES.split(",");
     mainStore.username = response.data.username;
-    mainStore.roles = response.data.roles.map((role) => role.name);
+    mainStore.roles = response.data.roles.map((role: { name: string }) => role.name);
     mainStore.isAuthorized = !mainStore.roles.every((role) => defaultRoleNames.includes(role));
 
     if (!mainStore.isAuthorized) {

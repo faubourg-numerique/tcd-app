@@ -29,7 +29,7 @@ export const useZoneStore = defineStore("zone", () => {
     }
 
     function $reset() {
-        zones.lenth = 0;
+        zones.length = 0;
     }
 
     return { zones, getZone, getZonesByCityId, fetchZones, $reset };
