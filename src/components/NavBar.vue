@@ -15,7 +15,7 @@ const mainStore = useMainStore();
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div v-if="mainStore.isAuthenticated && mainStore.isAuthorized" class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div v-if="mainStore.isAuthenticated && mainStore.isAuthorized" id="navbarNav" class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ name: 'dashboard' }">{{ $t("nav.Dashboard") }}</RouterLink>

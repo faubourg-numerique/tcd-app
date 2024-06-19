@@ -27,21 +27,21 @@ async function updateStreetlightPowerState(cityId: string, zoneId: string, stree
         <div class="bg-white p-4 rounded text-center border border-danger">
             <div class="form-group">
                 <label for="city-id" class="form-label">{{ $t("manager.selectACity") }}</label>
-                <select id="city-id" class="form-select" v-model="selectedCityId">
+                <select id="city-id" v-model="selectedCityId" class="form-select">
                     <option :value="null" disabled>{{ $t("manager.selectACity") }}</option>
                     <option v-for="city in cityStore.cities" :key="city.id" :value="city.id">{{ city.name }}</option>
                 </select>
             </div>
-            <div class="form-group" v-if="selectedCityId">
+            <div v-if="selectedCityId" class="form-group">
                 <label for="zone-id" class="form-label">{{ $t("manager.selectAZone") }}</label>
-                <select id="zone-id" class="form-select" v-model="selectedZoneId">
+                <select id="zone-id" v-model="selectedZoneId" class="form-select">
                     <option :value="null" disabled>{{ $t("manager.selectAZone") }}</option>
                     <option v-for="zone in zoneStore.getZonesByCityId(selectedCityId)" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
                 </select>
             </div>
         </div>
     </div>
-    <div class="container-fluid" v-if="selectedCityId && selectedZoneId">
+    <div v-if="selectedCityId && selectedZoneId" class="container-fluid">
         <div class="row">
             <div v-for="(streetlight, index) in streetlightStore.getStreetlightsByZoneId(selectedZoneId)" :key="streetlight.id" class="col-md mb-4">
                 <div class="bg-white p-1 rounded text-center border streetlightForm">
@@ -58,7 +58,7 @@ async function updateStreetlightPowerState(cityId: string, zoneId: string, stree
             </div>
         </div>
     </div>
-    <div class="container-fluid" v-else>
+    <div v-else class="container-fluid">
         <div class="center">
             <p class="text-center">{{ $t("manager.streetlight.error") }}</p>
         </div>
