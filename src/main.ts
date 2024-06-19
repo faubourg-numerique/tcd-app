@@ -1,46 +1,42 @@
-import './assets/main.css'
-const userLanguage = window.navigator.language
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { createI18n } from 'vue-i18n'
+import { createPinia } from "pinia";
+import { createApp } from "vue";
+import { createI18n } from "vue-i18n";
 
-import en from './locales/en.json'
-import fr from './locales/fr.json'
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
 
-import App from './App.vue'
-import router from './router'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import 'bootstrap-icons/font/bootstrap-icons.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import App from "@/App.vue";
+import router from "@/router";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-import 'leaflet/dist/leaflet.css'
+import en from "@/locales/en.json";
+import fr from "@/locales/fr.json";
 
-library.add(fas)
-library.add(far)
-library.add(fab)
+library.add(fas);
+library.add(far);
+library.add(fab);
 
 const i18n = createI18n({
-  legacy: false,
-  locale: userLanguage,
-  fallbackLocale: 'en',
-  messages: {
-    en: en,
-    fr: fr
-  }
-})
+    legacy: false,
+    locale: window.navigator.language,
+    fallbackLocale: "en",
+    messages: { en, fr }
+});
 
-const app = createApp(App)
+const pinia = createPinia();
 
-app.component('FontAwesomeIcon', FontAwesomeIcon)
-app.use(i18n)
-app.use(createPinia())
-app.use(router)
+const app = createApp(App);
 
-app.mount('#app')
+app.component("FontAwesomeIcon", FontAwesomeIcon);
+
+app.use(i18n);
+app.use(pinia);
+app.use(router);
+
+app.mount("#app");

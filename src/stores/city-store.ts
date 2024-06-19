@@ -1,36 +1,32 @@
-import { ref } from 'vue'
-import { type AxiosResponse } from 'axios'
-import { useOauthStore } from './oauth-store'
-import { defineStore } from 'pinia'
-import type { City } from '@/model/City'
+import { defineStore } from "pinia";
+import { reactive } from "vue";
 
-export const useCity = defineStore('city', () => {
-  const cities = ref<City[]>([])
+import CityNotFoundError from "@/errors/NotFoundError/CityNotFoundError";
+import type { City } from "@/models/City";
+import { useMainStore } from "@/stores/main-store";
 
-  const citySelected = ref('')
+export const useCityStore = defineStore("city", () => {
+    const mainStore = useMainStore();
 
-  const $reset = () => {
-    cities.value = []
-  }
+    const cities: City[] = reactive([]);
 
-  const getCities = async () => {
-    $reset()
-    useOauthStore()
-      .backend.get('/cities')
-      .then((response: AxiosResponse) => {
-        cities.value = response.data
-      })
-      .catch((error: Error) => {
-        console.error('Erreur lors de la requête GET:', error)
-      })
-  }
+    function getCity(cityId: string) {
+        const city = cities.find((city) => city.id === cityId);
+        if (!city) {
+            throw new CityNotFoundError(cityId);
+        }
+        return city;
+    }
 
-  $reset()
+    async function fetchCities() {
+        cities.length = 0;
+        const response = await mainStore.api.get("/cities");
+        cities.push(...response.data);
+    }
 
-  return {
-    cities,
-    $reset,
-    getCities,
-    citySelected
-  }
-})
+    function $reset() {
+        cities.length = 0;
+    }
+
+    return { cities, getCity, fetchCities, $reset };
+});
