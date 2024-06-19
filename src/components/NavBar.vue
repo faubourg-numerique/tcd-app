@@ -42,31 +42,31 @@ const mainStore = useMainStore();
 
 <style scoped>
 .navbar-brand img {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 .navbar-nav .nav-item .nav-link {
-  color: #333;
+    color: #333;
 }
 
 .navbar-nav .nav-item .nav-link:hover {
-  color: #0056b3;
+    color: #0056b3;
 }
 
 .navbar-nav .nav-item span {
-  color: #333;
+    color: #333;
 }
 
 .navbar-brand img {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 .nav-link {
-  color: #333;
-  padding: 0 15px;
+    color: #333;
+    padding: 0 15px;
 }
 
 .nav-link i {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 </style>

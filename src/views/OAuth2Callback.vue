@@ -26,8 +26,8 @@ async function authenticate() {
     mainStore.api = axios.create({
         baseURL: import.meta.env.VITE_API_URL,
         headers: {
-            Authorization: `Bearer ${route.query.token as string}`
-        }
+            Authorization: `Bearer ${route.query.token as string}`,
+        },
     });
 
     const response = await axios.get(import.meta.env.VITE_IDENTITY_MANAGER_URL + "/user?access_token=" + route.query.token);

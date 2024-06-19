@@ -15,7 +15,7 @@ const selectedZoneId: Ref<string | null> = ref(null);
 async function updateStreetlightPowerState(cityId: string, zoneId: string, streetlightId: string, powerState: string) {
     const streetlight = streetlightStore.getStreetlight(streetlightId);
     const data = {
-        value: powerState
+        value: powerState,
     };
     await streetlightStore.updateStreetlight(cityId, zoneId, streetlightId, data);
     streetlight.powerState = powerState;
@@ -47,12 +47,12 @@ async function updateStreetlightPowerState(cityId: string, zoneId: string, stree
                 <div class="bg-white p-1 rounded text-center border streetlightForm">
                     <div class="input-group d-block max-auto">
                         <label :for="'streetlight-' + streetlight.id" class="fs-1" role="button">
-                            <FontAwesomeIcon v-if="streetlight.powerState === 'on'" :icon="['fas', 'lightbulb']"/>
+                            <FontAwesomeIcon v-if="streetlight.powerState === 'on'" :icon="['fas', 'lightbulb']" />
                             <FontAwesomeIcon v-else :icon="['far', 'lightbulb']" />
                         </label>
                         <p class="fs-6">{{ $t("manager.streetlight." + streetlight.powerState) }}</p>
                         <p class="fs-6 text-danger">{{ streetlight.name }}</p>
-                        <input :id="'streetlight-' + streetlight.id" type="checkbox" class="d-none" :checked="streetlight.powerState === 'on'" @click="updateStreetlightPowerState(selectedCityId, selectedZoneId, streetlight.id, streetlight.powerState === 'off' ? 'on' : 'off')"/>
+                        <input :id="'streetlight-' + streetlight.id" type="checkbox" class="d-none" :checked="streetlight.powerState === 'on'" @click="updateStreetlightPowerState(selectedCityId, selectedZoneId, streetlight.id, streetlight.powerState === 'off' ? 'on' : 'off')" />
                     </div>
                 </div>
             </div>

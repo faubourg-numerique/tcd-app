@@ -10,7 +10,7 @@ const thermostatStore = useThermostatStore();
 async function updateThermostatTemperature(thermostatId: string) {
     const thermostat = thermostatStore.getThermostat(thermostatId);
     const data = {
-        value: thermostat.temperature
+        value: thermostat.temperature,
     };
     await thermostatStore.updateThermostat(thermostatId, data);
 }
@@ -28,25 +28,25 @@ const thermostat1DashboardPanel4Url = import.meta.env.VITE_THERMOSTAT_1_DASHBOAR
                 <form class="container border border-danger rounded d-flex flex-column align-items-center h-100" @submit.prevent="updateThermostatTemperature(thermostat.id)">
                     <div class="mb-3 w-50 form-group">
                         <label for="temperature" class="form-label">Temperature</label>
-                        <input id="temperature" v-model="thermostat.temperature" type="number" min="-20" max="60" step="0.1" placeholder="Temperature" required class="form-control"/>
+                        <input id="temperature" v-model="thermostat.temperature" type="number" min="-20" max="60" step="0.1" placeholder="Temperature" required class="form-control" />
                     </div>
                     <div class="mb-3 w-50 text-center form-group">
                         <p class="text-danger">{{ thermostat.name }}</p>
-                        <input type="submit" class="btn btn-primary mt-auto"/>
+                        <input type="submit" class="btn btn-primary mt-auto" />
                     </div>
                 </form>
             </div>
             <div class="rounded col-md mt-3 mb-3 container-iframe-thermostat w-100">
-                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel2Url" frameborder="0"/>
+                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel2Url" frameborder="0" />
             </div>
             <div class="rounded col-md mt-3 mb-3 container-iframe-thermostat w-100">
-                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel3Url" frameborder="0"/>
+                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel3Url" frameborder="0" />
             </div>
             <div class="rounded col-md mt-3 mb-3 container-iframe-thermostat w-100">
-                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel1Url" frameborder="0"/>
+                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel1Url" frameborder="0" />
             </div>
             <div class="rounded col-md mt-3 mb-3 container-iframe-thermostat w-100">
-                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel4Url" frameborder="0"/>
+                <iframe class="w-100 h-100 rounded border border-danger h-100" :src="thermostat1DashboardPanel4Url" frameborder="0" />
             </div>
         </div>
     </div>

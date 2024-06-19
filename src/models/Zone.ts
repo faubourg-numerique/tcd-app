@@ -1,11 +1,11 @@
 export interface Zone {
-    id: string
-    name: string
-    hasCity: string
+    id: string;
+    name: string;
+    hasCity: string;
     coordinates: [
         {
-            long: number
-            lat: number
-        }
-    ]
-};
+            long: number;
+            lat: number;
+        },
+    ];
+}

@@ -26,7 +26,7 @@ const i18n = createI18n({
     legacy: false,
     locale: window.navigator.language,
     fallbackLocale: "en",
-    messages: { en, fr }
+    messages: { en, fr },
 });
 
 const pinia = createPinia();

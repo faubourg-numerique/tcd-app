@@ -7,7 +7,7 @@ import { useI18n } from "vue-i18n";
 import { useStreetlightStore } from "@/stores/streetlight-store";
 import { useZoneStore } from "@/stores/zone-store";
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const streetlightStore = useStreetlightStore();
 const zoneStore = useZoneStore();
@@ -25,7 +25,7 @@ const thermostat1DashboardPanel2Url = import.meta.env.VITE_THERMOSTAT_1_DASHBOAR
         <div class="row">
             <div class="col-md-7 col-sm-12">
                 <LMap :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false">
-                    <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap"/>
+                    <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
                     <LMarker v-for="streetlight in streetlightStore.streetlights" :key="streetlight.id" :lat-lng="[streetlight.coordinates.lat, streetlight.coordinates.long]" />
                 </LMap>
             </div>

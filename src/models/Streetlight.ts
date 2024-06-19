@@ -1,11 +1,11 @@
 export interface Streetlight {
-    id: string
-    name: string
-    powerState: string
-    powerStateObservedAt: string
-    hasZone: string
+    id: string;
+    name: string;
+    powerState: string;
+    powerStateObservedAt: string;
+    hasZone: string;
     coordinates: {
-        long: number
-        lat: number
-    }
-};
+        long: number;
+        lat: number;
+    };
+}

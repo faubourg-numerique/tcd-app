@@ -13,29 +13,29 @@ const router = createRouter({
         {
             path: "/",
             name: "dashboard",
-            component: DashboardView
+            component: DashboardView,
         },
         {
             path: "/oauth2/callback",
             name: "oauth2.callback",
-            component: OAuth2Callback
+            component: OAuth2Callback,
         },
         {
             path: "/responsibilities/lighting",
             name: "responsibilities.lighting",
-            component: ResponsibilitiesLightingView
+            component: ResponsibilitiesLightingView,
         },
         {
             path: "/responsibilities/buildings",
             name: "responsibilities.buildings",
-            component: ResponsibilitiesBuildingsView
+            component: ResponsibilitiesBuildingsView,
         },
         {
             path: "/unauthorized",
             name: "unauthorized",
-            component: UnauthorizedView
-        }
-    ]
+            component: UnauthorizedView,
+        },
+    ],
 });
 
 router.beforeEach((to) => {
