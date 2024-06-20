@@ -15,7 +15,7 @@ const selectedZoneId: Ref<string | null> = ref(null);
 async function updateStreetlightPowerState(cityId: string, zoneId: string, streetlightId: string, powerState: string) {
     const streetlight = streetlightStore.getStreetlight(streetlightId);
     const data = {
-        value: powerState,
+        powerState: powerState,
     };
     await streetlightStore.updateStreetlight(cityId, zoneId, streetlightId, data);
     streetlight.powerState = powerState;
