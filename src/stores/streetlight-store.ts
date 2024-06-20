@@ -1,50 +1,40 @@
-import { ref } from 'vue'
-import { type AxiosResponse } from 'axios'
-import { useOauthStore } from './oauth-store'
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
+import { reactive } from "vue";
 
-export const useStreetlight = defineStore('streetLIght', () => {
-  const streetlights = ref([{ powerState: 'on', id: '', name: '', hasZone: '' }])
+import StreetlightNotFoundError from "@/errors/NotFoundError/StreetlightNotFoundError";
+import type { Streetlight } from "@/models/Streetlight";
+import { useMainStore } from "@/stores/main-store";
 
-  const $reset = () => {
-    streetlights.value = []
-  }
+export const useStreetlightStore = defineStore("streetlight", () => {
+    const mainStore = useMainStore();
 
-  const getStreetLight = async (cityId: String, zoneId: String) => {
-    $reset()
-    if (cityId === undefined || zoneId === undefined) {
-      return
+    const streetlights: Streetlight[] = reactive([]);
+
+    function getStreetlight(streetlightId: string) {
+        const streetlight = streetlights.find((streetlight) => streetlight.id === streetlightId);
+        if (!streetlight) {
+            throw new StreetlightNotFoundError(streetlightId);
+        }
+        return streetlight;
     }
-    useOauthStore()
-      .backend.get('/cities/' + cityId + '/zones/' + zoneId + '/streetlights')
-      .then((response: AxiosResponse) => {
-        streetlights.value = response.data
-      })
-      .catch((error: Error) => {
-        console.error('Erreur lors de la requête GET:', error)
-      })
-  }
 
-  const patchStreetLight = (
-    data: Object,
-    cityId: String,
-    zoneId: String,
-    streetlightId: String
-  ) => {
-    useOauthStore()
-      .backend.patch(
-        '/cities/' + cityId + '/zones/' + zoneId + '/streetlights/' + streetlightId,
-        data
-      )
-      .then((response: AxiosResponse) => {})
-  }
+    function getStreetlightsByZoneId(zoneId: string) {
+        return streetlights.filter((streetlight) => streetlight.hasZone === zoneId);
+    }
 
-  $reset()
+    async function fetchStreetlights(cityId: string, zoneId: string) {
+        streetlights.splice(0, streetlights.length, ...streetlights.filter((streetlight) => streetlight.hasZone !== zoneId));
+        const response = await mainStore.api.get(`/cities/${cityId}/zones/${zoneId}/streetlights`);
+        streetlights.push(...response.data);
+    }
 
-  return {
-    streetlights,
-    $reset,
-    getStreetLight,
-    patchStreetLight
-  }
-})
+    async function updateStreetlight(cityId: string, zoneId: string, streetlightId: string, data: Object) {
+        await mainStore.api.patch(`/cities/${cityId}/zones/${zoneId}/streetlights/${streetlightId}`, data);
+    }
+
+    function $reset() {
+        streetlights.length = 0;
+    }
+
+    return { streetlights, getStreetlight, getStreetlightsByZoneId, fetchStreetlights, updateStreetlight, $reset };
+});

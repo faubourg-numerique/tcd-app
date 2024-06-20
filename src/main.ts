@@ -1,33 +1,42 @@
-import './assets/main.css'
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createPinia } from "pinia";
+import { createApp } from "vue";
+import { createI18n } from "vue-i18n";
 
-import App from './App.vue'
-import router from './router'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import 'bootstrap-icons/font/bootstrap-icons.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-import { ref, onMounted, nextTick } from 'vue';
-import axios from 'axios';
-import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
+import App from "@/App.vue";
+import router from "@/router";
 
-library.add(fas)
-library.add(far)
-library.add(fab)
+import en from "@/locales/en.json";
+import fr from "@/locales/fr.json";
 
-const app = createApp(App)
+library.add(fas);
+library.add(far);
+library.add(fab);
 
-app.component('FontAwesomeIcon', FontAwesomeIcon)
-app.use(createPinia())
-app.use(router)
+const i18n = createI18n({
+    legacy: false,
+    locale: window.navigator.language,
+    fallbackLocale: "en",
+    messages: { en, fr },
+});
 
-app.mount('#app')
+const pinia = createPinia();
+
+const app = createApp(App);
+
+app.component("FontAwesomeIcon", FontAwesomeIcon);
+
+app.use(i18n);
+app.use(pinia);
+app.use(router);
+
+app.mount("#app");
