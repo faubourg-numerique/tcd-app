@@ -43,15 +43,8 @@ async function authenticate() {
     }
 
     await cityStore.fetchCities();
-
-    for (const city of cityStore.cities) {
-        await zoneStore.fetchZones(city.id);
-    }
-
-    for (const zone of zoneStore.zones) {
-        await streetlightStore.fetchStreetlights(zone.hasCity, zone.id);
-    }
-
+    await zoneStore.fetchZones();
+    await streetlightStore.fetchStreetlights();
     await thermostatStore.fetchThermostats();
 
     mainStore.isAuthenticated = true;
