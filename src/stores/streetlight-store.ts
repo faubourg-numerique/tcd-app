@@ -22,9 +22,9 @@ export const useStreetlightStore = defineStore("streetlight", () => {
         return streetlights.filter((streetlight) => streetlight.hasZone === zoneId);
     }
 
-    async function fetchStreetlights(cityId: string, zoneId: string) {
-        streetlights.splice(0, streetlights.length, ...streetlights.filter((streetlight) => streetlight.hasZone !== zoneId));
-        const response = await mainStore.api.get(`/cities/${cityId}/zones/${zoneId}/streetlights`);
+    async function fetchStreetlights() {
+        streetlights.length = 0;
+        const response = await mainStore.api.get("/streetlights");
         streetlights.push(...response.data);
     }
 

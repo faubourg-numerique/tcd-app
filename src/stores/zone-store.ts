@@ -22,9 +22,9 @@ export const useZoneStore = defineStore("zone", () => {
         return zones.filter((zone) => zone.hasCity === cityId);
     }
 
-    async function fetchZones(cityId: string) {
-        zones.splice(0, zones.length, ...zones.filter((zone) => zone.hasCity !== cityId));
-        const response = await mainStore.api.get(`/cities/${cityId}/zones`);
+    async function fetchZones() {
+        zones.length = 0;
+        const response = await mainStore.api.get("/zones");
         zones.push(...response.data);
     }
 

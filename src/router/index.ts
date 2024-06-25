@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useMainStore } from "@/stores/main-store";
 import DashboardView from "@/views/DashboardView.vue";
-import OAuth2Callback from "@/views/OAuth2Callback.vue";
+import OAuth2CallbackView from "@/views/OAuth2CallbackView.vue";
 import ResponsibilitiesLightingView from "@/views/ResponsibilitiesLightingView.vue";
 import ResponsibilitiesBuildingsView from "@/views/ResponsibilitiesBuildingsView.vue";
 import UnauthorizedView from "@/views/UnauthorizedView.vue";
@@ -18,7 +18,7 @@ const router = createRouter({
         {
             path: "/oauth2/callback",
             name: "oauth2.callback",
-            component: OAuth2Callback,
+            component: OAuth2CallbackView,
         },
         {
             path: "/responsibilities/lighting",
