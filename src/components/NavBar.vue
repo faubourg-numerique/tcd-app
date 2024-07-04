@@ -29,6 +29,19 @@ const mainStore = useMainStore();
                             <li>
                                 <RouterLink class="dropdown-item bi bi-lightbulb-fill" :to="{ name: 'responsibilities.lighting' }">{{ $t("nav.Lighting") }}</RouterLink>
                             </li>
+                            
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ $t("nav.DemoVisualisation") }}</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <RouterLink class="dropdown-item bi  bi-graph-down" :to="{ name: 'water-level' }">{{ $t("nav.waterLevel") }}</RouterLink>
+                            </li>
+                            <li>
+                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'indoor-ambiance' }">{{ $t("nav.indoorAmbiance") }}</RouterLink>
+                            </li>
+                            
                         </ul>
                     </li>
                     <li class="nav-item d-flex align-items-center">

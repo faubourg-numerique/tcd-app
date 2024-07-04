@@ -7,7 +7,10 @@
         "Watercourse": "Cours d'eau",
         "PAV": "P.A.V.",
         "Lighting": "Eclairage",
-        "Buildings": "Bâtiments"
+        "Buildings": "Bâtiments" ,
+        "DemoVisualisation": "Demo Visualisation",
+        "waterLevel": "Niveau d'eau - LONG",
+        "indoorAmbiance": "Ambiance intérieure - LONG"
     },
     "manager": {
         "selectACity": "Sélectionnez une ville",
