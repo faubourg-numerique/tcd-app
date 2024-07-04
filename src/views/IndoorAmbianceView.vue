@@ -7,7 +7,7 @@ const indoorAmbiancePanel4Url = import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_P
 
 <template>
   <div class="container">
-    <h1 class="mb-4">Indoor Ambiance</h1>
+    <h1 class="mb-4">{{ $t("nav.indoorAmbiance") }}</h1>
     <div class="row row-cols-1 row-cols-md-2 g-3">
       <div v-for="(panelUrl, index) in [indoorAmbiancePanel1Url, indoorAmbiancePanel2Url, indoorAmbiancePanel3Url, indoorAmbiancePanel4Url]" :key="index" class="col">
         <iframe :src="panelUrl" class="w-100" height="300"></iframe>
