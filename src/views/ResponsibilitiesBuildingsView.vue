@@ -10,7 +10,7 @@ const thermostatStore = useThermostatStore();
 async function updateThermostatTemperature(thermostatId: string) {
     const thermostat = thermostatStore.getThermostat(thermostatId);
     const data = {
-        value: thermostat.temperature,
+        temperature: thermostat.temperature,
     };
     await thermostatStore.updateThermostat(thermostatId, data);
 }

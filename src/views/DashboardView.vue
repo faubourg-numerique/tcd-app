@@ -18,6 +18,7 @@ const dashboardMapCenterLongitude = parseFloat(import.meta.env.VITE_DASHBOARD_MA
 
 const thermostat1DashboardPanel1Url = import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_1_URL.replace("$customText", t("dashboard.thermostat.temperature"));
 const thermostat1DashboardPanel2Url = import.meta.env.VITE_THERMOSTAT_1_DASHBOARD_PANEL_2_URL;
+console.log(zoneStore.zones);
 </script>
 
 <template>
@@ -26,7 +27,8 @@ const thermostat1DashboardPanel2Url = import.meta.env.VITE_THERMOSTAT_1_DASHBOAR
             <div class="col-md-7 col-sm-12">
                 <LMap :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false">
                     <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
-                    <LMarker v-for="streetlight in streetlightStore.streetlights" :key="streetlight.id" :lat-lng="[streetlight.coordinates.lat, streetlight.coordinates.long]" />
+                    <LMarker v-for="streetlight in streetlightStore.streetlights" :key="streetlight.id" :lat-lng="[streetlight.locationLongitude, streetlight.locationLatitude]" />
+                    <LPolygon v-for="zone in zoneStore.zones" :key="zone.id" :lat-lngs="zone.coordinates" />
                 </LMap>
             </div>
             <div class="col-md-5 col-sm-12">

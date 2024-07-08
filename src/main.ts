@@ -5,6 +5,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 import { createI18n } from "vue-i18n";
+import swal from "sweetalert2";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -32,6 +33,19 @@ const i18n = createI18n({
 const pinia = createPinia();
 
 const app = createApp(App);
+
+app.config.errorHandler = (error) => {
+    console.error(error);
+
+    swal.fire({
+        icon: "error",
+        title: "Une erreur s'est produite",
+        text: error as string,
+        customClass: {
+            htmlContainer: "pre",
+        },
+    });
+};
 
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 
