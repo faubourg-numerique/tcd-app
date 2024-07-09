@@ -44,6 +44,9 @@ const mainStore = useMainStore();
                             
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <RouterLink class="nav-link" :to="{ name: 'exemple-dashboard' }">{{ $t("nav.ExempleDashboard") }}</RouterLink>
+                    </li>
                     <li class="nav-item d-flex align-items-center">
                         <span class="bi bi-person-circle me-2">{{ mainStore.username }}</span>
                     </li>
