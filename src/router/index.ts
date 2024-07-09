@@ -6,8 +6,9 @@ import OAuth2CallbackView from "@/views/OAuth2CallbackView.vue";
 import ResponsibilitiesLightingView from "@/views/ResponsibilitiesLightingView.vue";
 import ResponsibilitiesBuildingsView from "@/views/ResponsibilitiesBuildingsView.vue";
 import UnauthorizedView from "@/views/UnauthorizedView.vue";
-import WaterLevelView from '@/views/WaterLevelView.vue'; 
-import IndoorAmbianceView from '@/views/IndoorAmbianceView.vue'; 
+import WaterLevelView from "@/views/WaterLevelView.vue";
+import IndoorAmbianceView from "@/views/IndoorAmbianceView.vue";
+import ExempleDashboardView from "@/views/ExempleDashboardView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,14 +34,19 @@ const router = createRouter({
             component: ResponsibilitiesBuildingsView,
         },
         {
-            path: '/water-level',
-            name: 'water-level',
-            component: WaterLevelView 
+            path: "/water-level",
+            name: "water-level",
+            component: WaterLevelView,
         },
         {
-            path: '/indoor-ambiance',
-            name: 'indoor-ambiance',
-            component: IndoorAmbianceView 
+            path: "/indoor-ambiance",
+            name: "indoor-ambiance",
+            component: IndoorAmbianceView,
+        },
+        {
+            path: "/exemple-dashboard",
+            name: "exemple-dashboard",
+            component: ExempleDashboardView,
         },
         {
             path: "/unauthorized",

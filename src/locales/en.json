@@ -7,10 +7,11 @@
         "Watercourse": "Watercourse",
         "PAV": "P.A.V.",
         "Lighting": "Lighting",
-        "Buildings": "Buildings" ,
-        "DemoVisualisation": "Demo Visualization", 
-        "waterLevel": "Water Level - LONG", 
-        "indoorAmbiance": "Indoor Ambiance - LONG"
+        "Buildings": "Buildings",
+        "DemoVisualisation": "Demo Visualization",
+        "waterLevel": "Water Level - LONG",
+        "indoorAmbiance": "Indoor Ambiance - LONG",
+        "ExempleDashboard": "Dashboard example"
     },
     "manager": {
         "selectACity": "Select a City",
