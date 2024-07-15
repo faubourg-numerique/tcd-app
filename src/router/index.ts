@@ -9,6 +9,7 @@ import UnauthorizedView from "@/views/UnauthorizedView.vue";
 import WaterLevelView from "@/views/WaterLevelView.vue";
 import IndoorAmbianceView from "@/views/IndoorAmbianceView.vue";
 import ExempleDashboardView from "@/views/ExempleDashboardView.vue";
+import UserInformationView from "@/views/UserInformationView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,11 @@ const router = createRouter({
             path: "/unauthorized",
             name: "unauthorized",
             component: UnauthorizedView,
+        },
+        {
+            path: "/user-information",
+            name: "user-information",
+            component: UserInformationView,
         },
     ],
 });
