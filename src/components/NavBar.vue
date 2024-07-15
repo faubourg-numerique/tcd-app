@@ -3,6 +3,8 @@ import { RouterLink } from "vue-router";
 import { useMainStore } from "@/stores/main-store";
 
 const mainStore = useMainStore();
+
+const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_logout?_method=DELETE&client_id=${import.meta.env.VITE_IDENTITY_MANAGER_APP_CLIENT_ID}`;
 </script>
 
 <template>
@@ -46,12 +48,17 @@ const mainStore = useMainStore();
                         <RouterLink class="nav-link" :to="{ name: 'exemple-dashboard' }">{{ $t("nav.ExempleDashboard") }}</RouterLink>
                     </li>
                     <li class="nav-item dropdown d-flex align-items-center">
-                        <a class="nav-link dropdown-toggle bi bi-person-circle me-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ mainStore.username }}</a>
+                        <a class="nav-link dropdown-toggle bi bi-person-circle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">&nbsp;&nbsp;{{ mainStore.username }}</a>
                         <ul class="dropdown-menu">
                             <li>
                                 <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'user-information' }">{{ $t("nav.information") }}</RouterLink>
                             </li>
                         </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a :href="logoutUrl">
+                            <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+                        </a>
                     </li>
                 </ul>
             </div>
