@@ -11,7 +11,8 @@
         "DemoVisualisation": "Demo Visualisation",
         "waterLevel": "Niveau d'eau - LONG",
         "indoorAmbiance": "Ambiance intérieure - LONG",
-        "ExempleDashboard": "Exemple de Dashboard"
+        "ExempleDashboard": "Exemple de Dashboard",
+        "information": "Information"
     },
     "manager": {
         "selectACity": "Sélectionnez une ville",

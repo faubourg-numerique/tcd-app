@@ -11,7 +11,8 @@
         "DemoVisualisation": "Demo Visualization",
         "waterLevel": "Water Level - LONG",
         "indoorAmbiance": "Indoor Ambiance - LONG",
-        "ExempleDashboard": "Dashboard example"
+        "ExempleDashboard": "Dashboard example",
+        "information": "Information"
     },
     "manager": {
         "selectACity": "Select a City",
