@@ -7,12 +7,12 @@ console.log(mainStore.roles);
 
 <template>
     <div class="container mt-5">
-        <h3 class="mb-4">Rôles de l'utilisateur</h3>
+        <h3 class="mb-4">{{ $t("roles.User-roles") }}</h3>
         <div class="d-flex flex-wrap justify-content-start">
             <div v-for="role in mainStore.roles" :key="role" class="p-2">
                 <div class="badge bg-danger text-wrap">
                     {{ role }}
-                </div>
+                 </div>
             </div>
         </div>
     </div>

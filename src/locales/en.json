@@ -40,4 +40,9 @@
         "fromDate": "From date",
         "toDate": "To date"
     }
+    , 
+    "roles":{
+        "User-roles" :"User roles" 
+    }
+    
 }

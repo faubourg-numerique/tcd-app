@@ -40,4 +40,8 @@
         "fromDate": "Partir de la date",
         "toDate": "à la date"
     }
+    ,
+    "roles":{
+        "User-roles" :"Rôles de l'utilisateur" 
+    }
 }
