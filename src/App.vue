@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import MenuBar from '@/components/MenuBar.vue'
+import { RouterView } from "vue-router";
+
+import NavBar from "@/components/NavBar.vue";
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <MenuBar />
-    </div>
-  </header>
+    <header class="mb-5">
+        <div class="wrapper">
+            <NavBar />
+        </div>
+    </header>
 
-  <RouterView />
+    <RouterView />
 </template>
-
-<style scoped>
-
-</style>
