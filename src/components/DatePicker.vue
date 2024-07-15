@@ -1,11 +1,11 @@
 <template>
     <div class="row">
         <div class="col-md-6 mb-3">
-            <label for="fromDate">From Date</label>
+            <label for="fromDate">{{ $t("datePicker.fromDate") }}</label>
             <input id="fromDate" v-model="fromDate" class="form-control" type="datetime-local" @change="emitUpdate" />
         </div>
         <div class="col-md-6 mb-3">
-            <label for="toDate">To Date</label>
+            <label for="toDate">{{ $t("datePicker.toDate") }}</label>
             <input id="toDate" v-model="toDate" class="form-control" type="datetime-local" @change="emitUpdate" />
         </div>
     </div>

@@ -11,7 +11,8 @@
         "DemoVisualisation": "Demo Visualisation",
         "waterLevel": "Niveau d'eau - LONG",
         "indoorAmbiance": "Ambiance intérieure - LONG",
-        "ExempleDashboard": "Exemple de Dashboard"
+        "ExempleDashboard": "Exemple de Dashboard",
+        "information": "Information"
     },
     "manager": {
         "selectACity": "Sélectionnez une ville",
@@ -34,5 +35,9 @@
     "waitingRole": {
         "mainTitle": "Vous n'avez pas de droit",
         "mainText": "Veuillez patienter l'arrivée du support technique ou contactez-le directement."
+    },
+    "datePicker": {
+        "fromDate": "Partir de la date",
+        "toDate": "à la date"
     }
 }

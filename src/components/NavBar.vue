@@ -29,26 +29,29 @@ const mainStore = useMainStore();
                             <li>
                                 <RouterLink class="dropdown-item bi bi-lightbulb-fill" :to="{ name: 'responsibilities.lighting' }">{{ $t("nav.Lighting") }}</RouterLink>
                             </li>
-                            
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ $t("nav.DemoVisualisation") }}</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ $t("nav.DemoVisualisation") }}</a>
                         <ul class="dropdown-menu">
                             <li>
-                                <RouterLink class="dropdown-item bi  bi-graph-down" :to="{ name: 'water-level' }">{{ $t("nav.waterLevel") }}</RouterLink>
+                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'water-level' }">{{ $t("nav.waterLevel") }}</RouterLink>
                             </li>
                             <li>
                                 <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'indoor-ambiance' }">{{ $t("nav.indoorAmbiance") }}</RouterLink>
                             </li>
-                            
                         </ul>
                     </li>
                     <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ name: 'exemple-dashboard' }">{{ $t("nav.ExempleDashboard") }}</RouterLink>
                     </li>
-                    <li class="nav-item d-flex align-items-center">
-                        <span class="bi bi-person-circle me-2">{{ mainStore.username }}</span>
+                    <li class="nav-item dropdown d-flex align-items-center">
+                        <a class="nav-link dropdown-toggle bi bi-person-circle me-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ mainStore.username }}</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'user-information' }">{{ $t("nav.information") }}</RouterLink>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
