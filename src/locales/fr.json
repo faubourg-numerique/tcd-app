@@ -35,5 +35,9 @@
     "waitingRole": {
         "mainTitle": "Vous n'avez pas de droit",
         "mainText": "Veuillez patienter l'arrivée du support technique ou contactez-le directement."
+    },
+    "datePicker": {
+        "fromDate": "Partir de la date",
+        "toDate": "à la date"
     }
 }
