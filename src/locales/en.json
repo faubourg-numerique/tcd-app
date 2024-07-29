@@ -12,6 +12,7 @@
         "waterLevel": "Water Level - LONG",
         "indoorAmbiance": "Indoor Ambiance - LONG",
         "ExempleDashboard": "Dashboard example",
+        "watercourse": "Watercourse",
         "information": "Information"
     },
     "manager": {
@@ -39,10 +40,8 @@
     "datePicker": {
         "fromDate": "From date",
         "toDate": "To date"
+    },
+    "roles": {
+        "User-roles": "User roles"
     }
-    , 
-    "roles":{
-        "User-roles" :"User roles" 
-    }
-    
 }
