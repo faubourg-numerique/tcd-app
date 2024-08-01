@@ -6,6 +6,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 
 
 
+
+
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin],
   initialView: 'dayGridMonth'
@@ -19,5 +21,5 @@ const calendarOptions = ref({
 </template>
 
 <style scoped>
-/* Add any scoped styles here */
+
 </style>
