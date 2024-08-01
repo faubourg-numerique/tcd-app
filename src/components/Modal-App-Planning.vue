@@ -6,25 +6,35 @@ const props = defineProps({
   isOpen: Boolean,
 });
 
-const emit = defineEmits(['modal-close']);
+const emit = defineEmits(['modal-close', 'add-schedule', 'delete-schedule', 'edit-schedule']);
 
 const target = ref(null);
 onClickOutside(target, () => emit('modal-close'));
+
+const handleAddSchedule = () => emit('add-schedule');
+const handleDeleteSchedule = () => emit('delete-schedule');
+const handleEditSchedule = () => emit('edit-schedule');
 </script>
 
 <template>
-  <div v-if="isOpen" class="modal-mask">
-    <div class="modal-wrapper">
-      <div ref="target" class="modal-container">
+  <div v-if="isOpen" class="modal show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
         <div class="modal-header">
-          <slot name="header">Default Header</slot>
+          <slot name="header">
+            <h5 class="modal-title">Default Header</h5>
+          </slot>
+          <button type="button" class="btn-close" @click="emit('modal-close')" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <slot name="content">Default Content</slot>
         </div>
         <div class="modal-footer">
           <slot name="footer">
-            <button @click="emit('modal-close')">Close</button>
+            <button type="button" class="btn btn-primary" @click="handleAddSchedule">Ajouter une planification</button>
+            <button type="button" class="btn btn-danger" @click="handleDeleteSchedule">Supprimer une planification</button>
+            <button type="button" class="btn btn-warning" @click="handleEditSchedule">Modifier une planification</button>
+            <button type="button" class="btn btn-secondary" @click="emit('modal-close')">Fermer</button>
           </slot>
         </div>
       </div>
@@ -33,31 +43,12 @@ onClickOutside(target, () => emit('modal-close'));
 </template>
 
 <style scoped>
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.modal.show {
+  display: block;
   background-color: rgba(0, 0, 0, 0.5);
 }
-.modal-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-.modal-container {
-  width: 300px;
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-}
-.modal-header,
-.modal-body,
-.modal-footer {
-  padding: 20px;
+.modal-dialog {
+  max-width: 500px;
+  margin: 1.75rem auto;
 }
 </style>
