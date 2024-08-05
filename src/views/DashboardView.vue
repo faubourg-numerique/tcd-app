@@ -8,6 +8,7 @@ import { useI18n } from "vue-i18n";
 import { useCityStore } from "@/stores/city-store";
 import { useStreetlightStore } from "@/stores/streetlight-store";
 import { useZoneStore } from "@/stores/zone-store";
+import  TcdAppPlanning  from "@/components/Tcd-App-Planning.vue";
 
 const { t } = useI18n();
 
@@ -53,6 +54,9 @@ const cityIcon = L.divIcon({
                 <div class="w-100">
                     <iframe class="h-100 w-100" :src="thermostat1DashboardPanel2Url" frameborder="0"></iframe>
                 </div>
+            </div>
+            <div>
+               <TcdAppPlanning/> 
             </div>
         </div>
     </div>
