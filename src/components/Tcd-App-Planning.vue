@@ -5,9 +5,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import Modale from "@/components/Modal-App-Planning.vue";
 
-// Refs pour gérer l'état de la modale et la date cliquée
+// Refs pour gérer l'état de la modale, la date cliquée, et les événements
 const isModalOpened = ref(false);
 const clickedDate = ref('');
+const events = ref<{ title: string; start: string; allDay: boolean; }[]>([]);  // Liste réactive des événements
 
 // Fonction pour ouvrir la modale avec la date cliquée
 const openModal = (date: string) => {
@@ -20,11 +21,22 @@ const closeModal = () => {
   isModalOpened.value = false;
 };
 
+// Fonction pour ajouter un événement
+const addEvent = () => {
+  events.value.push({
+    title: 'Nouvel Événement',  // Titre par défaut ou à saisir via la modale
+    start: clickedDate.value,
+    allDay: true
+  });
+  closeModal();  // Fermer la modale après ajout
+};
+
 // Options de configuration pour FullCalendar
 const calendarOptions = ref({
   plugins: [dayGridPlugin, interactionPlugin],
   initialView: 'dayGridMonth',
   locale: 'fr',
+  events: events.value,  // Lier les événements au calendrier
   dateClick: ({ dateStr }: { dateStr: string }) => {
     openModal(dateStr);
   }
@@ -44,9 +56,7 @@ const calendarOptions = ref({
       <p>Vous avez cliqué sur : {{ clickedDate }}</p>
     </template>
     <template #footer>
-      <!-- Boutons de la modale pour des actions supplémentaires -->
-      <button class="btn btn-primary" @click="() => { /* Logique pour ajouter une planification */ }">Ajouter une planification</button>
-      <button class="btn btn-danger" @click="() => { /* Logique pour supprimer une planification */ }">Supprimer une planification</button>
+      <button class="btn btn-primary" @click="addEvent">Ajouter une planification</button>
       <button class="btn btn-secondary" @click="closeModal">Fermer</button>
     </template>
   </Modale>
