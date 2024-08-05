@@ -10,6 +10,7 @@ import WaterLevelView from "@/views/WaterLevelView.vue";
 import IndoorAmbianceView from "@/views/IndoorAmbianceView.vue";
 import ExempleDashboardView from "@/views/ExempleDashboardView.vue";
 import UserInformationView from "@/views/UserInformationView.vue";
+import ResponsibilitiesWatercourseView from "@/views/ResponsibilitiesWatercourseView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,12 @@ const router = createRouter({
             name: "responsibilities.buildings",
             component: ResponsibilitiesBuildingsView,
         },
+        {
+            path: "/responsibilities/watercourse",
+            name: "responsibilities.watercourse",
+            component: ResponsibilitiesWatercourseView,
+        },
+
         {
             path: "/water-level",
             name: "water-level",
