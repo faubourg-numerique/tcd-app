@@ -11,15 +11,14 @@ export const useDeviceMeasurementStore = defineStore('deviceMeasurementStore', (
 
     async function getDeviceMeasurements() {
         try {
-            const response = await mainStore.api.get('/DeviceMeasurements');
-            measurements.value = response.data;
-            console.log(measurements.value);
+            const response = await mainStore.api.get('/device-measurements'); 
+            measurements.value = response.data;         
         } catch (error) {
             console.error('Erreur lors de la récupération des mesures des appareils:', error);
         }
     }
 
-    return {
+    return {  
         measurements,
         getDeviceMeasurements
     };
