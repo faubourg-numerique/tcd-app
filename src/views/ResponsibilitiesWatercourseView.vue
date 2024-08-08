@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
+import { useRouter } from 'vue-router';
 
 const deviceMeasurementStore = useDeviceMeasurementStore();
 const measurements = ref([]);
+const router = useRouter();
 
 onMounted(async () => {
     await deviceMeasurementStore.getDeviceMeasurements();
@@ -19,7 +21,7 @@ onMounted(async () => {
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
-                    <tr class="">
+                    <tr>
                         <th>Name</th>
                         <th>Distance</th>
                         <th>Max alerte</th>
@@ -29,14 +31,24 @@ onMounted(async () => {
                 </thead>
                 <tbody>
                     <tr v-for="measurement in measurements" :key="measurement.id">
-                        <td>{{ measurement.name.value }}</td>
-                        <td>{{ measurement.distance?.value ?? 'N/A'}}{{ measurement.distance?.unit?.value ?? 'N/A'}}</td>
+                        <td>
+                            <router-link :to="`/measurement-details/${measurement.id}`" class="no-link">{{ measurement.name.value }}</router-link>
+                        </td>
+                        <td>{{ measurement.distance?.value ?? 'N/A' }} {{ measurement.distance?.unit?.value ?? 'N/A' }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </template>
-
 <style scoped>
+a:hover  {
+  border-bottom: 1px solid;
+  background:rgb(220 53 69);
+}
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: default;
+}
 </style>
