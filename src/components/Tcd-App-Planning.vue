@@ -52,7 +52,6 @@ const openModal = (date: string, idEvent = "") => {
         scheduleForm.endDate = schedule.endDate;
         scheduleForm.endTime = schedule.endTime;
         scheduleForm.id = schedule.id;
-
         scheduleForm.byDay = schedule.byDay;
     } else {
         const dateNow = new Date(date).toISOString();
