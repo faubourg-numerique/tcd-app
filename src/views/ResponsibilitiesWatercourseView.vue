@@ -7,11 +7,12 @@ const measurements = ref([]);
 
 onMounted(async () => {
     await deviceMeasurementStore.getDeviceMeasurements();
-    measurements.value =  deviceMeasurementStore.measurements;
-   
-});
+    measurements.value = deviceMeasurementStore.measurements.filter((measurement) => measurement.measurementType.value === 'water-level');
 
+    console.log(measurements.value); 
+});
 </script>
+
 <template>
     <div class="container">
         <h1>Responsibilities Watercourse</h1>
@@ -19,19 +20,15 @@ onMounted(async () => {
             <table class="table table-striped">
                 <thead>
                     <tr class="">
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Distance</th>
                         <th>Max alerte</th>
                         <th>En alerte</th>
                         <th>Temporisation</th>
-                        
-                    
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="measurement in measurements" :key="measurement.id">
-                        <td>{{ measurement.id }} </td>
                         <td>{{ measurement.name.value }}</td>
                         <td>{{ measurement.distance?.value ?? 'N/A'}}{{ measurement.distance?.unit?.value ?? 'N/A'}}</td>
                     </tr>
