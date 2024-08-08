@@ -7,42 +7,36 @@ const measurements = ref([]);
 
 onMounted(async () => {
     await deviceMeasurementStore.getDeviceMeasurements();
-    measurements.value = deviceMeasurementStore.measurements;
+    measurements.value = deviceMeasurementStore.measurements.filter((measurement) => measurement.measurementType.value === 'water-level');
+
+    console.log(measurements.value); 
 });
 </script>
 
 <template>
-    <div>
-        <h1>Responsibilities Watercourse View</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Distance</th>
-                    <th>Humidity</th>
-                    <th>Temperature</th>
-                    <th>Pressure</th>
-                    <th>Voltage (Vdd)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="measurement in measurements" :key="measurement.id">
-                    <td>{{ measurement.id }}</td>
-                    <td>{{ measurement.name.value }}</td>
-                    <td>{{ measurement.distance?.value }}</td>
-                    <td>{{ measurement.humidity?.value }}</td>
-                    <td>{{ measurement.temperature?.value }}</td>
-                    <td>{{ measurement.pressure?.value }}</td>
-                    <td>{{ measurement.vdd?.value }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="container">
+        <h1>Responsibilities Watercourse</h1>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="">
+                        <th>Name</th>
+                        <th>Distance</th>
+                        <th>Max alerte</th>
+                        <th>En alerte</th>
+                        <th>Temporisation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="measurement in measurements" :key="measurement.id">
+                        <td>{{ measurement.name.value }}</td>
+                        <td>{{ measurement.distance?.value ?? 'N/A'}}{{ measurement.distance?.unit?.value ?? 'N/A'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
 <style scoped>
-.table {
-    margin-top: 20px;
-}
 </style>
