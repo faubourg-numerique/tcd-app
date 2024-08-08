@@ -1,27 +1,70 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import FullCalendar from "@fullcalendar/vue3";
+import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import Modale from "@/components/Modal-App-Planning.vue";
 import { useScheduleStore } from "@/stores/schedule-store";
-import type Schedule from "@/models/schedule";
-import { all } from "axios";
+import type Schedule from "@/models/Schedule";
 
 const scheduleStore = useScheduleStore();
 
 // Refs pour gérer l'état de la modale, la date cliquée, et les événements
 const isModalOpened = ref(false);
-const clickedDate = ref("");
-const startDate = ref("");
-const endDate = ref("");
-const title = ref("");
+
+const days = [
+    { id: 1, name: "Lundi" },
+    { id: 2, name: "Mardi" },
+    { id: 3, name: "Mercredi" },
+    { id: 4, name: "Jeudi" },
+    { id: 5, name: "Vendredi" },
+    { id: 6, name: "Samedi" },
+    { id: 7, name: "Dimanche" },
+];
+
+const scheduleForm = reactive<{
+    name: string;
+    byDay: number[] | null;
+    startDate: string;
+    startTime: string;
+    endDate: string;
+    endTime: string;
+    id: string;
+}>({
+    name: "",
+    byDay: [],
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: "",
+    id: "",
+});
+const modalIsUpdate = ref(false);
 
 // Fonction pour ouvrir la modale avec la date cliquée
-const openModal = (date: string) => {
-    clickedDate.value = date;
-    startDate.value = new Date(date).toISOString().slice(0, 16);
-    endDate.value = new Date(date).toISOString().slice(0, 16);
+const openModal = (date: string, idEvent = "") => {
+    const schedule = scheduleStore.schedules.find((scheduleOne) => scheduleOne.id === idEvent);
+    if (schedule) {
+        scheduleForm.name = schedule.name;
+        scheduleForm.startDate = schedule.startDate;
+        scheduleForm.startTime = schedule.startTime;
+        scheduleForm.endDate = schedule.endDate;
+        scheduleForm.endTime = schedule.endTime;
+        scheduleForm.id = schedule.id;
+
+        scheduleForm.byDay = schedule.byDay;
+    } else {
+        const dateNow = new Date(date).toISOString();
+        scheduleForm.name = "";
+        scheduleForm.startDate = dateNow.slice(0, 10);
+        scheduleForm.startTime = dateNow.slice(11, 16);
+        scheduleForm.endDate = dateNow.slice(0, 10);
+        scheduleForm.endTime = dateNow.slice(11, 16);
+        scheduleForm.byDay = [];
+        scheduleForm.id = "";
+    }
+
     isModalOpened.value = true;
 };
 
@@ -29,42 +72,53 @@ const openModal = (date: string) => {
 const closeModal = () => {
     isModalOpened.value = false;
 };
-const allSchedules = ref<{ title: string; start: string; end: string }[]>([]);
+const allSchedules = ref<{ title: string; start: string; end: string; id: string }[]>([]);
 
-const calendarOptions = ref({
+const calendarOptions = ref<CalendarOptions>({
     plugins: [dayGridPlugin, interactionPlugin],
     initialView: "dayGridMonth",
     locale: "fr",
-    events: allSchedules.value, // Lier les événements au calendrier
     dateClick: ({ dateStr }: { dateStr: string }) => {
+        modalIsUpdate.value = false;
         openModal(dateStr);
+    },
+    eventClick: ({ event }: EventClickArg) => {
+        modalIsUpdate.value = true;
+
+        openModal(event.startStr, event.id);
     },
 });
 
 // Fonction pour ajouter un événement
-const addEvent = () => {
+const addEvent = async () => {
     const actualDate = new Date();
 
-    if (new Date(startDate.value) < actualDate) {
+    if (new Date(scheduleForm.startDate + scheduleForm.startTime) < actualDate) {
         alert("La date de début doit être supérieure à la date actuelle");
         return;
     }
-
     const schedule: Schedule = {
-        title: title.value,
-        start: startDate.value.slice(0, 16),
-        end: endDate.value.slice(0, 16),
-        userName: "",
-        id: null,
+        name: scheduleForm.name,
+        startDate: scheduleForm.startDate,
+        startTime: scheduleForm.startTime,
+        endDate: scheduleForm.endDate,
+        endTime: scheduleForm.endTime,
+        byDay: scheduleForm.byDay,
+        id: scheduleForm.id,
     };
-    allSchedules.value = [];
+    await scheduleStore.addSchedule(schedule);
+    updateCalendarOptions();
+    closeModal(); // Fermer la modale après ajout
+};
 
-    scheduleStore.addSchedule(schedule);
+const updateCalendarOptions = () => {
+    allSchedules.value = [];
     scheduleStore.schedules.forEach((scheduleOne) => {
         allSchedules.value.push({
-            title: scheduleOne.title,
-            start: scheduleOne.start,
-            end: scheduleOne.end,
+            title: scheduleOne.name,
+            start: scheduleOne.startDate + "T" + scheduleOne.startTime,
+            end: scheduleOne.endDate + "T" + scheduleOne.endTime,
+            id: scheduleOne.id,
         });
     });
     calendarOptions.value = {
@@ -73,12 +127,47 @@ const addEvent = () => {
         locale: "fr",
         events: allSchedules.value, // Lier les événements au calendrier
         dateClick: ({ dateStr }: { dateStr: string }) => {
+            modalIsUpdate.value = false;
             openModal(dateStr);
         },
+        eventClick: ({ event }: EventClickArg) => {
+            modalIsUpdate.value = true;
+
+            openModal(event.startStr, event.id);
+        },
     };
+};
+
+const updateEvent = async () => {
+    const actualDate = new Date();
+
+    if (new Date(scheduleForm.startDate + scheduleForm.startTime) < actualDate) {
+        alert("La date de début doit être supérieure à la date actuelle");
+        return;
+    }
+    const schedule: Schedule = {
+        name: scheduleForm.name,
+        startDate: scheduleForm.startDate,
+        startTime: scheduleForm.startTime,
+        endDate: scheduleForm.endDate,
+        endTime: scheduleForm.endTime,
+        byDay: scheduleForm.byDay,
+        id: scheduleForm.id,
+    };
+
+    allSchedules.value = [];
+    await scheduleStore.updateSchedule(schedule.id, schedule);
+    updateCalendarOptions();
     closeModal(); // Fermer la modale après ajout
 };
 
+const deleteEvent = async () => {
+    await scheduleStore.deleteSchedule(scheduleForm.id);
+    updateCalendarOptions();
+    closeModal(); // Fermer la modale après ajout
+};
+
+updateCalendarOptions();
 </script>
 
 <template>
@@ -86,7 +175,7 @@ const addEvent = () => {
     <FullCalendar :options="calendarOptions" />
 
     <!-- Modale pour afficher les informations de la date cliquée -->
-    <Modale :is-open="isModalOpened" @modal-close="closeModal">
+    <Modale :is-open="isModalOpened" :is-update="modalIsUpdate" @delete-schedule="deleteEvent" @edit-schedule="updateEvent" @add-schedule="addEvent" @modal-close="closeModal">
         <template #header>
             <h3>Planification d'événement</h3>
         </template>
@@ -94,24 +183,33 @@ const addEvent = () => {
             <form @submit.prevent="addEvent">
                 <div class="form-group">
                     <label for="title">Titre</label>
-                    <input id="title" v-model="title" type="text" class="form-control" placeholder="Titre de l'événement" required />
+                    <input id="title" v-model="scheduleForm.name" type="text" class="form-control" placeholder="Titre de l'événement" required />
                 </div>
                 <div class="form-group">
                     <label for="startDate">Date de début</label>
-                    <input id="startDate" v-model="startDate" type="datetime-local" class="form-control" required />
+                    <input id="startDate" v-model="scheduleForm.startDate" type="date" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="startTime">Heure de début</label>
+                    <input id="startTime" v-model="scheduleForm.startTime" type="time" class="form-control" required />
                 </div>
                 <div class="form-group">
                     <label for="endDate">Date de fin</label>
-                    <input id="endDate" v-model="endDate" type="datetime-local" class="form-control" required />
+                    <input id="endDate" v-model="scheduleForm.endDate" type="date" class="form-control" required />
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <label for="endTime">Heure de fin</label>
+                    <input id="endTime" v-model="scheduleForm.endTime" type="time" class="form-control" required />
                 </div>
+
+                <div class="card p-3">
+                    <div v-for="day in days" :key="day.id" class="form-check">
+                        <input :id="day.id + ''" v-model="scheduleForm.byDay" type="checkbox" class="form-check-input" :value="day.id" />
+                        <label class="form-check-label" :for="day.id + ''">{{ day.name }}</label>
+                    </div>
+                </div>
+                <input v-model="scheduleForm.id" type="hidden" />
             </form>
-        </template>
-        <template #footer>
-            <button class="btn btn-primary" @click="addEvent">Ajouter une planification</button>
-            <button class="btn btn-secondary" @click="closeModal">Fermer</button>
         </template>
     </Modale>
 </template>
