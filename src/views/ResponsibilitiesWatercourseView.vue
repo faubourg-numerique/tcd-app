@@ -32,7 +32,7 @@ onMounted(async () => {
                 <tbody>
                     <tr v-for="measurement in measurements" :key="measurement.id">
                         <td>
-                            <router-link :to="`/measurement-details/${measurement.id}`" class="no-link">{{ measurement.name.value }}</router-link>
+                            <router-link :to="`/responsibilities/watercourse/${measurement.id}`" class="no-link">{{ measurement.name.value }} </router-link>
                         </td>
                         <td>{{ measurement.distance?.value ?? 'N/A' }} {{ measurement.distance?.unit?.value ?? 'N/A' }}</td>
                     </tr>
