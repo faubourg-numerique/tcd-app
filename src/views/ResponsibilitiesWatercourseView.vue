@@ -11,7 +11,7 @@ onMounted(async () => {
     await deviceMeasurementStore.getDeviceMeasurements();
     measurements.value = deviceMeasurementStore.measurements.filter((measurement) => measurement.measurementType.value === 'water-level');
 
-    console.log(measurements.value); 
+     
 });
 </script>
 
