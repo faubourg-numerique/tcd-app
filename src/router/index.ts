@@ -11,6 +11,7 @@ import IndoorAmbianceView from "@/views/IndoorAmbianceView.vue";
 import ExempleDashboardView from "@/views/ExempleDashboardView.vue";
 import UserInformationView from "@/views/UserInformationView.vue";
 import ResponsibilitiesWatercourseView from "@/views/ResponsibilitiesWatercourseView.vue";
+import ResponsibilitiesWatercourseDetailsView from "@/views/ResponsibilitiesWatercourseDetailsView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,7 +44,7 @@ const router = createRouter({
         {
             path: "/responsibilities/watercourse/:id",
             name: "responsibilities.watercourse.id",
-            component: ResponsibilitiesWatercourseView,
+            component: ResponsibilitiesWatercourseDetailsView,
         },
 
         {
