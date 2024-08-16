@@ -40,6 +40,11 @@ const router = createRouter({
             name: "responsibilities.watercourse",
             component: ResponsibilitiesWatercourseView,
         },
+        {
+            path: "/responsibilities/watercourse/:id",
+            name: "responsibilities.watercourse.id",
+            component: ResponsibilitiesWatercourseView,
+        },
 
         {
             path: "/water-level",

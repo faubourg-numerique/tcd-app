@@ -44,7 +44,8 @@ const modalIsUpdate = ref(false);
 
 // Fonction pour ouvrir la modale avec la date cliquée
 const openModal = (date: string, idEvent = "") => {
-    const schedule = scheduleStore.schedules.find((scheduleOne) => scheduleOne.id === idEvent);
+    console.log(idEvent.split('_')[0]);
+    const schedule = scheduleStore.schedules.find((scheduleOne) => scheduleOne.id === idEvent.split('_')[0]);
     if (schedule) {
         scheduleForm.name = schedule.name;
         scheduleForm.startDate = schedule.startDate;
@@ -71,6 +72,7 @@ const openModal = (date: string, idEvent = "") => {
 const closeModal = () => {
     isModalOpened.value = false;
 };
+
 const allSchedules = ref<{ title: string; start: string; end: string; id: string }[]>([]);
 
 const calendarOptions = ref<CalendarOptions>({
@@ -112,14 +114,34 @@ const addEvent = async () => {
 
 const updateCalendarOptions = () => {
     allSchedules.value = [];
+
     scheduleStore.schedules.forEach((scheduleOne) => {
-        allSchedules.value.push({
-            title: scheduleOne.name,
-            start: scheduleOne.startDate + "T" + scheduleOne.startTime,
-            end: scheduleOne.endDate + "T" + scheduleOne.endTime,
-            id: scheduleOne.id,
-        });
+        if (scheduleOne.byDay && scheduleOne.byDay.length > 0) {
+            // met un event chaque jour selectionné entre les dates de début et de fin
+            const startDate = new Date(scheduleOne.startDate);
+            const endDate = new Date(scheduleOne.endDate);
+            const byDay = scheduleOne.byDay;
+            while (startDate <= endDate) {
+                if (byDay.includes(startDate.getDay() + 1)) {
+                    allSchedules.value.push({
+                        title: scheduleOne.name,
+                        start: startDate.toISOString().slice(0, 10) + "T" + scheduleOne.startTime,
+                        end: startDate.toISOString().slice(0, 10) + "T" + scheduleOne.endTime,
+                        id: scheduleOne.id + "_" + startDate.toISOString().slice(0, 10),
+                    });
+                }
+                startDate.setDate(startDate.getDate() + 1);
+            }
+        } else {
+            allSchedules.value.push({
+                title: scheduleOne.name,
+                start: scheduleOne.startDate + "T" + scheduleOne.startTime,
+                end: scheduleOne.endDate + "T" + scheduleOne.endTime,
+                id: scheduleOne.id + "_" + scheduleOne.startDate,
+            });
+        }
     });
+
     calendarOptions.value = {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: "dayGridMonth",
@@ -135,6 +157,7 @@ const updateCalendarOptions = () => {
             openModal(event.startStr, event.id);
         },
     };
+    console.log(allSchedules.value);
 };
 
 const updateEvent = async () => {
@@ -151,7 +174,7 @@ const updateEvent = async () => {
         endDate: scheduleForm.endDate,
         endTime: scheduleForm.endTime,
         byDay: scheduleForm.byDay,
-        id: scheduleForm.id,
+        id: scheduleForm.id.split('_')[0],
     };
 
     allSchedules.value = [];
