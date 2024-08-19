@@ -1,9 +1,10 @@
 export default interface Schedule {
     id: string;
     name: string;
-    byDay: Array<number> | null;
-    startTime: string;
+    byDay: number[];
     startDate: string;
-    endTime: string;
+    startTime: string;
     endDate: string;
+    endTime: string;
+    hasZone: string;
 }
