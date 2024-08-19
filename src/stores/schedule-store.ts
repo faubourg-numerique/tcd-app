@@ -20,25 +20,25 @@ export const useScheduleStore = defineStore("schedule", () => {
 
     async function fetchSchedules() {
         schedules.length = 0;
-        const response = await mainStore.api.get("/schedule");
+        const response = await mainStore.api.get("/operation-schedules");
 
         schedules.push(...response.data);
     }
 
     async function addSchedule(data: Schedule) {
-        const response = await mainStore.api.post("/schedule", data);
+        const response = await mainStore.api.post("/operation-schedules", data);
         schedules.splice(0, schedules.length);
         schedules.push(...response.data);
     }
 
     async function updateSchedule(scheduleId: string, data: Object) {
-        const response = await mainStore.api.patch(`/schedule/${scheduleId}`, data);
+        const response = await mainStore.api.patch(`/operation-schedules/${scheduleId}`, data);
         schedules.splice(0, schedules.length);
         schedules.push(...response.data);
     }
 
     async function deleteSchedule(scheduleId: string) {
-        const response = await mainStore.api.delete(`/schedule/${scheduleId}`);
+        const response = await mainStore.api.delete(`/operation-schedules/${scheduleId}`);
         schedules.splice(0, schedules.length);
         console.log(response.data);
         schedules.push(...response.data);
