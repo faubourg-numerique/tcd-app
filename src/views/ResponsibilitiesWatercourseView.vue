@@ -36,9 +36,9 @@ onMounted(async () => {
 
     
     await alertSettingsStore.getAlertSettings();
-    console.log( alertSettingsStore.alertSettings) ;
+    
 
-    console.log(subscriptions.value); 
+   
 });
 </script>
 
