@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
+import { useSubscriptionStore } from '@/stores/subscriptions-store';
 import { useRouter } from 'vue-router';
 
-// Définir le type pour les objets measurement
 interface Measurement {
   id: string;
   measurementType: {
@@ -30,13 +30,24 @@ interface Measurement {
 }
 
 const deviceMeasurementStore = useDeviceMeasurementStore();
+const subscriptionStore = useSubscriptionStore(); // Initialize once
 const measurements = ref<Measurement[]>([]);
+const subscriptions = ref([]); // Initialize subscriptions ref
+
 const router = useRouter();
 
 onMounted(async () => {
+    // Fetch device measurements
     await deviceMeasurementStore.getDeviceMeasurements();
-    measurements.value = deviceMeasurementStore.measurements.filter((measurement: Measurement) => measurement.measurementType.value === 'water-level');
+    measurements.value = deviceMeasurementStore.measurements.filter(
+        (measurement: Measurement) => measurement.measurementType.value === 'water-level'
+    );
+
+    // Fetch subscriptions
+    await subscriptionStore.getsubscriptions();
+    subscriptions.value = subscriptionStore.subscriptions; // Assign directly to the ref
 });
+console.log(subscriptions.value);
 </script>
 
 <template>
