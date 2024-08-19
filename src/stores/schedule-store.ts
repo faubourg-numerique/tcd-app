@@ -19,22 +19,29 @@ export const useScheduleStore = defineStore("schedule", () => {
     }
 
     async function fetchSchedules() {
-        /*schedules.length = 0;
-        const response = await mainStore.api.get("/schedules");
-        schedules.push(...response.data);*/
+        schedules.length = 0;
+        const response = await mainStore.api.get("/schedule");
+
+        schedules.push(...response.data);
     }
 
     async function addSchedule(data: Schedule) {
-        schedules.push(data);
-        //await mainStore.api.post("/schedules", data);
+        const response = await mainStore.api.post("/schedule", data);
+        schedules.splice(0, schedules.length);
+        schedules.push(...response.data);
     }
 
     async function updateSchedule(scheduleId: string, data: Object) {
-        //await mainStore.api.patch(`/schedules/${scheduleId}`, data);
+        const response = await mainStore.api.patch(`/schedule/${scheduleId}`, data);
+        schedules.splice(0, schedules.length);
+        schedules.push(...response.data);
     }
 
     async function deleteSchedule(scheduleId: string) {
-        //await mainStore.api.delete(`/schedules/${scheduleId}`);
+        const response = await mainStore.api.delete(`/schedule/${scheduleId}`);
+        schedules.splice(0, schedules.length);
+        console.log(response.data);
+        schedules.push(...response.data);
     }
 
     function $reset() {
