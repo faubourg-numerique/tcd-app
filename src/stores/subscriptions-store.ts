@@ -11,9 +11,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     async function getsubscriptions() {
         try {
             const response = await mainStore.api.get('/subscriptions'); 
-            subscriptions.value = response.data;  
-            console.log('subscriptions:', response);
-            console.log('subscriptions:', subscriptions.value);       
+            subscriptions.value = response.data;         
         } catch (error) {
             console.error('Error subscriptions:', error);
         }

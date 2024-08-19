@@ -3,36 +3,14 @@ import { ref, onMounted } from 'vue';
 import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
 import { useSubscriptionStore } from '@/stores/subscriptions-store';
 import { useRouter } from 'vue-router';
+import type { Subscription } from '@/models/Subscription';
+import type { Measurement } from "@/models/Measurement";
 
-interface Measurement {
-  id: string;
-  measurementType: {
-    value: string;
-  };
-  name: {
-    value: string;
-  };
-  distance?: {
-    value: number;
-    unit?: {
-      value: string;
-    };
-  };
-  maxAlerte?: {
-    value: string;
-  };
-  enAlerte?: {
-    value: string;
-  };
-  temporisation?: {
-    value: string;
-  };
-}
 
 const deviceMeasurementStore = useDeviceMeasurementStore();
-const subscriptionStore = useSubscriptionStore(); // Initialize once
+const subscriptionStore = useSubscriptionStore();
 const measurements = ref<Measurement[]>([]);
-const subscriptions = ref([]); // Initialize subscriptions ref
+const subscriptions = ref<Subscription[]>([]);
 
 const router = useRouter();
 
@@ -45,9 +23,16 @@ onMounted(async () => {
 
     // Fetch subscriptions
     await subscriptionStore.getsubscriptions();
-    subscriptions.value = subscriptionStore.subscriptions; // Assign directly to the ref
+
+    // Filter subscriptions based on measurements
+    subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
+        return subscription.entities.some((entity) => {
+            return measurements.value.some((measurement: Measurement) => measurement.id === entity.id);
+        });
+    });
+
+    console.log(subscriptions.value); 
 });
-console.log(subscriptions.value);
 </script>
 
 <template>
