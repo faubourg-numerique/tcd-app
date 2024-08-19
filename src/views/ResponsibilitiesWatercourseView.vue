@@ -2,15 +2,18 @@
 import { ref, onMounted } from 'vue';
 import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
 import { useSubscriptionStore } from '@/stores/subscriptions-store';
+import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useRouter } from 'vue-router';
 import type { Subscription } from '@/models/Subscription';
 import type { Measurement } from "@/models/Measurement";
 
-
 const deviceMeasurementStore = useDeviceMeasurementStore();
 const subscriptionStore = useSubscriptionStore();
+const alertSettingsStore = useAlertSettingsStore(); // Créez une instance de la boutique
+
 const measurements = ref<Measurement[]>([]);
 const subscriptions = ref<Subscription[]>([]);
+const alertSettings = ref<any[]>([]);
 
 const router = useRouter();
 
@@ -31,9 +34,14 @@ onMounted(async () => {
         });
     });
 
+    
+    await alertSettingsStore.getAlertSettings();
+    console.log( alertSettingsStore.alertSettings) ;
+
     console.log(subscriptions.value); 
 });
 </script>
+
 
 <template>
     <div class="container">

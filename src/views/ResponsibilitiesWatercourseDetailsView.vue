@@ -1,63 +1,67 @@
 <template>
-    <div class="container">
-      <h1>Details for Watercourse Responsibility</h1>
-    
-      <div v-if="measurement">
-        <p><strong>Name:</strong> {{ measurement.name.value }}</p>
-        <p><strong>Distance:</strong> {{ measurement.distance?.value ?? 'N/A' }} {{ measurement.distance?.unit?.value ?? 'N/A' }}</p>
-        <p><strong>Max Alert:</strong> {{ measurement.maxAlerte?.value ?? 'N/A' }}</p>
-        <p><strong>Current Alert:</strong> {{ measurement.enAlerte?.value ?? 'N/A' }}</p>
-        <p><strong>Temporisation:</strong> {{ measurement.temporisation?.value ?? 'N/A' }}</p>
+  <div class="container">
+    <h1>Details for Watercourse Responsibility </h1>
+
+    <div v-if="measurement">
+      <p><strong>Name :</strong> {{ measurement.name.value }}</p>
+      <p><strong>Id :</strong> {{ measurement.id }}</p>
+      <p><strong>Distance:</strong> {{ measurement.distance?.value ?? 'N/A' }} {{ measurement.distance?.unit?.value ?? 'N/A' }}</p>
+      <p><strong>Max Alert:</strong> {{ measurement.maxAlerte?.value ?? 'N/A' }}</p>
+      <p><strong>Current Alert:</strong> {{ measurement.enAlerte?.value ?? 'N/A' }}</p>
+      <p><strong>Temporisation:</strong> {{ measurement.temporisation?.value ?? 'N/A' }}</p>
+      
+     
+      <h2>Subscriptions</h2>
+      <div v-if="subscriptions.length">
+        <ul>
+          <li v-for="subscription in subscriptions" :key="subscription.id">
+            <strong>{{ subscription.subscriptionName }}:</strong>
+            <span>Status: {{ subscription.status }}</span>
+          </li>
+        </ul>
       </div>
       <div v-else>
-        <p>Loading...</p>
+        <p>No subscriptions found for this measurement.</p>
       </div>
     </div>
-  </template>
-  
+    <div v-else>
+      <p>Loading...</p>
+    </div>
+  </div>
+</template>
+
   <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
-  
- 
-  interface Measurement {
-    id: string;
-    measurementType: {
-      value: string;
-    };
-    name: {
-      value: string;
-    };
-    distance?: {
-      value: number;
-      unit?: {
-        value: string;
-      };
-    };
-    maxAlerte?: {
-      value: string;
-    };
-    enAlerte?: {
-      value: string;
-    };
-    temporisation?: {
-      value: string;
-    };
-  }
+  import { useSubscriptionStore } from '@/stores/subscriptions-store';
+  import type { Subscription } from '@/models/Subscription';
+  import type { Measurement } from "@/models/Measurement";
   
   const route = useRoute();
   const deviceMeasurementStore = useDeviceMeasurementStore();
+  const subscriptionStore = useSubscriptionStore();
   const measurement = ref<Measurement | null>(null);
+  const subscriptions = ref<Subscription[]>([]);
   
   onMounted(async () => {
-    const measurementId = route.params.id as string;
-    await deviceMeasurementStore.getDeviceMeasurements();
-    measurement.value = deviceMeasurementStore.measurements.find(
-      (m: Measurement) => m.id === measurementId
-    ) ?? null;
+      const measurementId = route.params.id as string;
+      
+      await deviceMeasurementStore.getDeviceMeasurements();
+      measurement.value = deviceMeasurementStore.measurements.find(
+        (m: Measurement) => m.id === measurementId
+      ) ?? null;
+  
+      await subscriptionStore.getsubscriptions();
+      
+      if (measurement.value) {
+          subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
+              return subscription.entities.some(entity => entity.id === measurement.value?.id);
+          });
+      }
   });
   </script>
+  
   
   <style scoped>
   .container {

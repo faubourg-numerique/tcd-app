@@ -5,7 +5,6 @@ export interface Subscription {
     type: string;
     subscriptionName: string;
     entities: Measurement[];
-    watchedAttributes: string[];
     status: string;
     isActive: boolean;
     notification: Notification;
