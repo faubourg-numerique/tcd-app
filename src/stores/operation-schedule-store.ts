@@ -18,15 +18,34 @@ export const useOperationScheduleStore = defineStore("operation-schedule", () =>
         return operationSchedule;
     }
 
+    function getOperationSchedulesByZoneId(zoneId: string) {
+        return operationSchedules.filter((operationSchedule) => operationSchedule.hasZone === zoneId);
+    }
+
     async function fetchOperationSchedules() {
         operationSchedules.length = 0;
         const response = await mainStore.api.get("/operation-schedules");
         operationSchedules.push(...response.data);
     }
 
+    async function createOperationSchedule(operationSchedule: OperationSchedule) {
+        await mainStore.api.post("/operation-schedules", operationSchedule);
+        await fetchOperationSchedules();
+    }
+
+    async function updateOperationSchedule(operationSchedule: OperationSchedule) {
+        await mainStore.api.patch(`/operation-schedules/${operationSchedule.id}`, operationSchedule);
+        await fetchOperationSchedules();
+    }
+
+    async function deleteOperationSchedule(operationSchedule: OperationSchedule) {
+        await mainStore.api.delete(`/operation-schedules/${operationSchedule.id}`);
+        await fetchOperationSchedules();
+    }
+
     function $reset() {
         operationSchedules.length = 0;
     }
 
-    return { operationSchedules, getOperationSchedule, fetchOperationSchedules, $reset };
+    return { operationSchedules, getOperationSchedule, getOperationSchedulesByZoneId, fetchOperationSchedules, createOperationSchedule, updateOperationSchedule, deleteOperationSchedule, $reset };
 });
