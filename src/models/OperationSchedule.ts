@@ -1,4 +1,4 @@
-export default interface Schedule {
+export interface OperationSchedule {
     id: string;
     name: string;
     byDay: number[];
