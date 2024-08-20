@@ -4,7 +4,7 @@ import FullCalendar from "@fullcalendar/vue3";
 import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import Modale from "@/components/Modal-App-Planning.vue";
+import OperationScheduleModal from "@/components/OperationScheduleModal.vue";
 import { useScheduleStore } from "@/stores/schedule-store";
 import type Schedule from "@/models/Schedule";
 
@@ -25,7 +25,7 @@ const days = [
 
 const scheduleForm = reactive<{
     name: string;
-    byDay: number[] | null;
+    byDay: number[];
     startDate: string;
     startTime: string;
     endDate: string;
@@ -197,7 +197,7 @@ updateCalendarOptions();
     <FullCalendar :options="calendarOptions" />
 
     <!-- Modale pour afficher les informations de la date cliquée -->
-    <Modale :is-open="isModalOpened" :is-update="modalIsUpdate" @delete-schedule="deleteEvent" @edit-schedule="updateEvent" @add-schedule="addEvent" @modal-close="closeModal">
+    <OperationScheduleModal :is-open="isModalOpened" :is-update="modalIsUpdate" @delete-schedule="deleteEvent" @edit-schedule="updateEvent" @add-schedule="addEvent" @modal-close="closeModal">
         <template #header>
             <h3>Planification d'événement</h3>
         </template>
@@ -233,7 +233,7 @@ updateCalendarOptions();
                 <input v-model="scheduleForm.id" type="hidden" />
             </form>
         </template>
-    </Modale>
+    </OperationScheduleModal>
 </template>
 
 <style scoped>
