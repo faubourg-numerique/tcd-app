@@ -2,7 +2,6 @@
 import { useMainStore } from "@/stores/main-store";
 
 const mainStore = useMainStore();
-console.log(mainStore.roles);
 </script>
 
 <template>
