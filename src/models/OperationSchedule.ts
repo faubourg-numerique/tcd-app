@@ -6,5 +6,6 @@ export interface OperationSchedule {
     startTime: string;
     endDate: string;
     endTime: string;
+    duration: string;
     hasZone: string;
 }
