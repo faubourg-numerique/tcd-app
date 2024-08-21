@@ -39,6 +39,103 @@ const startTime: Ref<string> = ref("");
 const endDate: Ref<string> = ref("");
 const endTime: Ref<string> = ref("");
 
+const operationScheduleStore = useOperationScheduleStore();
+
+const operationSchedule: OperationSchedule = reactive({
+    id: "",
+    name: "",
+    byDay: [],
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: "",
+    duration: "",
+    hasZone: props.zoneId,
+});
+
+const operationScheduleFormModalElement = ref(null);
+let operationScheduleFormModal: Modal|null = null;
+
+const events = computed(() => {
+    const operationSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zoneId);
+    return operationSchedules.map((operationSchedule) => {
+        if (operationSchedule.byDay.length) {
+            return {
+                id: operationSchedule.id,
+                title: operationSchedule.name,
+                duration: operationSchedule.duration,
+                rrule: {
+                    freq: "weekly",
+                    interval: 1,
+                    byweekday: operationSchedule.byDay.map((day) => weekDays[day]),
+                    dtstart: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
+                    until: `${operationSchedule.endDate}T${operationSchedule.endTime}`
+                },
+            }
+        } else {
+            const date = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
+            const [hours, minutes, seconds] = operationSchedule.duration.split(":").map(Number);
+            date.setHours(date.getHours() + hours);
+            date.setMinutes(date.getMinutes() + minutes);
+            date.setSeconds(date.getSeconds() + seconds);
+
+            return {
+                id: operationSchedule.id,
+                title: operationSchedule.name,
+                start: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
+                end: date.toISOString(),
+            }
+        }
+    });
+});
+
+const options = reactive<CalendarOptions>({
+    plugins: [dayGridPlugin, interactionPlugin, rrulePlugin],
+    initialView: "dayGridMonth",
+    locale: "fr",
+    events: events,
+    firstDay: 1,
+    dateClick: ({ dateStr }: { dateStr: string }) => {
+        if (!operationScheduleFormModal) {
+            return;
+        }
+
+        operationSchedule.id = "";
+        operationSchedule.name = "";
+        operationSchedule.byDay = [];
+        operationSchedule.startDate = dateStr;
+        operationSchedule.startTime = "";
+        operationSchedule.endDate = "";
+        operationSchedule.endTime = "";
+        operationSchedule.duration = "";
+        operationSchedule.hasZone = props.zoneId;
+
+        startDate.value = dateStr;
+        startTime.value = "";
+        endDate.value = "";
+        endTime.value = "";
+
+        operationScheduleFormModal.show();
+    },
+    eventClick: ({ event }: EventClickArg) => {
+        if (!operationScheduleFormModal) {
+            return;
+        }
+
+        Object.assign(operationSchedule, operationScheduleStore.getOperationSchedule(event.id));
+
+        const startDateTime = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
+        startDate.value = `${startDateTime.getFullYear()}-${String(startDateTime.getMonth() + 1).padStart(2, "0")}-${String(startDateTime.getDate()).padStart(2, "0")}`;
+        startTime.value = `${String(startDateTime.getHours()).padStart(2, "0")}:${String(startDateTime.getMinutes()).padStart(2, "0")}:${String(startDateTime.getSeconds()).padStart(2, "0")}`;
+
+        const endDateTime = new Date(`${operationSchedule.endDate}T${operationSchedule.endTime}`);
+        endDate.value = `${endDateTime.getFullYear()}-${String(endDateTime.getMonth() + 1).padStart(2, "0")}-${String(endDateTime.getDate()).padStart(2, "0")}`;
+        endTime.value = `${String(endDateTime.getHours()).padStart(2, "0")}:${String(endDateTime.getMinutes()).padStart(2, "0")}:${String(endDateTime.getSeconds()).padStart(2, "0")}`;
+
+        operationScheduleFormModal.show();
+    },
+});
+
 function computeStartDateTime() {
     if (!startDate.value || !startTime.value) {
         return;
@@ -65,94 +162,13 @@ watch(startTime, computeStartDateTime);
 watch(endDate, computeEndDateTime);
 watch(endTime, computeEndDateTime);
 
-const operationScheduleStore = useOperationScheduleStore();
-
-const operationSchedule: OperationSchedule = reactive({
-    id: "",
-    name: "",
-    byDay: [],
-    startDate: "",
-    startTime: "",
-    endDate: "",
-    endTime: "",
-    hasZone: props.zoneId,
-});
-
-const operationScheduleFormModalElement = ref(null);
-let operationScheduleFormModal: Modal|null = null;
-
-const events = computed(() => {
-    const operationSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zoneId);
-    return operationSchedules.map((operationSchedule) => {
-        if (operationSchedule.byDay.length) {
-            return {
-                id: operationSchedule.id,
-                title: operationSchedule.name,
-                rrule: {
-                    freq: "weekly",
-                    interval: 1,
-                    byweekday: operationSchedule.byDay.map((day) => weekDays[day]),
-                    dtstart: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
-                    until: `${operationSchedule.endDate}T${operationSchedule.endTime}`
-                },
-                startTime: operationSchedule.startTime,
-                endime: operationSchedule.endTime,
-            }
-        } else {
-            return {
-                id: operationSchedule.id,
-                title: operationSchedule.name,
-                start: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
-                end: `${operationSchedule.endDate}T${operationSchedule.endTime}`,
-            }
-        }
-    });
-});
-
-const options = reactive<CalendarOptions>({
-    plugins: [dayGridPlugin, interactionPlugin, rrulePlugin],
-    initialView: "dayGridMonth",
-    locale: "fr",
-    events: events,
-    firstDay: 1,
-    dateClick: ({ dateStr }: { dateStr: string }) => {
-        if (!operationScheduleFormModal) {
-            return;
-        }
-
-        operationSchedule.id = "";
-        operationSchedule.name = "";
-        operationSchedule.byDay = [];
-        operationSchedule.startDate = dateStr;
-        operationSchedule.startTime = "";
-        operationSchedule.endDate = dateStr;
-        operationSchedule.endTime = "";
-        operationSchedule.hasZone = props.zoneId;
-
-        startDate.value = "";
-        startTime.value = "";
+watch(() => operationSchedule.byDay, () => {
+    if (!operationSchedule.byDay.length) {
         endDate.value = "";
         endTime.value = "";
-
-        operationScheduleFormModal.show();
-    },
-    eventClick: ({ event }: EventClickArg) => {
-        if (!operationScheduleFormModal) {
-            return;
-        }
-
-        Object.assign(operationSchedule, operationScheduleStore.getOperationSchedule(event.id));
-
-        const startDateTime = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
-        startDate.value = `${startDateTime.getFullYear()}-${String(startDateTime.getMonth() + 1).padStart(2, "0")}-${String(startDateTime.getDate()).padStart(2, "0")}`;
-        startTime.value = `${String(startDateTime.getHours()).padStart(2, "0")}:${String(startDateTime.getMinutes()).padStart(2, "0")}:${String(startDateTime.getSeconds()).padStart(2, "0")}`;
-
-        const endDateTime = new Date(`${operationSchedule.endDate}T${operationSchedule.endTime}`);
-        endDate.value = `${endDateTime.getFullYear()}-${String(endDateTime.getMonth() + 1).padStart(2, "0")}-${String(endDateTime.getDate()).padStart(2, "0")}`;
-        endTime.value = `${String(endDateTime.getHours()).padStart(2, "0")}:${String(endDateTime.getMinutes()).padStart(2, "0")}:${String(endDateTime.getSeconds()).padStart(2, "0")}`;
-
-        operationScheduleFormModal.show();
-    },
+        operationSchedule.endDate = "";
+        operationSchedule.endTime = "";
+    }
 });
 
 async function createOperationSchedule(operationSchedule: OperationSchedule) {
@@ -219,13 +235,19 @@ onMounted(() => {
                         <input v-model="startTime" id="start-time" type="time" step="1" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="end-date" class="form-label">Date de fin</label>
-                        <input v-model="endDate" id="end-date" type="date" class="form-control" required>
+                        <label for="duration" class="form-label">Durée</label>
+                        <input v-model="operationSchedule.duration" id="duration" type="time" step="1" class="form-control" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="end-time" class="form-label">Heure de fin</label>
-                        <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required>
-                    </div>
+                    <template v-if="operationSchedule.byDay.length">
+                        <div class="mb-3">
+                            <label for="end-date" class="form-label">Date de fin</label>
+                            <input v-model="endDate" id="end-date" type="date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end-time" class="form-label">Heure de fin</label>
+                            <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required>
+                        </div>
+                    </template>
                     <div>
                         <label for="by-day" class="form-label">Récurrence</label>
                         <select v-model="operationSchedule.byDay" id="by-day" class="form-select" multiple>
