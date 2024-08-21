@@ -1,7 +1,7 @@
 @ -1,241 +0,0 @@
 <script setup lang="ts">
 import Modal from "bootstrap/js/dist/modal";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, type Ref, watch } from "vue";
 import FullCalendar from "@fullcalendar/vue3";
 import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -33,6 +33,37 @@ const props = defineProps({
         required: true,
     },
 });
+
+const startDate: Ref<string> = ref("");
+const startTime: Ref<string> = ref("");
+const endDate: Ref<string> = ref("");
+const endTime: Ref<string> = ref("");
+
+function computeStartDateTime() {
+    if (!startDate.value || !startTime.value) {
+        return;
+    }
+
+    const date = new Date(`${startDate.value}T${startTime.value}`);
+    operationSchedule.startDate = date.toISOString().slice(0, 10);
+    operationSchedule.startTime = date.toISOString().slice(11, 19) + "Z";
+}
+
+function computeEndDateTime() {
+    if (!endDate.value || !endTime.value) {
+        return;
+    }
+
+    const date = new Date(`${endDate.value}T${endTime.value}`);
+    operationSchedule.endDate = date.toISOString().slice(0, 10);
+    operationSchedule.endTime = date.toISOString().slice(11, 19) + "Z";
+}
+
+watch(startDate, computeStartDateTime);
+watch(startTime, computeStartDateTime);
+
+watch(endDate, computeEndDateTime);
+watch(endTime, computeEndDateTime);
 
 const operationScheduleStore = useOperationScheduleStore();
 
@@ -98,6 +129,11 @@ const options = reactive<CalendarOptions>({
         operationSchedule.endTime = "";
         operationSchedule.hasZone = props.zoneId;
 
+        startDate.value = "";
+        startTime.value = "";
+        endDate.value = "";
+        endTime.value = "";
+
         operationScheduleFormModal.show();
     },
     eventClick: ({ event }: EventClickArg) => {
@@ -106,6 +142,15 @@ const options = reactive<CalendarOptions>({
         }
 
         Object.assign(operationSchedule, operationScheduleStore.getOperationSchedule(event.id));
+
+        const startDateTime = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
+        startDate.value = `${startDateTime.getFullYear()}-${String(startDateTime.getMonth() + 1).padStart(2, "0")}-${String(startDateTime.getDate()).padStart(2, "0")}`;
+        startTime.value = `${String(startDateTime.getHours()).padStart(2, "0")}:${String(startDateTime.getMinutes()).padStart(2, "0")}:${String(startDateTime.getSeconds()).padStart(2, "0")}`;
+
+        const endDateTime = new Date(`${operationSchedule.endDate}T${operationSchedule.endTime}`);
+        endDate.value = `${endDateTime.getFullYear()}-${String(endDateTime.getMonth() + 1).padStart(2, "0")}-${String(endDateTime.getDate()).padStart(2, "0")}`;
+        endTime.value = `${String(endDateTime.getHours()).padStart(2, "0")}:${String(endDateTime.getMinutes()).padStart(2, "0")}:${String(endDateTime.getSeconds()).padStart(2, "0")}`;
+
         operationScheduleFormModal.show();
     },
 });
@@ -167,19 +212,19 @@ onMounted(() => {
                     </div>
                     <div class="mb-3">
                         <label for="start-date" class="form-label">Date de début</label>
-                        <input v-model="operationSchedule.startDate" id="start-date" type="date" class="form-control" required>
+                        <input v-model="startDate" id="start-date" type="date" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="start-time" class="form-label">Heure de début</label>
-                        <input v-model="operationSchedule.startTime" id="start-time" type="time" step="1" class="form-control" required>
+                        <input v-model="startTime" id="start-time" type="time" step="1" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="end-date" class="form-label">Date de fin</label>
-                        <input v-model="operationSchedule.endDate" id="end-date" type="date" class="form-control" required>
+                        <input v-model="endDate" id="end-date" type="date" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="end-time" class="form-label">Heure de fin</label>
-                        <input v-model="operationSchedule.endTime" id="end-time" type="time" step="1" class="form-control" required>
+                        <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required>
                     </div>
                     <div>
                         <label for="by-day" class="form-label">Récurrence</label>
