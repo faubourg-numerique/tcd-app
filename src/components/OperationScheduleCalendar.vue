@@ -93,6 +93,7 @@ const options = reactive<CalendarOptions>({
     plugins: [dayGridPlugin, interactionPlugin, rrulePlugin],
     initialView: "dayGridMonth",
     locale: "fr",
+    // @ts-ignore
     events: events,
     firstDay: 1,
     dateClick: ({ dateStr }: { dateStr: string }) => {
