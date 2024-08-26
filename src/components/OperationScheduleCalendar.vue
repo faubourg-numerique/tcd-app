@@ -1,241 +1,274 @@
+@ -1,241 +0,0 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import Modal from "bootstrap/js/dist/modal";
+import { computed, onMounted, reactive, ref, type Ref, watch } from "vue";
 import FullCalendar from "@fullcalendar/vue3";
 import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import OperationScheduleModal from "@/components/OperationScheduleModal.vue";
-import { useScheduleStore } from "@/stores/schedule-store";
-import type Schedule from "@/models/Schedule";
+import rrulePlugin from "@fullcalendar/rrule";
+import swal from "sweetalert2";
 
-const scheduleStore = useScheduleStore();
+import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
+import type { OperationSchedule } from "@/models/OperationSchedule";
 
-// Refs pour gérer l'état de la modale, la date cliquée, et les événements
-const isModalOpened = ref(false);
-
-const days = [
-    { id: 1, name: "Lundi" },
-    { id: 2, name: "Mardi" },
-    { id: 3, name: "Mercredi" },
-    { id: 4, name: "Jeudi" },
-    { id: 5, name: "Vendredi" },
-    { id: 6, name: "Samedi" },
-    { id: 7, name: "Dimanche" },
+const weekDays = [
+    "SU",
+    "MO",
+    "TU",
+    "WE",
+    "TH",
+    "FR",
+    "SA",
+    "SU",
 ];
 
-const scheduleForm = reactive<{
-    name: string;
-    byDay: number[];
-    startDate: string;
-    startTime: string;
-    endDate: string;
-    endTime: string;
-    id: string;
-}>({
+const props = defineProps({
+    cityId: {
+        type: String,
+        required: true,
+    },
+    zoneId: {
+        type: String,
+        required: true,
+    },
+});
+
+const startDate: Ref<string> = ref("");
+const startTime: Ref<string> = ref("");
+const endDate: Ref<string> = ref("");
+const endTime: Ref<string> = ref("");
+
+const operationScheduleStore = useOperationScheduleStore();
+
+const operationSchedule: OperationSchedule = reactive({
+    id: "",
     name: "",
     byDay: [],
     startDate: "",
     startTime: "",
     endDate: "",
     endTime: "",
-    id: "",
-});
-const modalIsUpdate = ref(false);
-
-// Fonction pour ouvrir la modale avec la date cliquée
-const openModal = (date: string, idEvent = "") => {
-    console.log(idEvent.split('_')[0]);
-    const schedule = scheduleStore.schedules.find((scheduleOne) => scheduleOne.id === idEvent.split('_')[0]);
-    if (schedule) {
-        scheduleForm.name = schedule.name;
-        scheduleForm.startDate = schedule.startDate;
-        scheduleForm.startTime = schedule.startTime;
-        scheduleForm.endDate = schedule.endDate;
-        scheduleForm.endTime = schedule.endTime;
-        scheduleForm.id = schedule.id;
-        scheduleForm.byDay = schedule.byDay;
-    } else {
-        const dateNow = new Date(date).toISOString();
-        scheduleForm.name = "";
-        scheduleForm.startDate = dateNow.slice(0, 10);
-        scheduleForm.startTime = dateNow.slice(11, 16);
-        scheduleForm.endDate = dateNow.slice(0, 10);
-        scheduleForm.endTime = dateNow.slice(11, 16);
-        scheduleForm.byDay = [];
-        scheduleForm.id = "";
-    }
-
-    isModalOpened.value = true;
-};
-
-// Fonction pour fermer la modale
-const closeModal = () => {
-    isModalOpened.value = false;
-};
-
-const allSchedules = ref<{ title: string; start: string; end: string; id: string }[]>([]);
-
-const calendarOptions = ref<CalendarOptions>({
-    plugins: [dayGridPlugin, interactionPlugin],
-    initialView: "dayGridMonth",
-    locale: "fr",
-    dateClick: ({ dateStr }: { dateStr: string }) => {
-        modalIsUpdate.value = false;
-        openModal(dateStr);
-    },
-    eventClick: ({ event }: EventClickArg) => {
-        modalIsUpdate.value = true;
-
-        openModal(event.startStr, event.id);
-    },
+    duration: "",
+    hasZone: props.zoneId,
 });
 
-// Fonction pour ajouter un événement
-const addEvent = async () => {
-    const actualDate = new Date();
+const operationScheduleFormModalElement = ref(null);
+let operationScheduleFormModal: Modal|null = null;
 
-    if (new Date(scheduleForm.startDate + scheduleForm.startTime) < actualDate) {
-        alert("La date de début doit être supérieure à la date actuelle");
-        return;
-    }
-    const schedule: Schedule = {
-        name: scheduleForm.name,
-        startDate: scheduleForm.startDate,
-        startTime: scheduleForm.startTime,
-        endDate: scheduleForm.endDate,
-        endTime: scheduleForm.endTime,
-        byDay: scheduleForm.byDay,
-        id: scheduleForm.id,
-    };
-    await scheduleStore.addSchedule(schedule);
-    updateCalendarOptions();
-    closeModal(); // Fermer la modale après ajout
-};
-
-const updateCalendarOptions = () => {
-    allSchedules.value = [];
-
-    scheduleStore.schedules.forEach((scheduleOne) => {
-        if (scheduleOne.byDay && scheduleOne.byDay.length > 0) {
-            // met un event chaque jour selectionné entre les dates de début et de fin
-            const startDate = new Date(scheduleOne.startDate);
-            const endDate = new Date(scheduleOne.endDate);
-            const byDay = scheduleOne.byDay;
-            while (startDate <= endDate) {
-                if (byDay.includes(startDate.getDay() + 1)) {
-                    allSchedules.value.push({
-                        title: scheduleOne.name,
-                        start: startDate.toISOString().slice(0, 10) + "T" + scheduleOne.startTime,
-                        end: startDate.toISOString().slice(0, 10) + "T" + scheduleOne.endTime,
-                        id: scheduleOne.id + "_" + startDate.toISOString().slice(0, 10),
-                    });
-                }
-                startDate.setDate(startDate.getDate() + 1);
+const events = computed(() => {
+    const operationSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zoneId);
+    return operationSchedules.map((operationSchedule) => {
+        if (operationSchedule.byDay.length) {
+            return {
+                id: operationSchedule.id,
+                title: operationSchedule.name,
+                duration: operationSchedule.duration,
+                rrule: {
+                    freq: "weekly",
+                    interval: 1,
+                    byweekday: operationSchedule.byDay.map((day) => weekDays[day]),
+                    dtstart: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
+                    until: `${operationSchedule.endDate}T${operationSchedule.endTime}`
+                },
             }
         } else {
-            allSchedules.value.push({
-                title: scheduleOne.name,
-                start: scheduleOne.startDate + "T" + scheduleOne.startTime,
-                end: scheduleOne.endDate + "T" + scheduleOne.endTime,
-                id: scheduleOne.id + "_" + scheduleOne.startDate,
-            });
+            const date = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
+            const [hours, minutes, seconds] = operationSchedule.duration.split(":").map(Number);
+            date.setHours(date.getHours() + hours);
+            date.setMinutes(date.getMinutes() + minutes);
+            date.setSeconds(date.getSeconds() + seconds);
+
+            return {
+                id: operationSchedule.id,
+                title: operationSchedule.name,
+                start: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
+                end: date.toISOString(),
+            }
         }
     });
+});
 
-    calendarOptions.value = {
-        plugins: [dayGridPlugin, interactionPlugin],
-        initialView: "dayGridMonth",
-        locale: "fr",
-        events: allSchedules.value, // Lier les événements au calendrier
-        dateClick: ({ dateStr }: { dateStr: string }) => {
-            modalIsUpdate.value = false;
-            openModal(dateStr);
-        },
-        eventClick: ({ event }: EventClickArg) => {
-            modalIsUpdate.value = true;
+const options = reactive<CalendarOptions>({
+    plugins: [dayGridPlugin, interactionPlugin, rrulePlugin],
+    initialView: "dayGridMonth",
+    locale: "fr",
+    // @ts-ignore
+    events: events,
+    firstDay: 1,
+    dateClick: ({ dateStr }: { dateStr: string }) => {
+        if (!operationScheduleFormModal) {
+            return;
+        }
 
-            openModal(event.startStr, event.id);
-        },
-    };
-    console.log(allSchedules.value);
-};
+        operationSchedule.id = "";
+        operationSchedule.name = "";
+        operationSchedule.byDay = [];
+        operationSchedule.startDate = dateStr;
+        operationSchedule.startTime = "";
+        operationSchedule.endDate = "";
+        operationSchedule.endTime = "";
+        operationSchedule.duration = "";
+        operationSchedule.hasZone = props.zoneId;
 
-const updateEvent = async () => {
-    const actualDate = new Date();
+        startDate.value = dateStr;
+        startTime.value = "";
+        endDate.value = "";
+        endTime.value = "";
 
-    if (new Date(scheduleForm.startDate + scheduleForm.startTime) < actualDate) {
-        alert("La date de début doit être supérieure à la date actuelle");
+        operationScheduleFormModal.show();
+    },
+    eventClick: ({ event }: EventClickArg) => {
+        if (!operationScheduleFormModal) {
+            return;
+        }
+
+        Object.assign(operationSchedule, operationScheduleStore.getOperationSchedule(event.id));
+
+        const startDateTime = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
+        startDate.value = `${startDateTime.getFullYear()}-${String(startDateTime.getMonth() + 1).padStart(2, "0")}-${String(startDateTime.getDate()).padStart(2, "0")}`;
+        startTime.value = `${String(startDateTime.getHours()).padStart(2, "0")}:${String(startDateTime.getMinutes()).padStart(2, "0")}:${String(startDateTime.getSeconds()).padStart(2, "0")}`;
+
+        const endDateTime = new Date(`${operationSchedule.endDate}T${operationSchedule.endTime}`);
+        endDate.value = `${endDateTime.getFullYear()}-${String(endDateTime.getMonth() + 1).padStart(2, "0")}-${String(endDateTime.getDate()).padStart(2, "0")}`;
+        endTime.value = `${String(endDateTime.getHours()).padStart(2, "0")}:${String(endDateTime.getMinutes()).padStart(2, "0")}:${String(endDateTime.getSeconds()).padStart(2, "0")}`;
+
+        operationScheduleFormModal.show();
+    },
+});
+
+function computeStartDateTime() {
+    if (!startDate.value || !startTime.value) {
         return;
     }
-    const schedule: Schedule = {
-        name: scheduleForm.name,
-        startDate: scheduleForm.startDate,
-        startTime: scheduleForm.startTime,
-        endDate: scheduleForm.endDate,
-        endTime: scheduleForm.endTime,
-        byDay: scheduleForm.byDay,
-        id: scheduleForm.id.split('_')[0],
-    };
 
-    allSchedules.value = [];
-    await scheduleStore.updateSchedule(schedule.id, schedule);
-    updateCalendarOptions();
-    closeModal(); // Fermer la modale après ajout
-};
+    const date = new Date(`${startDate.value}T${startTime.value}`);
+    operationSchedule.startDate = date.toISOString().slice(0, 10);
+    operationSchedule.startTime = date.toISOString().slice(11, 19) + "Z";
+}
 
-const deleteEvent = async () => {
-    await scheduleStore.deleteSchedule(scheduleForm.id);
-    updateCalendarOptions();
-    closeModal(); // Fermer la modale après ajout
-};
+function computeEndDateTime() {
+    if (!endDate.value || !endTime.value) {
+        return;
+    }
 
-updateCalendarOptions();
+    const date = new Date(`${endDate.value}T${endTime.value}`);
+    operationSchedule.endDate = date.toISOString().slice(0, 10);
+    operationSchedule.endTime = date.toISOString().slice(11, 19) + "Z";
+}
+
+watch(startDate, computeStartDateTime);
+watch(startTime, computeStartDateTime);
+
+watch(endDate, computeEndDateTime);
+watch(endTime, computeEndDateTime);
+
+watch(() => operationSchedule.byDay, () => {
+    if (!operationSchedule.byDay.length) {
+        endDate.value = "";
+        endTime.value = "";
+        operationSchedule.endDate = "";
+        operationSchedule.endTime = "";
+    }
+});
+
+async function createOperationSchedule(operationSchedule: OperationSchedule) {
+    await operationScheduleStore.createOperationSchedule(operationSchedule);
+
+    if (operationScheduleFormModal) {
+        operationScheduleFormModal.hide();
+    }
+}
+
+async function updateOperationSchedule(operationSchedule: OperationSchedule) {
+    await operationScheduleStore.updateOperationSchedule(operationSchedule);
+
+    if (operationScheduleFormModal) {
+        operationScheduleFormModal.hide();
+    }
+}
+
+async function deleteOperationSchedule(operationSchedule: OperationSchedule) {
+    const result = await swal.fire({
+        icon: "question",
+        title: "Supprimer cet évènement ?",
+        text: "Êtes-vous sûr de vouloir supprimer cet évènement ?",
+        showCancelButton: true,
+    });
+
+    if (!result) {
+        return;
+    }
+
+    await operationScheduleStore.deleteOperationSchedule(operationSchedule);
+
+    if (operationScheduleFormModal) {
+        operationScheduleFormModal.hide();
+    }
+}
+
+onMounted(() => {
+    if (operationScheduleFormModalElement.value) {
+        operationScheduleFormModal = new Modal(operationScheduleFormModalElement.value);
+    }
+});
 </script>
 
 <template>
-    <!-- Composant FullCalendar pour afficher le calendrier -->
-    <FullCalendar :options="calendarOptions" />
-
-    <!-- Modale pour afficher les informations de la date cliquée -->
-    <OperationScheduleModal :is-open="isModalOpened" :is-update="modalIsUpdate" @delete-schedule="deleteEvent" @edit-schedule="updateEvent" @add-schedule="addEvent" @modal-close="closeModal">
-        <template #header>
-            <h3>Planification d'événement</h3>
-        </template>
-        <template #content>
-            <form @submit.prevent="addEvent">
-                <div class="form-group">
-                    <label for="title">Titre</label>
-                    <input id="title" v-model="scheduleForm.name" type="text" class="form-control" placeholder="Titre de l'événement" required />
+    <div ref="operationScheduleFormModalElement" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <form class="modal-content" @submit.prevent="operationSchedule.id ? updateOperationSchedule(operationSchedule) : createOperationSchedule(operationSchedule)">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">{{ operationSchedule.id ? "Modifier" : "Ajouter" }} un évènement</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="form-group">
-                    <label for="startDate">Date de début</label>
-                    <input id="startDate" v-model="scheduleForm.startDate" type="date" class="form-control" required />
-                </div>
-                <div class="form-group">
-                    <label for="startTime">Heure de début</label>
-                    <input id="startTime" v-model="scheduleForm.startTime" type="time" class="form-control" required />
-                </div>
-                <div class="form-group">
-                    <label for="endDate">Date de fin</label>
-                    <input id="endDate" v-model="scheduleForm.endDate" type="date" class="form-control" required />
-                </div>
-                <div class="form-group">
-                    <label for="endTime">Heure de fin</label>
-                    <input id="endTime" v-model="scheduleForm.endTime" type="time" class="form-control" required />
-                </div>
-
-                <div class="card p-3">
-                    <div v-for="day in days" :key="day.id" class="form-check">
-                        <input :id="day.id + ''" v-model="scheduleForm.byDay" type="checkbox" class="form-check-input" :value="day.id" />
-                        <label class="form-check-label" :for="day.id + ''">{{ day.name }}</label>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nom</label>
+                        <input v-model="operationSchedule.name" id="name" type="text" class="form-control" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="start-date" class="form-label">Date de début</label>
+                        <input v-model="startDate" id="start-date" type="date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="start-time" class="form-label">Heure de début</label>
+                        <input v-model="startTime" id="start-time" type="time" step="1" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Durée</label>
+                        <input v-model="operationSchedule.duration" id="duration" type="time" step="1" class="form-control" required>
+                    </div>
+                    <template v-if="operationSchedule.byDay.length">
+                        <div class="mb-3">
+                            <label for="end-date" class="form-label">Date de fin</label>
+                            <input v-model="endDate" id="end-date" type="date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end-time" class="form-label">Heure de fin</label>
+                            <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required>
+                        </div>
+                    </template>
+                    <div>
+                        <label for="by-day" class="form-label">Récurrence</label>
+                        <select v-model="operationSchedule.byDay" id="by-day" class="form-select" multiple>
+                            <option :value="1">Lundi</option>
+                            <option :value="2">Mardi</option>
+                            <option :value="3">Mercredi</option>
+                            <option :value="4">Jeudi</option>
+                            <option :value="5">Vendredi</option>
+                            <option :value="6">Samedi</option>
+                            <option :value="7">Dimanche</option>
+                        </select>
                     </div>
                 </div>
-                <input v-model="scheduleForm.id" type="hidden" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button v-if="operationSchedule.id" type="button" class="btn btn-danger" @click="deleteOperationSchedule(operationSchedule)">Supprimer</button>
+                    <button type="submit" class="btn" :class="{'btn-success': !operationSchedule.id, 'btn-warning': operationSchedule.id}">{{ operationSchedule.id ? "Modifier" : "Ajouter" }}</button>
+                </div>
             </form>
-        </template>
-    </OperationScheduleModal>
+        </div>
+    </div>
+    <FullCalendar :options="options" />
 </template>
-
-<style scoped>
-/* Ajouter des styles personnalisés ici si nécessaire */
-</style>

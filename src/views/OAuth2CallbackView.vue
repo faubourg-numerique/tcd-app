@@ -7,14 +7,14 @@ import { useMainStore } from "@/stores/main-store";
 import { useStreetlightStore } from "@/stores/streetlight-store";
 import { useThermostatStore } from "@/stores/thermostat-store";
 import { useZoneStore } from "@/stores/zone-store";
-import { useScheduleStore } from "@/stores/schedule-store";
+import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
 
 const route = useRoute();
 const router = useRouter();
 
-const scheduleStore = useScheduleStore();
 const cityStore = useCityStore();
 const mainStore = useMainStore();
+const operationScheduleStore = useOperationScheduleStore();
 const streetlightStore = useStreetlightStore();
 const thermostatStore = useThermostatStore();
 const zoneStore = useZoneStore();
@@ -45,10 +45,10 @@ async function authenticate() {
     }
 
     await cityStore.fetchCities();
-    await zoneStore.fetchZones();
+    await operationScheduleStore.fetchOperationSchedules();
     await streetlightStore.fetchStreetlights();
     await thermostatStore.fetchThermostats();
-    await scheduleStore.fetchSchedules();
+    await zoneStore.fetchZones();
 
     mainStore.isAuthenticated = true;
 

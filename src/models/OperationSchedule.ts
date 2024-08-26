@@ -1,4 +1,4 @@
-export default interface Schedule {
+export interface OperationSchedule {
     id: string;
     name: string;
     byDay: number[];
@@ -6,5 +6,6 @@ export default interface Schedule {
     startTime: string;
     endDate: string;
     endTime: string;
+    duration: string;
     hasZone: string;
 }
