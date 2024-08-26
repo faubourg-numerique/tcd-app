@@ -1,4 +1,3 @@
-// stores/device-measurement-store.js
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useMainStore } from '@/stores/main-store';
