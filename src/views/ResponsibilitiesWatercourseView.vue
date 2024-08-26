@@ -19,23 +19,19 @@ const subscriptions = ref<Subscription[]>([]);
 const router = useRouter();
 
 onMounted(async () => {
-    // Fetch device measurements
     await deviceMeasurementStore.getDeviceMeasurements();
     measurements.value = deviceMeasurementStore.measurements.filter(
         (measurement: Measurement) => measurement.measurementType.value === 'water-level'
     );
 
-    // Fetch subscriptions
     await subscriptionStore.getsubscriptions();
 
-    // Filter subscriptions based on measurements
     subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
         return subscription.entities.some((entity) => {
             return measurements.value.some((measurement: Measurement) => measurement.id === entity.id);
         });
     });
 
-    //console.log( measurements.value);
     await alertSettingsStore.getAlertSettings(); 
 });
 </script>

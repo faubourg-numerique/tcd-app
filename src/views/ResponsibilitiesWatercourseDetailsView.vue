@@ -7,6 +7,7 @@ import type { Subscription } from '@/models/Subscription';
 import type { Measurement } from "@/models/Measurement";
 import type { AlertSetting } from "@/models/AlertSetting";
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
+import  Modal  from '@/components/SubscriptionModal.vue'; 
 
 const route = useRoute();
 const deviceMeasurementStore = useDeviceMeasurementStore();
@@ -45,6 +46,17 @@ onMounted(async () => {
     });
   }
 });
+ 
+
+const isModalOpen = ref(false);
+
+function openModal() {
+  isModalOpen.value = true;
+}
+
+function closeModal() {
+  isModalOpen.value = false;
+}
 </script>
 
 <template>
@@ -86,6 +98,7 @@ onMounted(async () => {
           <thead>
             <tr>
               <th>Subscription Name</th>
+              <th>Subscription ID</th>
               <th>Query</th>
               <th>Status</th>
               <th>Creation Date</th>
@@ -97,9 +110,10 @@ onMounted(async () => {
           <tbody>
             <tr v-for="subscription in subscriptions" :key="subscription.id">
               <td>{{ subscription.subscriptionName }}</td>
+              <td>{{ subscription.id }}</td>
               <td>{{ subscription.q }}</td>
               <td>{{ subscription.status }}</td>
-              <td>{{ new Date(subscription.creationDate).toLocaleDateString() }} </td>
+              <td>{{ new Date(subscription.creationDate).toLocaleDateString()  }} </td>
               <td>
                 <ul>
                   <li v-for="email in extractEmailsFromUrl(subscription.notification.endpoint.uri)" :key="email">
@@ -108,7 +122,7 @@ onMounted(async () => {
                 </ul>
               </td>
               <td>{{ subscription.throttling }}</td>
-              <td>{{ subscription.lastNotification }} </td>
+              <td>{{ subscription.lastNotification ?? 'N/A' }} </td>
             </tr>
           </tbody>
         </table>
@@ -117,7 +131,9 @@ onMounted(async () => {
         <p>No subscriptions found for this measurement.</p>
       </div>
     </div>
+    <button class="btn btn-primary" type="button" @click="openModal" > Créer une Subscription</button>
   </div>
+  
 </template>
 
 
