@@ -35,7 +35,7 @@ onMounted(async () => {
         });
     });
 
-    
+    //console.log( measurements.value);
     await alertSettingsStore.getAlertSettings(); 
 });
 </script>

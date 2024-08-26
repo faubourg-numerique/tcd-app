@@ -8,7 +8,6 @@ import type { Measurement } from "@/models/Measurement";
 import type { AlertSetting } from "@/models/AlertSetting";
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 
-
 const route = useRoute();
 const deviceMeasurementStore = useDeviceMeasurementStore();
 const subscriptionStore = useSubscriptionStore();
@@ -17,6 +16,12 @@ const alertSettingsStore = useAlertSettingsStore();
 const measurement = ref<Measurement | null>(null);
 const subscriptions = ref<Subscription[]>([]);
 const alerts = ref<AlertSetting[]>([]);
+
+function extractEmailsFromUrl(url: string): string[] {
+  const urlParams = new URL(url).searchParams;
+  const emailsParam = urlParams.get('emails');
+  return emailsParam ? emailsParam.split(',') : [];
+}
 
 onMounted(async () => {
   const measurementId = route.params.id as string;
@@ -50,38 +55,71 @@ onMounted(async () => {
       <p><strong>Name :</strong> {{ measurement.name.value }}</p>
       <p><strong>Id :</strong> {{ measurement.id }}</p>
       <p><strong>Distance:</strong> {{ measurement.distance?.value ?? 'N/A' }} {{ measurement.distance?.unit?.value ?? 'N/A' }}</p>
-      <p><strong>Max Alert:</strong> {{ measurement.maxAlerte?.value ?? 'N/A' }}</p>
-      <p><strong>Current Alert:</strong> {{ measurement.enAlerte?.value ?? 'N/A' }}</p>
-      <p><strong>Temporisation:</strong> {{ measurement.temporisation?.value ?? 'N/A' }}</p>
 
+      <!-- Alerts Section -->
       <h2>Alerts</h2>
       <div v-if="alerts.length">
-        <ul>
-          <li v-for="alert in alerts" :key="alert.id">
-            <p>{{ alert.name.value }} :</p>
-            <p>Criteria: {{ alert.criteriaType.value }}</p>
-          </li>
-        </ul>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Id</th>
+              <th>Criteria</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="alert in alerts" :key="alert.id">
+              <td>{{ alert.name.value }}</td>
+              <td>{{ alert.id }}</td>
+              <td>{{ alert.criteriaType.value }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div v-else>
         <p>No alerts found for this measurement.</p>
       </div>
-    </div>
-    <div v-else>
-      <p>Loading...</p>
-    </div>
-    <h2>Subscriptions</h2>
+
+      <h2>Subscriptions</h2>
       <div v-if="subscriptions.length">
-          <div v-for="subscription in subscriptions" :key="subscription.id">
-            <p>{{ subscription.subscriptionName }}  </p>
-            <span>Status :  {{ subscription.status }}</span>
-          </div>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Subscription Name</th>
+              <th>Query</th>
+              <th>Status</th>
+              <th>Creation Date</th>
+              <th>Emails</th>
+              <th>Throttling </th>
+              <th>Last Notification </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="subscription in subscriptions" :key="subscription.id">
+              <td>{{ subscription.subscriptionName }}</td>
+              <td>{{ subscription.q }}</td>
+              <td>{{ subscription.status }}</td>
+              <td>{{ new Date(subscription.creationDate).toLocaleDateString() }} </td>
+              <td>
+                <ul>
+                  <li v-for="email in extractEmailsFromUrl(subscription.notification.endpoint.uri)" :key="email">
+                    {{ email }}
+                  </li>
+                </ul>
+              </td>
+              <td>{{ subscription.throttling }}</td>
+              <td>{{ subscription.lastNotification }} </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div v-else>
         <p>No subscriptions found for this measurement.</p>
       </div>
+    </div>
   </div>
 </template>
+
 
 <style scoped>
 .container {
