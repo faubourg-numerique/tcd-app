@@ -16,6 +16,7 @@ const measurements = ref<Measurement[]>([]);
 const subscriptions = ref<Subscription[]>([]);
 
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const router = useRouter();
 
 onMounted(async () => {

@@ -45,7 +45,9 @@ onMounted(async () => {
       return alert.hasEntity.object === measurement.value?.id;
     });
   }
+  console.log(subscriptions.value);
 });
+
  
 
 const isModalOpen = ref(false);
@@ -134,13 +136,17 @@ function closeModal() {
       </div>
     </div>
 
-    <!-- Button to Open Modal -->
+
     <div class="text-center mt-4">
       <button class="btn btn-primary" type="button" @click="openModal">Créer une Subscription</button>
     </div>
     <Modal :is-open="isModalOpen" @close="closeModal">
-      <template #title>Créer une nouvelle Subscription</template>
-      <p>Formulaire de création de subscription...</p>
+      <template #title>Créer une nouvelle Subscription
+
+      </template>
+      <modal-body>
+
+      </modal-body>
     </Modal>
   </div>
 </template>
