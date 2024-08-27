@@ -56,6 +56,7 @@ import { useSubscriptionStore } from "@/stores/subscriptions-store";
 // Props
 const props = defineProps({
   isOpen: Boolean,
+  measurementId: String,  // Assurez-vous que ce prop est défini
 });
 
 // Emit event
@@ -78,22 +79,34 @@ async function submitForm() {
   try {
     const subscriptionStore = useSubscriptionStore();
 
-  
     const emailArray = emails.value.split(',').map(email => email.trim());
-    
 
     await subscriptionStore.createsubscription({
       subscriptionName: subscriptionName.value,
+      entities: [
+        {
+          id: props.measurementId,  // Utiliser l'ID du measurement passé en prop
+          type: "DeviceMeasurement",
+        },
+      ],
       q: `distance${selected.value}${queryValue.value}`,
       emails: emailArray,
       throttling: throttling.value,
+      isActive: true,
+      notification: {
+        attributes: ["distance"],
+        format: "normalized",
+        endpoint: {
+          uri: "https://example.com", // Remplacez par l'URI de notification réelle
+          accept: "application/json",
+        },
+        status: "ok",
+      },
     });
 
-    
     closeModal();
   } catch (error) {
     console.error('Failed to create subscription:', error);
-   
   }
 }
 </script>
