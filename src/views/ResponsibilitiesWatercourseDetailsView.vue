@@ -60,17 +60,18 @@ function closeModal() {
 </script>
 
 <template>
-  <div class="container">
-    <h1>Details for Watercourse Responsibility</h1>
+  <div class="container mt-4">
+    <h1 class="text-center mb-4">Details for Watercourse Responsibility</h1>
 
-    <div v-if="measurement">
+   
+    <div v-if="measurement" class="bg-light p-3 rounded shadow-sm">
       <p><strong>Name :</strong> {{ measurement.name.value }}</p>
       <p><strong>Id :</strong> {{ measurement.id }}</p>
       <p><strong>Distance:</strong> {{ measurement.distance?.value ?? 'N/A' }} {{ measurement.distance?.unit?.value ?? 'N/A' }}</p>
 
-      <!-- Alerts Section -->
-      <h2>Alerts</h2>
-      <div v-if="alerts.length">
+     
+      <h2 class="mt-4">Alerts</h2>
+      <div v-if="alerts.length" class="table-responsive">
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
@@ -88,12 +89,13 @@ function closeModal() {
           </tbody>
         </table>
       </div>
-      <div v-else>
-        <p>No alerts found for this measurement.</p>
+      <div v-else class="alert alert-warning" role="alert">
+        No alerts found for this measurement.
       </div>
 
-      <h2>Subscriptions</h2>
-      <div v-if="subscriptions.length">
+     
+      <h2 class="mt-4">Subscriptions</h2>
+      <div v-if="subscriptions.length" class="table-responsive">
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
@@ -103,8 +105,8 @@ function closeModal() {
               <th>Status</th>
               <th>Creation Date</th>
               <th>Emails</th>
-              <th>Throttling </th>
-              <th>Last Notification </th>
+              <th>Throttling</th>
+              <th>Last Notification</th>
             </tr>
           </thead>
           <tbody>
@@ -113,40 +115,38 @@ function closeModal() {
               <td>{{ subscription.id }}</td>
               <td>{{ subscription.q }}</td>
               <td>{{ subscription.status }}</td>
-              <td>{{ new Date(subscription.creationDate).toLocaleDateString()  }} </td>
+              <td>{{ new Date(subscription.creationDate).toLocaleDateString() }}</td>
               <td>
-                <ul>
+                <ul class="list-unstyled">
                   <li v-for="email in extractEmailsFromUrl(subscription.notification.endpoint.uri)" :key="email">
                     {{ email }}
                   </li>
                 </ul>
               </td>
               <td>{{ subscription.throttling }}</td>
-              <td>{{ subscription.lastNotification ?? 'N/A' }} </td>
+              <td>{{ subscription.lastNotification ?? 'N/A' }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div v-else>
-        <p>No subscriptions found for this measurement.</p>
+      <div v-else class="alert alert-warning" role="alert">
+        No subscriptions found for this measurement.
       </div>
     </div>
-    <button class="btn btn-primary" type="button" @click="openModal" > Créer une Subscription</button>
+
+    <!-- Button to Open Modal -->
+    <div class="text-center mt-4">
+      <button class="btn btn-primary" type="button" @click="openModal">Créer une Subscription</button>
+    </div>
+    <Modal :is-open="isModalOpen" @close="closeModal">
+      <template #title>Créer une nouvelle Subscription</template>
+      <p>Formulaire de création de subscription...</p>
+    </Modal>
   </div>
-  
 </template>
 
 
+
 <style scoped>
-.container {
-  margin-top: 20px;
-}
 
-p {
-  margin: 10px 0;
-}
-
-strong {
-  color: #333;
-}
 </style>
