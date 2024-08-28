@@ -56,7 +56,7 @@ import { useSubscriptionStore } from "@/stores/subscriptions-store";
 // Props
 const props = defineProps({
   isOpen: Boolean,
-  measurementId: String,  // Assurez-vous que ce prop est défini
+  measurementId: String,  
 });
 
 // Emit event
@@ -85,7 +85,7 @@ async function submitForm() {
       subscriptionName: subscriptionName.value,
       entities: [
         {
-          id: props.measurementId,  // Utiliser l'ID du measurement passé en prop
+          id: props.measurementId,  
           type: "DeviceMeasurement",
         },
       ],
@@ -97,7 +97,7 @@ async function submitForm() {
         attributes: ["distance"],
         format: "normalized",
         endpoint: {
-          uri: "https://example.com", // Remplacez par l'URI de notification réelle
+          uri: "https://example.com",
           accept: "application/json",
         },
         status: "ok",
