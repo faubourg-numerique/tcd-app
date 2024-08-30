@@ -51,6 +51,7 @@ const operationSchedule: OperationSchedule = reactive({
     endTime: "",
     duration: "",
     hasZone: props.zoneId,
+    hasOperation: "",
 });
 
 const operationScheduleFormModalElement = ref(null);
@@ -110,6 +111,7 @@ const options = reactive<CalendarOptions>({
         operationSchedule.endTime = "";
         operationSchedule.duration = "";
         operationSchedule.hasZone = props.zoneId;
+        operationSchedule.hasOperation = "";
 
         startDate.value = dateStr;
         startTime.value = "";
