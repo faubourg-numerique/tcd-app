@@ -8,4 +8,5 @@ export interface OperationSchedule {
     endTime: string;
     duration: string;
     hasZone: string;
+    hasOperation: string;
 }
