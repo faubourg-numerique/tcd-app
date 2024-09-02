@@ -36,7 +36,7 @@
                 <label for="throttling" class="form-label">Throttling</label>
                 <input id="throttling" type="number" v-model.number="throttling" class="form-control" name="Throttling" min="5000" required>
               </div>
-              <button type="submit" class="btn btn-primary">Créer</button>
+              <button type="submit" class="btn btn-primary">Enregrister</button>
             </form>
           </div>
           <div class="modal-footer">
@@ -52,6 +52,7 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue'; 
 import { useSubscriptionStore } from "@/stores/subscriptions-store";
+import Swal from 'sweetalert2';
 
 // Props
 const props = defineProps({
@@ -105,11 +106,20 @@ async function submitForm() {
         },
         status: "ok",
       },
+    }).then(async () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Subscription created successfully',
+      });
     });
 
     closeModal();
   } catch (error) {
-    console.error('Failed to create subscription:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: (error as Error).toString(),
+    });
   }
 }
 </script>

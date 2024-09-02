@@ -62,8 +62,11 @@
               <td>{{ subscription.throttling }}</td>
               <td>{{ subscription.lastNotification ?? 'N/A' }}</td>
               <td>
-                <button class="btn btn-outline-danger" @click="deleteSubscription(subscription.id)">
+                <button class="btn btn-outline-danger mx-auto" @click="deleteSubscription(subscription.id)">
                   <i class="bi bi-trash"></i> Supprimer
+                </button > 
+                <button class="btn btn-outline-warning mx-auto" @click="updateSubscription(subscription.id)">
+                  <i class="bi bi-pen"></i> Modifier
                 </button>
               </td>
             </tr>
@@ -97,6 +100,7 @@ import Modal from '@/components/SubscriptionModal.vue';
 import type { Measurement } from "@/models/Measurement";
 import type { Subscription } from "@/models/Subscription";
 import type { AlertSetting } from "@/models/AlertSetting";
+import swal from "sweetalert2";
 
 const route = useRoute();
 const deviceMeasurementStore = useDeviceMeasurementStore();
@@ -144,7 +148,6 @@ onMounted(async () => {
       return alert.hasEntity.object === measurement.value?.id;
     });
   }
-  console.log(subscriptions.value);
 });
 
 const isModalOpen = ref(false);
@@ -157,7 +160,27 @@ function closeModal() {
   isModalOpen.value = false;
 }
 function deleteSubscription(subscriptionId: string) {
-  subscriptionStore.deletesubscription(subscriptionId);
+  swal.fire({
+    title: 'Vous êtes sûr?',
+    text: 'De supprimer cette subscription',
+    icon: 'warning',
+    confirmButtonText: 'Oui',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await subscriptionStore.deletesubscription(subscriptionId);
+      await subscriptionStore.getsubscriptions();  
+      subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
+        return subscription.entities.some(entity => entity.id === measurement.value?.id);
+      });
+    }
+  });
+}
+function updateSubscription(subscriptionId: string) {
+  const subscription = subscriptions.value.find((subscription: Subscription) => subscription.id === subscriptionId);
+  if (subscription) {
+    isModalOpen.value = true;
+  }
+  
 }
 </script>
 <style>
