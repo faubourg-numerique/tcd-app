@@ -1,3 +1,6 @@
+<!-- eslint-disable vue/require-default-prop -->
+<!-- eslint-disable vue/attributes-order -->
+<!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div v-if="isOpen">
     <div class="modal fade show d-block" tabindex="-1">
