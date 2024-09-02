@@ -81,7 +81,7 @@
     <Modal :is-open="isModalOpen" :measurement-id="measurement?.id" @close="closeModal">
       <template #title>Créer une nouvelle Subscription</template>
       <template #body>
-        <!-- Modal content here -->
+        
       </template>
     </Modal>
   </div>
@@ -155,6 +155,9 @@ function openModal() {
 
 function closeModal() {
   isModalOpen.value = false;
+}
+function deleteSubscription(subscriptionId: string) {
+  subscriptionStore.deletesubscription(subscriptionId);
 }
 </script>
 <style>
