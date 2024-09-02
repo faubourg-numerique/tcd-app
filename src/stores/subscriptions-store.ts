@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useMainStore } from '@/stores/main-store';
 
+
 export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     const  subscriptions = ref([]);
     
@@ -16,9 +17,17 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
             console.error('Error subscriptions:', error);
         }
     }
+    async function createsubscription(subscription: any) {
+        try {
+            await mainStore.api.post('/subscriptions', subscription);
+        } catch (error) {
+            console.error('Error creating subscription:', error);
+        }
+    }
 
     return {  
         subscriptions,
-        getsubscriptions
+        getsubscriptions ,
+        createsubscription ,
     };
 });
