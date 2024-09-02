@@ -82,7 +82,9 @@ async function submitForm() {
     const emailArray = emails.value.split(',').map(email => email.trim());
 
     await subscriptionStore.createsubscription({
+      
       subscriptionName: subscriptionName.value,
+      type: "Subscription",
       entities: [
         {
           id: props.measurementId,  
@@ -90,14 +92,15 @@ async function submitForm() {
         },
       ],
       q: `distance${selected.value}${queryValue.value}`,
-      emails: emailArray,
       throttling: throttling.value,
       isActive: true,
-      notification: {
-        attributes: ["distance"],
+      "notification": {
+            "attributes": [
+                "distance"
+            ],
         format: "normalized",
         endpoint: {
-          uri: "https://example.com",
+          uri: `https://example.com?emails=${encodeURIComponent(emailArray.join(','))}`,
           accept: "application/json",
         },
         status: "ok",

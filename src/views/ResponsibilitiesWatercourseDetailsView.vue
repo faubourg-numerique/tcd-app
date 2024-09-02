@@ -45,6 +45,7 @@
               <th>Emails</th>
               <th>Throttling</th>
               <th>Last Notification</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -60,6 +61,11 @@
               </td>
               <td>{{ subscription.throttling }}</td>
               <td>{{ subscription.lastNotification ?? 'N/A' }}</td>
+              <td>
+                <button class="btn btn-outline-danger" @click="deleteSubscription(subscription.id)">
+                  <i class="bi bi-trash"></i> Supprimer
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -75,11 +81,12 @@
     <Modal :is-open="isModalOpen" :measurement-id="measurement?.id" @close="closeModal">
       <template #title>Créer une nouvelle Subscription</template>
       <template #body>
-     
+        <!-- Modal content here -->
       </template>
     </Modal>
   </div>
 </template>
+
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
