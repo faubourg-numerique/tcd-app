@@ -58,28 +58,26 @@ import { useSubscriptionStore } from "@/stores/subscriptions-store";
 import swal from 'sweetalert2';
 import type { Subscription } from '@/models/Subscription';
 
-// Props
 const props = defineProps({
   isOpen: Boolean,
-  measurementId: String,  
+  measurementId: {
+    type: String,
+    default: '',
+  },
 });
 
-// Emit event
 const emit = defineEmits(['close']);
 
-// Reactive state
 const subscriptionName = ref<string>('');
 const selected = ref<string>('');
 const queryValue = ref<number | null>(null);
 const emails = ref<string>('');
 const throttling = ref<number | null>(null);
 
-// Close modal function
 function closeModal() {
   emit('close');
 }
 
-// Submit form function
 async function submitForm() {
   try {
     const subscriptionStore = useSubscriptionStore();
