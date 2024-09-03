@@ -1,3 +1,4 @@
+
 <template>
   <div class="container mt-4">
     <h1 class="text-center mb-4">Details for Watercourse Responsibility</h1>
@@ -5,7 +6,7 @@
     <div v-if="measurement" class="bg-light p-3 rounded shadow-sm">
       <MeasurementGeneral :measurement="measurement" />
 
-      <MeasurementVisualization :grafanaUrl="grafanaUrlMap[measurement.id]" />
+      <MeasurementVisualization :grafana-url="grafanaUrlMap[measurement.id]" />
 
       <MeasurementAlerts :alerts="alerts" />
 
