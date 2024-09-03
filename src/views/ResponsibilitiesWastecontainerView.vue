@@ -5,6 +5,6 @@ import DeviceMeasurementTable from '@/components/DeviceMeasurementTable.vue';
 <template>
   <div>
     <h1>Mesurements View</h1>
-    <DeviceMeasurementTable measurement-type="Waster-container" />
+    <DeviceMeasurementTable measurement-type="waste-level" />
   </div>
 </template>
