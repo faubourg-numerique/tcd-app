@@ -9,6 +9,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
 import swal from "sweetalert2";
 
+import { useOperationStore } from "@/stores/operation-store";
 import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
 import type { OperationSchedule } from "@/models/OperationSchedule";
 
@@ -39,6 +40,7 @@ const startTime: Ref<string> = ref("");
 const endDate: Ref<string> = ref("");
 const endTime: Ref<string> = ref("");
 
+const operationStore = useOperationStore();
 const operationScheduleStore = useOperationScheduleStore();
 
 const operationSchedule: OperationSchedule = reactive({
@@ -56,6 +58,8 @@ const operationSchedule: OperationSchedule = reactive({
 
 const operationScheduleFormModalElement = ref(null);
 let operationScheduleFormModal: Modal|null = null;
+
+const operations = operationStore.getOperationsByZoneId(props.zoneId);
 
 const events = computed(() => {
     const operationSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zoneId);
@@ -251,7 +255,7 @@ onMounted(() => {
                             <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required>
                         </div>
                     </template>
-                    <div>
+                    <div class="mb-3">
                         <label for="by-day" class="form-label">Récurrence</label>
                         <select v-model="operationSchedule.byDay" id="by-day" class="form-select" multiple>
                             <option :value="1">Lundi</option>
@@ -261,6 +265,12 @@ onMounted(() => {
                             <option :value="5">Vendredi</option>
                             <option :value="6">Samedi</option>
                             <option :value="7">Dimanche</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="by-day" class="form-label">Opération</label>
+                        <select v-model="operationSchedule.hasOperation" id="has-operation" class="form-select" required>
+                            <option :value="operation.id" v-for="operation in operations">{{ operation.name }}</option>
                         </select>
                     </div>
                 </div>
