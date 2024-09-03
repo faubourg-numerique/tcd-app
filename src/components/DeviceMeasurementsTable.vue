@@ -58,7 +58,7 @@ watch(() => props.measurementType, async () => {
                 <tbody>
                     <tr v-for="measurement in measurements" :key="measurement.id">
                         <td>
-                            <router-link :to="`/responsibilities/watercourse/${measurement.id}`" class="no-link">
+                            <router-link :to="`/responsibilities/${measurementType}/${measurement.id}`" class="no-link">
                                 {{ measurement.name.value }} 
                             </router-link>
                         </td>

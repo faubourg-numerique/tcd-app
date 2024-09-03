@@ -13,6 +13,7 @@ import UserInformationView from "@/views/UserInformationView.vue";
 import ResponsibilitiesWatercourseView from "@/views/ResponsibilitiesWatercourseView.vue";
 import ResponsibilitiesWatercourseDetailsView from "@/views/ResponsibilitiesWatercourseDetailsView.vue";
 import ResposibilitiesWastecontainer from "@/views/ResponsibilitiesWastecontainerView.vue";
+import ResponsibilitiesWastecontainerDetailsView from "@/views/ResponsibilitiesWastecontainDetailsView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,16 +44,21 @@ const router = createRouter({
             component: ResponsibilitiesWatercourseView,
         },
         {
-            path: "/responsibilities/wastercontainer",
-            name: "responsibilities.wastecontainer",
-            component: ResposibilitiesWastecontainer,
-        },
-        {
             path: "/responsibilities/watercourse/:id",
             name: "responsibilities.watercourse.id",
             component: ResponsibilitiesWatercourseDetailsView,
         },
-
+        {
+            path: "/responsibilities/wastecontainer",
+            name: "responsibilities.wastecontainer",
+            component: ResposibilitiesWastecontainer,
+        },
+        {
+            path: "/responsibilities/waste-level/:id",
+            name: "responsibilities.wastecontainer.id",
+            component: ResponsibilitiesWastecontainerDetailsView,
+        },
+       
         {
             path: "/water-level",
             name: "water-level",
