@@ -39,22 +39,22 @@ const router = createRouter({
             component: ResponsibilitiesBuildingsView,
         },
         {
-            path: "/responsibilities/watercourse",
+            path: "/responsibilities/watercourse",  // ajout de la route pour les cours d'eau
             name: "responsibilities.watercourse",
             component: ResponsibilitiesWatercourseView,
         },
         {
-            path: "/responsibilities/watercourse/:id",
+            path: "/responsibilities/water-level/:id", //ajout de la route pour les détails des cours d'eau
             name: "responsibilities.watercourse.id",
             component: ResponsibilitiesWatercourseDetailsView,
         },
         {
-            path: "/responsibilities/wastecontainer",
+            path: "/responsibilities/wastecontainer", // ajout de la route pour les conteneurs de déchets
             name: "responsibilities.wastecontainer",
             component: ResposibilitiesWastecontainer,
         },
         {
-            path: "/responsibilities/waste-level/:id",
+            path: "/responsibilities/waste-level/:id", //ajout de la route pour les détails des conteneurs de déchets
             name: "responsibilities.wastecontainer.id",
             component: ResponsibilitiesWastecontainerDetailsView,
         },
