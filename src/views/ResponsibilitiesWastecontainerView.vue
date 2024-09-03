@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import DeviceMeasurementTable from '@/components/DeviceMeasurementTable.vue';
+import DeviceMeasurementsTable from '@/components/DeviceMeasurementsTable.vue';
 </script>
 
 <template>
   <div>
-    <h1>Mesurements View</h1>
-    <DeviceMeasurementTable measurement-type="waste-level" />
+    <DeviceMeasurementsTable measurement-type="waste-level" />
   </div>
 </template>
