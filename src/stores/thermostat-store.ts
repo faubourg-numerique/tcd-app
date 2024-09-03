@@ -18,18 +18,27 @@ export const useThermostatStore = defineStore("thermostat", () => {
         return thermostat;
     }
 
+    function getThermostatsByZoneId(zoneId: string) {
+        return thermostats.filter((thermostat) => thermostat.hasZone === zoneId);
+    }
+
     async function fetchThermostats() {
+        thermostats.length = 0;
         const response = await mainStore.api.get("/thermostats");
         thermostats.push(...response.data);
     }
 
-    async function updateThermostat(thermostatId: string, data: Object) {
-        await mainStore.api.patch(`/thermostats/${thermostatId}`, data);
+    async function updateThermostat(cityId: string, zoneId: string, thermostatId: string) {
+        const thermostat = getThermostat(thermostatId);
+        const data = {
+            temperature: thermostat.temperature
+        };
+        await mainStore.api.patch(`/cities/${cityId}/zones/${zoneId}/thermostats/${thermostatId}`, data);
     }
 
     function $reset() {
         thermostats.length = 0;
     }
 
-    return { thermostats, getThermostat, fetchThermostats, updateThermostat, $reset };
+    return { thermostats, getThermostat, getThermostatsByZoneId, fetchThermostats, updateThermostat, $reset };
 });
