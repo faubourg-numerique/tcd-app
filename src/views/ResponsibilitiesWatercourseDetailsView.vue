@@ -65,9 +65,6 @@
                 <button class="btn btn-outline-danger mx-auto" @click="deleteSubscription(subscription.id)">
                   <i class="bi bi-trash"></i> Supprimer
                 </button > 
-                <button class="btn btn-outline-warning mx-auto" @click="updateSubscription(subscription.id)">
-                  <i class="bi bi-pen"></i> Modifier
-                </button>
               </td>
             </tr>
           </tbody>
@@ -175,13 +172,7 @@ function deleteSubscription(subscriptionId: string) {
     }
   });
 }
-function updateSubscription(subscriptionId: string) {
-  const subscription = subscriptions.value.find((subscription: Subscription) => subscription.id === subscriptionId);
-  if (subscription) {
-    isModalOpen.value = true;
-  }
-  
-}
+
 </script>
 <style>
 template{

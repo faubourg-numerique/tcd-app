@@ -55,7 +55,8 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue'; 
 import { useSubscriptionStore } from "@/stores/subscriptions-store";
-import Swal from 'sweetalert2';
+import swal from 'sweetalert2';
+import type { Subscription } from '@/models/Subscription';
 
 // Props
 const props = defineProps({
@@ -82,6 +83,7 @@ function closeModal() {
 async function submitForm() {
   try {
     const subscriptionStore = useSubscriptionStore();
+    const subscriptions = ref<Subscription[]>([]);
 
     const emailArray = emails.value.split(',').map(email => email.trim());
 
@@ -110,15 +112,20 @@ async function submitForm() {
         status: "ok",
       },
     }).then(async () => {
-      Swal.fire({
+      swal.fire({
         icon: 'success',
         title: 'Subscription created successfully',
+      }).then (async () => {
+        await subscriptionStore.getsubscriptions();
+        subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
+        return subscription.entities.some(entity => entity.id === measurement.value?.id);
+      });
       });
     });
 
     closeModal();
   } catch (error) {
-    Swal.fire({
+    swal.fire({
       icon: 'error',
       title: 'Oops...',
       text: (error as Error).toString(),
