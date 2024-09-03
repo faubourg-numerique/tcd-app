@@ -24,10 +24,18 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
             console.error('Error creating subscription:', error);
         }
     }
+    async function deletesubscription(subscriptionId: string) {
+        try {
+            await mainStore.api.delete(`/subscriptions/${subscriptionId}`);
+        } catch (error) {
+            console.error('Error deleting subscription:', error);
+        }
+    }
 
     return {  
         subscriptions,
         getsubscriptions ,
         createsubscription ,
+        deletesubscription ,
     };
 });

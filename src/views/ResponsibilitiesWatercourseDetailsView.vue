@@ -45,6 +45,7 @@
               <th>Emails</th>
               <th>Throttling</th>
               <th>Last Notification</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -60,6 +61,11 @@
               </td>
               <td>{{ subscription.throttling }}</td>
               <td>{{ subscription.lastNotification ?? 'N/A' }}</td>
+              <td>
+                <button class="btn btn-outline-danger mx-auto" @click="deleteSubscription(subscription.id)">
+                  <i class="bi bi-trash"></i> Supprimer
+                </button > 
+              </td>
             </tr>
           </tbody>
         </table>
@@ -75,11 +81,12 @@
     <Modal :is-open="isModalOpen" :measurement-id="measurement?.id" @close="closeModal">
       <template #title>Créer une nouvelle Subscription</template>
       <template #body>
-     
+        
       </template>
     </Modal>
   </div>
 </template>
+
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -90,6 +97,7 @@ import Modal from '@/components/SubscriptionModal.vue';
 import type { Measurement } from "@/models/Measurement";
 import type { Subscription } from "@/models/Subscription";
 import type { AlertSetting } from "@/models/AlertSetting";
+import swal from "sweetalert2";
 
 const route = useRoute();
 const deviceMeasurementStore = useDeviceMeasurementStore();
@@ -137,7 +145,6 @@ onMounted(async () => {
       return alert.hasEntity.object === measurement.value?.id;
     });
   }
-  console.log(subscriptions.value);
 });
 
 const isModalOpen = ref(false);
@@ -149,6 +156,23 @@ function openModal() {
 function closeModal() {
   isModalOpen.value = false;
 }
+function deleteSubscription(subscriptionId: string) {
+  swal.fire({
+    title: 'Vous êtes sûr?',
+    text: 'De supprimer cette subscription',
+    icon: 'warning',
+    confirmButtonText: 'Oui',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await subscriptionStore.deletesubscription(subscriptionId);
+      await subscriptionStore.getsubscriptions();  
+      subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
+        return subscription.entities.some(entity => entity.id === measurement.value?.id);
+      });
+    }
+  });
+}
+
 </script>
 <style>
 template{

@@ -1,3 +1,6 @@
+<!-- eslint-disable vue/require-default-prop -->
+<!-- eslint-disable vue/attributes-order -->
+<!-- eslint-disable vue/no-parsing-error -->
 <template>
   <div v-if="isOpen">
     <div class="modal fade show d-block" tabindex="-1">
@@ -36,7 +39,7 @@
                 <label for="throttling" class="form-label">Throttling</label>
                 <input id="throttling" type="number" v-model.number="throttling" class="form-control" name="Throttling" min="5000" required>
               </div>
-              <button type="submit" class="btn btn-primary">Créer</button>
+              <button type="submit" class="btn btn-primary">Enregrister</button>
             </form>
           </div>
           <div class="modal-footer">
@@ -52,37 +55,40 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue'; 
 import { useSubscriptionStore } from "@/stores/subscriptions-store";
+import swal from 'sweetalert2';
+import type { Subscription } from '@/models/Subscription';
 
-// Props
 const props = defineProps({
   isOpen: Boolean,
-  measurementId: String,  
+  measurementId: {
+    type: String,
+    default: '',
+  },
 });
 
-// Emit event
 const emit = defineEmits(['close']);
 
-// Reactive state
 const subscriptionName = ref<string>('');
 const selected = ref<string>('');
 const queryValue = ref<number | null>(null);
 const emails = ref<string>('');
 const throttling = ref<number | null>(null);
 
-// Close modal function
 function closeModal() {
   emit('close');
 }
 
-// Submit form function
 async function submitForm() {
   try {
     const subscriptionStore = useSubscriptionStore();
+    const subscriptions = ref<Subscription[]>([]);
 
     const emailArray = emails.value.split(',').map(email => email.trim());
 
     await subscriptionStore.createsubscription({
+      
       subscriptionName: subscriptionName.value,
+      type: "Subscription",
       entities: [
         {
           id: props.measurementId,  
@@ -90,23 +96,38 @@ async function submitForm() {
         },
       ],
       q: `distance${selected.value}${queryValue.value}`,
-      emails: emailArray,
       throttling: throttling.value,
       isActive: true,
-      notification: {
-        attributes: ["distance"],
+      "notification": {
+            "attributes": [
+                "distance"
+            ],
         format: "normalized",
         endpoint: {
-          uri: "https://example.com",
+          uri: `https://example.com?emails=${encodeURIComponent(emailArray.join(','))}`,
           accept: "application/json",
         },
         status: "ok",
       },
+    }).then(async () => {
+      swal.fire({
+        icon: 'success',
+        title: 'Subscription created successfully',
+      }).then (async () => {
+        await subscriptionStore.getsubscriptions();
+        subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
+        return subscription.entities.some(entity => entity.id === measurement.value?.id);
+      });
+      });
     });
 
     closeModal();
   } catch (error) {
-    console.error('Failed to create subscription:', error);
+    swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: (error as Error).toString(),
+    });
   }
 }
 </script>
