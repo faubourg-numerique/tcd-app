@@ -13,7 +13,8 @@
         "indoorAmbiance": "Ambiance intérieure - LONG",
         "ExempleDashboard": "Exemple de Dashboard",
         "watercourse": "Cours d'eau",
-        "information": "Information"
+        "information": "Information" ,
+        "waste-container": "Conteneur à  dechet"
     },
     "manager": {
         "selectACity": "Sélectionnez une ville",

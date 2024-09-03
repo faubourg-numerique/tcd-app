@@ -13,7 +13,8 @@
         "indoorAmbiance": "Indoor Ambiance - LONG",
         "ExempleDashboard": "Dashboard example",
         "watercourse": "Watercourse",
-        "information": "Information"
+        "information": "Information" ,
+        "waste-container": "Waste container"
     },
     "manager": {
         "selectACity": "Select a City",

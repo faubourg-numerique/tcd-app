@@ -4,6 +4,6 @@ import DeviceMeasurementsTable from '@/components/DeviceMeasurementsTable.vue';
 
 <template>
   <div>
-    <DeviceMeasurementsTable measurement-type="water-level" />
+    <DeviceMeasurementsTable measurement-type="waste-level" />
   </div>
 </template>
