@@ -12,6 +12,7 @@ import ExempleDashboardView from "@/views/ExempleDashboardView.vue";
 import UserInformationView from "@/views/UserInformationView.vue";
 import ResponsibilitiesWatercourseView from "@/views/ResponsibilitiesWatercourseView.vue";
 import ResponsibilitiesWatercourseDetailsView from "@/views/ResponsibilitiesWatercourseDetailsView.vue";
+import ResposibilitiesWastecontainer from "@/views/ResponsibilitiesWastecontainerView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +41,11 @@ const router = createRouter({
             path: "/responsibilities/watercourse",
             name: "responsibilities.watercourse",
             component: ResponsibilitiesWatercourseView,
+        },
+        {
+            path: "/responsibilities/wastercontainer",
+            name: "responsibilities.wastecontainer",
+            component: ResposibilitiesWastecontainer,
         },
         {
             path: "/responsibilities/watercourse/:id",

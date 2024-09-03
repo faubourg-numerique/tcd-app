@@ -34,6 +34,9 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
                             <li>
                                 <RouterLink class="dropdown-item bi bi-water" :to="{ name: 'responsibilities.watercourse' }">{{ $t("nav.watercourse") }}</RouterLink>
                             </li>
+                            <li>
+                                <RouterLink class="dropdown-item bi bi-trash-fill" :to="{ name: 'responsibilities.wastecontainer' }">{{ $t("nav.waste-container") }}</RouterLink>
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
