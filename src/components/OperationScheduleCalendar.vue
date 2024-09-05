@@ -10,6 +10,7 @@ import rrulePlugin from "@fullcalendar/rrule";
 import swal from "sweetalert2";
 
 import { useOperationStore } from "@/stores/operation-store";
+import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
 import type { OperationSchedule } from "@/models/OperationSchedule";
 
@@ -41,6 +42,7 @@ const endDate: Ref<string> = ref("");
 const endTime: Ref<string> = ref("");
 
 const operationStore = useOperationStore();
+const operationParametersStore = useOperationParametersStore();
 const operationScheduleStore = useOperationScheduleStore();
 
 const operationSchedule: OperationSchedule = reactive({
@@ -54,6 +56,7 @@ const operationSchedule: OperationSchedule = reactive({
     duration: "",
     hasZone: props.zoneId,
     hasOperation: "",
+    hasOperationParameters: "",
 });
 
 const operationScheduleFormModalElement = ref(null);
@@ -267,10 +270,16 @@ onMounted(() => {
                             <option :value="7">Dimanche</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="mb-3">
                         <label for="by-day" class="form-label">Opération</label>
                         <select v-model="operationSchedule.hasOperation" id="has-operation" class="form-select" required>
                             <option :value="operation.id" v-for="operation in operations">{{ operation.name }}</option>
+                        </select>
+                    </div>
+                    <div v-if="operationSchedule.hasOperation">
+                        <label for="has-operation-parameters" class="form-label">Paramètres</label>
+                        <select v-model="operationSchedule.hasOperationParameters" id="has-operation-parameters" class="form-select" required>
+                            <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(operationSchedule.hasOperation)" :value="operationParameters.id" :key="operationParameters.id">{{ operationParameters.name }}</option>
                         </select>
                     </div>
                 </div>
