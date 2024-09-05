@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="mt-4">Subscriptions</h2>
+    <h2 class="mt-4">Notification</h2>
     <div v-if="subscriptions.length" class="table-responsive">
       <table class="table table-striped table-bordered">
         <thead>

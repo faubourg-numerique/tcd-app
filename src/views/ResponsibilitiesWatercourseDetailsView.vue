@@ -1,7 +1,7 @@
 
 <template>
   <div class="container mt-4">
-    <h1 class="text-center mb-4">Details for Watercourse Responsibility</h1>
+    <h1 class="text-center mb-4">Surveillance du niveau d’eau</h1>
 
     <div v-if="measurement" class="bg-light p-3 rounded shadow-sm">
       <MeasurementGeneral :measurement="measurement" />
