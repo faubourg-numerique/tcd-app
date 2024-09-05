@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h2 class="mt-4">Alerts</h2>
+      <h2 class="mt-4">Alertes</h2>
       <div v-if="alerts.length" class="table-responsive">
         <table class="table table-striped table-bordered">
           <thead>

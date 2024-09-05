@@ -9,4 +9,5 @@ export interface OperationSchedule {
     duration: string;
     hasZone: string;
     hasOperation: string;
+    hasOperationParameters: string;
 }

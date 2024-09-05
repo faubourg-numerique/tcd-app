@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { ref, type Ref } from "vue";
 
-import { useCityStore } from "@/stores/city-store";
 import { useStreetlightStore } from "@/stores/streetlight-store";
-import { useZoneStore } from "@/stores/zone-store";
-import  OperationScheduleCalendar  from "@/components/OperationScheduleCalendar.vue";
+import CityZoneSelector from "@/components/CityZoneSelector.vue";
+import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
 
-const cityStore = useCityStore();
 const streetlightStore = useStreetlightStore();
-const zoneStore = useZoneStore();
 
 const selectedCityId: Ref<string | null> = ref(null);
 const selectedZoneId: Ref<string | null> = ref(null);
@@ -26,22 +23,7 @@ async function updateStreetlightPowerState(cityId: string, zoneId: string, stree
 <template>
     <div class="container">
         <div class="m-4">
-            <div class="bg-white p-4 rounded text-center border border-danger">
-                <div class="form-group">
-                    <label for="city-id" class="form-label">{{ $t("manager.selectACity") }}</label>
-                    <select id="city-id" v-model="selectedCityId" class="form-select">
-                        <option :value="null" disabled>{{ $t("manager.selectACity") }}</option>
-                        <option v-for="city in cityStore.cities" :key="city.id" :value="city.id">{{ city.name }}</option>
-                    </select>
-                </div>
-                <div v-if="selectedCityId" class="form-group">
-                    <label for="zone-id" class="form-label">{{ $t("manager.selectAZone") }}</label>
-                    <select id="zone-id" v-model="selectedZoneId" class="form-select">
-                        <option :value="null" disabled>{{ $t("manager.selectAZone") }}</option>
-                        <option v-for="zone in zoneStore.getZonesByCityId(selectedCityId)" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
-                    </select>
-                </div>
-            </div>
+            <CityZoneSelector v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId"></CityZoneSelector>
         </div>
         <div v-if="selectedCityId && selectedZoneId" class="container-fluid">
             <div class="row">

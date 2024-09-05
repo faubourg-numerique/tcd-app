@@ -11,6 +11,7 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <span class="navbar-brand d-flex align-items-center">
+                <img alt="dRURAL" class="logo" src="@/assets/images/logos/drural.png" width="68" height="50" />
                 <img alt="Somme Numérique" class="logo" src="@/assets/images/logos/somme-numerique.png" width="50" height="50" />
                 <span class="ms-2 d-none d-sm-inline text-danger">{{ $t("nav.mainTitle") }}</span>
             </span>
