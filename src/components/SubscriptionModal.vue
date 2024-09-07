@@ -20,10 +20,7 @@
                 <label for="QueryCriteria" class="form-label">Query Criteria</label>
                 <select id="QueryCriteria" v-model="selected" class="form-control" required>
                   <option disabled value="">Please select one Criteria</option>
-                  <option value="=">= Equal to</option>
-                  <option value="≥">≥ Greater than or equal to</option>
                   <option value=">">> Greater than</option>
-                  <option value="≤">≤ Less than or equal to</option>
                   <option value="<">< Less than</option>
                 </select>
               </div>
