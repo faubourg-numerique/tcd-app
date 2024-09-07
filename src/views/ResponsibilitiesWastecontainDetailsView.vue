@@ -51,10 +51,17 @@
   const alerts = ref<AlertSetting[]>([]);
   
   const grafanaUrlMap: Record<string, string> = {
-    'urn:ngsi-ld:DeviceMeasurement:7247c13d-4447-4a77-be08-64a7a1e1eff2': 'https://grafana.ouranos-ws.com/d-solo/fdw6nnfyq6nswc/water-course?orgId=1&theme=light&panelId=1&from=now-24h&to=now',
-    'urn:ngsi-ld:DeviceMeasurement:7b3b3b3b-4b3b-4b3b-4b3b-4b3b3b3b3b3b': 'https://grafana.ouranos-ws.com/d-solo/fdw6nnfyq6nswc/water-course?orgId=1&theme=light&panelId=1&from=now-24h&to=now',
-  };
-  
+  'urn:ngsi-ld:DeviceMeasurement:b87eb1f6-41c9-4861-8dd0-088ebe7881a7': 'https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=1',
+  'urn:ngsi-ld:DeviceMeasurement:a17e49e6-68f5-45d9-90e8-de7b229de350': 'https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=2',
+  'urn:ngsi-ld:DeviceMeasurement:8725b1f6-3cdd-4f24-8e1f-af34a6f4a0b8': 'https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=4',
+  'urn:ngsi-ld:DeviceMeasurement:48e5334e-8c99-48d9-a386-836bf0d440aa': 'https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=5',
+  'urn:ngsi-ld:DeviceMeasurement:f7ca0c34-f0b3-4fbd-921e-19fb3517f50d': 'https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=7',
+  'urn:ngsi-ld:DeviceMeasurement:a482a1be-1787-4974-9101-accee04a5b9c': 'https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=8',
+  'urn:ngsi-ld:DeviceMeasurement:fe6b5228-78fe-4272-938b-501d23a356c2': 'https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=3',
+};
+
+
+
   onMounted(async () => {
     const measurementId = route.params.id as string;
   
