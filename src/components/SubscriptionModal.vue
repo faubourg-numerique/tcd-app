@@ -85,6 +85,8 @@ async function submitForm() {
 
     const emailArray = emails.value.split(',').map(email => email.trim());
 
+    const notificationURL = `${import.meta.env.VITE_URL_NOTIFICATION}emails=${encodeURIComponent(emailArray.join(','))}`;
+
     await subscriptionStore.createsubscription({
       
       subscriptionName: subscriptionName.value,
@@ -104,7 +106,7 @@ async function submitForm() {
             ],
         format: "normalized",
         endpoint: {
-          uri: `https://example.com?emails=${encodeURIComponent(emailArray.join(','))}`,
+          uri: notificationURL ,
           accept: "application/json",
         },
         status: "ok",
