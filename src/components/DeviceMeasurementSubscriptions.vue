@@ -1,15 +1,15 @@
 <template>
   <div>
-    <h2 class="mt-4">Notification</h2>
+    <h2 class="mt-4">Alertes</h2>
     <div v-if="subscriptions.length" class="table-responsive">
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
-            <th>Query</th>
-            <th>Status</th>
+            <th>Critère</th>
+            <th>Statut</th>
             <th>Emails</th>
-            <th>Throttling</th>
-            <th>Last Notification</th>
+            <th>Rappel</th>
+            <th>Dernière alerte</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -24,7 +24,7 @@
                 </li>
               </ul>
             </td>
-            <td>{{ subscription.throttling }}</td>
+            <td>{{ [Math.floor((subscription.throttling ?? 0) / 3600), ('0' + Math.floor(((subscription.throttling ?? 0) % 3600) / 60)).slice(-2), ('0' + (subscription.throttling ?? 0) % 60).slice(-2)].join(':') }}</td>
             <td>{{ subscription.lastNotification ?? 'N/A' }}</td>
             <td>
               <button class="btn btn-outline-danger mx-auto" @click="$emit('delete-subscription', subscription.id)">
@@ -36,7 +36,7 @@
       </table>
     </div>
     <div v-else class="alert alert-warning" role="alert">
-      No subscriptions found for this measurement.
+      Aucune alerte
     </div>
   </div>
 </template>

@@ -161,9 +161,13 @@ function computeEndDateTime() {
         return;
     }
 
-    const date = new Date(`${endDate.value}T${endTime.value}`);
-    operationSchedule.endDate = date.toISOString().slice(0, 10);
-    operationSchedule.endTime = date.toISOString().slice(11, 19) + "Z";
+    try {
+        const date = new Date(`${endDate.value}T${endTime.value}`);
+        operationSchedule.endDate = date.toISOString().slice(0, 10);
+        operationSchedule.endTime = date.toISOString().slice(11, 19) + "Z";
+    } catch(error) {
+
+    }
 }
 
 watch(startDate, computeStartDateTime);

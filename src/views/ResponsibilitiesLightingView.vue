@@ -4,11 +4,14 @@ import { ref, type Ref } from "vue";
 import { useStreetlightStore } from "@/stores/streetlight-store";
 import CityZoneSelector from "@/components/CityZoneSelector.vue";
 import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const streetlightStore = useStreetlightStore();
 
-const selectedCityId: Ref<string | null> = ref(null);
-const selectedZoneId: Ref<string | null> = ref(null);
+const selectedCityId: Ref<string | null> = ref(route.query.cityId as string ?? null);
+const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? null);
 
 async function updateStreetlightPowerState(cityId: string, zoneId: string, streetlightId: string, powerState: string) {
     const streetlight = streetlightStore.getStreetlight(streetlightId);

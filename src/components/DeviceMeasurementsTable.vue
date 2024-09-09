@@ -18,8 +18,6 @@ const measurements = ref<Measurement[]>([]);
 const subscriptions = ref<Subscription[]>([]);
 
 onMounted(async () => {
-    await deviceMeasurementStore.getDeviceMeasurements();
-    
     measurements.value = deviceMeasurementStore.measurements.filter(
         (measurement: Measurement) => measurement.measurementType.value === props.measurementType
     );

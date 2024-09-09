@@ -5,44 +5,41 @@
   <div v-if="isOpen">
     <div class="modal fade show d-block" tabindex="-1">
       <div class="modal-dialog">
-        <div class="modal-content">
+        <form @submit.prevent="submitForm" class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title"><slot name="title"></slot></h5>
             <button type="button" class="btn-close" @click="closeModal"></button>
           </div>
           <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-3">
-                <label for="subscriptionName" class="form-label">Subscription Name</label>
-                <input id="subscriptionName" type="text" v-model="subscriptionName" class="form-control" name="subscriptionName" required>
-              </div>
-              <div class="mb-3">
-                <label for="QueryCriteria" class="form-label">Query Criteria</label>
-                <select id="QueryCriteria" v-model="selected" class="form-control" required>
-                  <option disabled value="">Please select one Criteria</option>
-                  <option value=">">> Greater than</option>
-                  <option value="<">< Less than</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="QueryValue" class="form-label">Query Value</label>
-                <input id="QueryValue" type="number" v-model.number="queryValue" class="form-control" name="queryValue" required>
-              </div>
-              <div class="mb-3">
-                <label for="mail" class="form-label">Emails</label>
-                <input id="mail" type="email" v-model="emails" class="form-control" placeholder="Enter emails separated by commas" required>
-              </div>
-              <div class="mb-3">
-                <label for="throttling" class="form-label">Throttling</label>
-                <input id="throttling" type="number" v-model.number="throttling" class="form-control" name="Throttling" min="5000" required>
-              </div>
-              <button type="submit" class="btn btn-primary">Enregrister</button>
-            </form>
+            <div class="mb-3">
+              <label for="subscriptionName" class="form-label">Nom</label>
+              <input id="subscriptionName" type="text" v-model="subscriptionName" class="form-control" name="subscriptionName" required>
+            </div>
+            <div class="mb-3">
+              <label for="QueryCriteria" class="form-label">Critère</label>
+              <select id="QueryCriteria" v-model="selected" class="form-control" required>
+                <option value=">">> Supérieur à</option>
+                <option value="<">< Inférieur à</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="QueryValue" class="form-label">Valeur</label>
+              <input id="QueryValue" type="number" v-model.number="queryValue" class="form-control" name="queryValue" required>
+            </div>
+            <div class="mb-3">
+              <label for="mail" class="form-label">Emails (séparés par des virgules)</label>
+              <input id="mail" type="text" v-model="emails" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="throttling" class="form-label">Rappel (en secondes)</label>
+              <input id="throttling" type="number" v-model.number="throttling" class="form-control" name="Throttling" min="1" required>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="closeModal">Fermer</button>
+            <button type="submit" class="btn btn-primary">Enregister</button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
     <div class="modal-backdrop fade show"></div>
@@ -111,12 +108,7 @@ async function submitForm() {
     }).then(async () => {
       swal.fire({
         icon: 'success',
-        title: 'Subscription created successfully',
-      }).then (async () => {
-        await subscriptionStore.getsubscriptions();
-        subscriptions.value = subscriptionStore.subscriptions.filter((subscription: Subscription) => {
-        return subscription.entities.some(entity => entity.id === measurement.value?.id);
-      });
+        title: 'Alerte créée avec succès',
       });
     });
 

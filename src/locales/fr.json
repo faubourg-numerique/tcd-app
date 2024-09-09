@@ -14,7 +14,7 @@
         "ExempleDashboard": "Exemple de Dashboard",
         "watercourse": "Cours d'eau",
         "information": "Information" ,
-        "waste-container": "P.V.A"
+        "waste-container": "PAV"
     },
     "manager": {
         "selectACity": "Sélectionnez une ville",
@@ -25,7 +25,8 @@
             "error": "Oups désolé, mais tu n'as pas tout sélectionné ou il n'y a aucun lampadaire."
         },
         "thermostat": {
-            "titleForm": "température"
+            "titleForm": "température",
+            "error": "Aucun thermostat"
         }
     },
     "dashboard": {

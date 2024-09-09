@@ -8,17 +8,15 @@
 
       <MeasurementVisualization :grafana-url="grafanaUrlMap[measurement.id]" />
 
-      <MeasurementAlerts :alerts="alerts" />
-
       <MeasurementSubscriptions :subscriptions="subscriptions" @delete-subscription="deleteSubscription" />
     </div>
 
     <div class="text-center mt-4">
-      <button class="btn btn-primary" type="button" @click="openModal">Créer une Subscription</button>
+      <button class="btn btn-primary" type="button" @click="openModal">Créer une alerte</button>
     </div>
     
     <Modal :is-open="isModalOpen" :measurement-id="measurement?.id" @close="closeModal">
-      <template #title>Créer une nouvelle Subscription</template>
+      <template #title>Créer une nouvelle alerte</template>
       <template #body>
       </template>
     </Modal>
@@ -63,7 +61,6 @@ const grafanaUrlMap: Record<string, string> = {
 onMounted(async () => {
   const measurementId = route.params.id as string;
 
-  await deviceMeasurementStore.getDeviceMeasurements();
   measurement.value = deviceMeasurementStore.measurements.find(
     (m: Measurement) => m.id === measurementId
   ) ?? null;
