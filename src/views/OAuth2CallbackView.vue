@@ -10,6 +10,8 @@ import { useZoneStore } from "@/stores/zone-store";
 import { useOperationStore } from "@/stores/operation-store";
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
+import { useWasteContainerStore } from "@/stores/waste-container-store";
+import { useFloodMonitoringStore } from "@/stores/flood-monitoring-store";
 
 const route = useRoute();
 const router = useRouter();
@@ -22,6 +24,8 @@ const operationScheduleStore = useOperationScheduleStore();
 const streetlightStore = useStreetlightStore();
 const thermostatStore = useThermostatStore();
 const zoneStore = useZoneStore();
+const wasteContainerStore = useWasteContainerStore();
+const floodMonitoringStore = useFloodMonitoringStore();
 
 async function authenticate() {
     if (!route.query.token) {
@@ -55,6 +59,8 @@ async function authenticate() {
     await streetlightStore.fetchStreetlights();
     await thermostatStore.fetchThermostats();
     await zoneStore.fetchZones();
+    await wasteContainerStore.fetchWasteContainers();
+    await floodMonitoringStore.fetchFloodMonitorings();
 
     mainStore.isAuthenticated = true;
 
