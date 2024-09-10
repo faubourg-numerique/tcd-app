@@ -8,7 +8,7 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
 </script>
 
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-xl navbar-light bg-light">
         <div class="container-fluid">
             <span class="navbar-brand d-flex align-items-center">
                 <img alt="dRURAL" class="logo" src="@/assets/images/logos/drural.png" width="68" height="50" />

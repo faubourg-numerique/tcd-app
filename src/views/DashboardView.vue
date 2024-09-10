@@ -88,26 +88,14 @@ function openFloodMonitoring(floodMonitoringId: string) {
 
 <template>
     <div class="container">
-        <div class="row">
-            <div class="col-md-7 col-sm-12">
-                <LMap style="min-height: 40vh" :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false">
-                    <LPolygon v-for="zone in zoneStore.zones" :key="zone.id" :lat-lngs="zone.coordinates" />
-                    <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
-                    <LMarker v-for="wasteContainer in wasteContainerStore.wasteContainers" :key="wasteContainer.id" :lat-lng="[wasteContainer.location[1], wasteContainer.location[0]]" :icon="wasteContainerIcon" @click="openWasteContainer(wasteContainer.id)" />
-                    <LMarker v-for="floodMonitoring in floodMonitoringStore.floodMonitorings" :key="floodMonitoring.id" :lat-lng="[floodMonitoring.location[1], floodMonitoring.location[0]]" :icon="floodMonitoringIcon" @click="openFloodMonitoring(floodMonitoring.id)" />
-                    <LMarker v-for="streetlight in streetlightStore.streetlights" :key="streetlight.id" :lat-lng="[streetlight.locationLongitude, streetlight.locationLatitude]" :icon="streetlightIcon" @click="openStreetlight(streetlight.id)" />
-                    <LMarker v-for="city in cityStore.cities" :key="city.id" :lat-lng="[city.locationLongitude, city.locationLatitude]" :icon="cityIcon" />
-                    <LMarker v-for="thermostat in thermostatStore.thermostats" :key="thermostat.id" :lat-lng="[thermostat.location[1], thermostat.location[0]]" :icon="thermostatIcon" @click="openThermostat(thermostat.id)" />
-                </LMap>
-            </div>
-            <div class="col-md-5 col-sm-12">
-                <div class="w-100">
-                    <iframe class="h-100 w-100" :src="thermostat1DashboardPanel1Url" frameborder="0"></iframe>
-                </div>
-                <div class="w-100">
-                    <iframe class="h-100 w-100" :src="thermostat1DashboardPanel2Url" frameborder="0"></iframe>
-                </div>
-            </div>
-        </div>
+        <LMap style="min-height: 60vh" :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false">
+            <LPolygon v-for="zone in zoneStore.zones" :key="zone.id" :lat-lngs="zone.coordinates" />
+            <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
+            <LMarker v-for="wasteContainer in wasteContainerStore.wasteContainers" :key="wasteContainer.id" :lat-lng="[wasteContainer.location[1], wasteContainer.location[0]]" :icon="wasteContainerIcon" @click="openWasteContainer(wasteContainer.id)" />
+            <LMarker v-for="floodMonitoring in floodMonitoringStore.floodMonitorings" :key="floodMonitoring.id" :lat-lng="[floodMonitoring.location[1], floodMonitoring.location[0]]" :icon="floodMonitoringIcon" @click="openFloodMonitoring(floodMonitoring.id)" />
+            <LMarker v-for="streetlight in streetlightStore.streetlights" :key="streetlight.id" :lat-lng="[streetlight.locationLongitude, streetlight.locationLatitude]" :icon="streetlightIcon" @click="openStreetlight(streetlight.id)" />
+            <LMarker v-for="city in cityStore.cities" :key="city.id" :lat-lng="[city.locationLongitude, city.locationLatitude]" :icon="cityIcon" />
+            <LMarker v-for="thermostat in thermostatStore.thermostats" :key="thermostat.id" :lat-lng="[thermostat.location[1], thermostat.location[0]]" :icon="thermostatIcon" @click="openThermostat(thermostat.id)" />
+        </LMap>
     </div>
 </template>

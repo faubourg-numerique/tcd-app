@@ -25,7 +25,7 @@
               </ul>
             </td>
             <td>{{ [Math.floor((subscription.throttling ?? 0) / 3600), ('0' + Math.floor(((subscription.throttling ?? 0) % 3600) / 60)).slice(-2), ('0' + (subscription.throttling ?? 0) % 60).slice(-2)].join(':') }}</td>
-            <td>{{ subscription.lastNotification ?? 'N/A' }}</td>
+            <td>{{ subscription.notification.lastNotification ? (new Date(subscription.notification.lastNotification)).toLocaleString() : 'N/A' }}</td>
             <td>
               <button class="btn btn-outline-danger mx-auto" @click="$emit('delete-subscription', subscription.id)">
                 <i class="bi bi-trash"></i> Supprimer

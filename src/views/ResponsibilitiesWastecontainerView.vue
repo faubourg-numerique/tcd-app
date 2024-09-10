@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import CityZoneSelector from "@/components/CityZoneSelector.vue";
 import { useDeviceMeasurementStore } from '@/stores/device-Measurement-store';
-import { useFloodMonitoringStore } from '@/stores/flood-monitoring-store';
 import { useWasteContainerStore } from "@/stores/waste-container-store";
 import { ref, type Ref } from 'vue';
 import { useRoute } from "vue-router";
@@ -38,16 +37,16 @@ function getDeviceMeasurement(deviceMeasurementId: string) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="floodMonitoring in wasteContainerStore.getWasteContainersByZoneId(selectedZoneId)" :key="floodMonitoring.id">
+                    <tr v-for="wasteContainer in wasteContainerStore.getWasteContainersByZoneId(selectedZoneId)" :key="wasteContainer.id">
                         <td>
-                            <router-link :to="`/responsibilities/water-level/${floodMonitoring.hasDeviceMeasurement}`" class="no-link">
-                                {{ getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.name?.value }} 
+                            <router-link :to="`/responsibilities/water-level/${wasteContainer.hasDeviceMeasurement}`" class="no-link">
+                                {{ wasteContainer.name }} 
                             </router-link>
                         </td>
-                        <td>{{ getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.distance?.value ?? 'N/A' }} mm</td>
-                        <td>{{ getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.maxAlerte?.value ?? 'N/A' }}</td>
-                        <td>{{ getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.enAlerte?.value ?? 'N/A' }}</td>
-                        <td>{{ getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.temporisation?.value ?? 'N/A' }}</td>
+                        <td>{{ getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.distance?.value ?? 'N/A' }} mm</td>
+                        <td>{{ getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.maxAlerte?.value ?? 'N/A' }}</td>
+                        <td>{{ getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.enAlerte?.value ?? 'N/A' }}</td>
+                        <td>{{ getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.temporisation?.value ?? 'N/A' }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -96,7 +96,8 @@ async function submitForm() {
       isActive: true,
       "notification": {
             "attributes": [
-                "distance"
+                "distance",
+                "name"
             ],
         format: "normalized",
         endpoint: {

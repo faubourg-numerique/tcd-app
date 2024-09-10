@@ -40,7 +40,7 @@ function getDeviceMeasurement(deviceMeasurementId: string) {
                     <tr v-for="floodMonitoring in floodMonitoringStore.getFloodMonitoringsByZoneId(selectedZoneId)" :key="floodMonitoring.id">
                         <td>
                             <router-link :to="`/responsibilities/water-level/${floodMonitoring.hasDeviceMeasurement}`" class="no-link">
-                                {{ getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.name?.value }} 
+                                {{ floodMonitoring.name }} 
                             </router-link>
                         </td>
                         <td>{{ getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.distance?.value ?? 'N/A' }} mm</td>
