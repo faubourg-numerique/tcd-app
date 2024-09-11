@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
+import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 
 const props = defineProps({
     deviceMeasurementId: {

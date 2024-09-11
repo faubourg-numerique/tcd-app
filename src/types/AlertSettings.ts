@@ -1,4 +1,4 @@
-type AlertSettings = {
+export type AlertSettings = {
     id: string;
     criteriaType: string;
     name: string;
@@ -6,5 +6,3 @@ type AlertSettings = {
     hasEntity: string;
     hasSubscription: string;
 };
-
-export default AlertSettings;

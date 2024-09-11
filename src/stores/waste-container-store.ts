@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import WasteContainerNotFoundError from "@/errors/NotFoundError/WasteContainerNotFoundError";
 
-import type WasteContainer from "@/types/WasteContainer";
+import type { WasteContainer } from "@/types/WasteContainer";
 
 export const useWasteContainerStore = defineStore("waste-container", () => {
     const wasteContainers: WasteContainer[] = reactive([]);

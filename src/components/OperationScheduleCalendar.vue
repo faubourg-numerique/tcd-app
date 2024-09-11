@@ -14,7 +14,7 @@ import rrulePlugin from "@fullcalendar/rrule";
 import FullCalendar from "@fullcalendar/vue3";
 
 import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
-import type OperationSchedule from "@/types/OperationSchedule";
+import type { OperationSchedule } from "@/types/OperationSchedule";
 
 const weekDays = [
     "SU",

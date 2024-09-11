@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import OperationScheduleNotFoundError from "@/errors/NotFoundError/OperationScheduleNotFoundError";
 
-import type OperationSchedule from "@/types/OperationSchedule";
+import type { OperationSchedule } from "@/types/OperationSchedule";
 
 export const useOperationScheduleStore = defineStore("operation-schedule", () => {
     const operationSchedules: OperationSchedule[] = reactive([]);

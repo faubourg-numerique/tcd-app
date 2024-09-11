@@ -4,7 +4,7 @@ import swal from "sweetalert2";
 import { onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
+import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 
 

@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import DeviceMeasurementNotFoundError from "@/errors/NotFoundError/DeviceMeasurementNotFoundError";
 
-import type DeviceMeasurement from "@/types/DeviceMeasurement";
+import type { DeviceMeasurement } from "@/types/DeviceMeasurement";
 
 export const useDeviceMeasurementStore = defineStore("device-measurement", () => {
     const deviceMeasurements: DeviceMeasurement[] = reactive([]);

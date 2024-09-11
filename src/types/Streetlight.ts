@@ -1,4 +1,4 @@
-type Streetlight = {
+export type Streetlight = {
     id: string;
     location: [number, number];
     name: string;
@@ -6,5 +6,3 @@ type Streetlight = {
     wotServerUrl: string;
     hasZone: string;
 };
-
-export default Streetlight;

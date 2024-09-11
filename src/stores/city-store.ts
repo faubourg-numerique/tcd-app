@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import CityNotFoundError from "@/errors/NotFoundError/CityNotFoundError";
 
-import type City from "@/types/City";
+import type { City } from "@/types/City";
 
 export const useCityStore = defineStore("city", () => {
     const cities: City[] = reactive([]);

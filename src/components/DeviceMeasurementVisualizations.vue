@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
+import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 
 const urls: { [deviceMeasurementId: string]: string } = {
     "urn:ngsi-ld:DeviceMeasurement:b87eb1f6-41c9-4861-8dd0-088ebe7881a7": "https://grafana.ouranos-ws.com/d-solo/cdx6rx38rpb7ke/p-a-v?orgId=1&theme=light&panelId=1",

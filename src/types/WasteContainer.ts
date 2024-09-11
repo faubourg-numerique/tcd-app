@@ -1,4 +1,4 @@
-type WasteContainer = {
+export type WasteContainer = {
     id: string;
     fillingLevel: number;
     location: [number, number];
@@ -6,5 +6,3 @@ type WasteContainer = {
     hasDeviceMeasurement: string;
     hasZone: string;
 }
-
-export default WasteContainer;

@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import AlertSettingsNotFoundError from "@/errors/NotFoundError/AlertSettingsNotFoundError";
 
-import type AlertSettings from "@/types/AlertSettings";
+import type { AlertSettings } from "@/types/AlertSettings";
 
 export const useAlertSettingsStore = defineStore("alert-settings", () => {
     const alertSettings: AlertSettings[] = reactive([]);

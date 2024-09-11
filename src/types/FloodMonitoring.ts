@@ -1,4 +1,4 @@
-type FloodMonitoring = {
+export type FloodMonitoring = {
     id: string;
     location: [number, number];
     measuredDistance: number;
@@ -6,5 +6,3 @@ type FloodMonitoring = {
     hasDeviceMeasurement: string;
     hasZone: string;
 }
-
-export default FloodMonitoring;

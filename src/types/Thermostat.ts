@@ -1,4 +1,4 @@
-type Thermostat = {
+export type Thermostat = {
     id: string;
     location: [number, number];
     name: string;
@@ -8,5 +8,3 @@ type Thermostat = {
     hasDeviceMeasurement: string;
     hasZone: string;
 };
-
-export default Thermostat;

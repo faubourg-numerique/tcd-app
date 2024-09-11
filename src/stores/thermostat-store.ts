@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import ThermostatNotFoundError from "@/errors/NotFoundError/ThermostatNotFoundError";
 
-import type Thermostat from "@/types/Thermostat";
+import type { Thermostat } from "@/types/Thermostat";
 
 export const useThermostatStore = defineStore("thermostat", () => {
     const thermostats: Thermostat[] = reactive([]);

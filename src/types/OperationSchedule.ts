@@ -1,4 +1,4 @@
-type OperationSchedule = {
+export type OperationSchedule = {
     id: string;
     byDay: number[];
     duration: string;
@@ -11,5 +11,3 @@ type OperationSchedule = {
     hasOperationParameters: string;
     hasZone: string;
 };
-
-export default OperationSchedule;

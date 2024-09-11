@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import FloodMonitoringNotFoundError from "@/errors/NotFoundError/FloodMonitoringNotFoundError";
 
-import type FloodMonitoring from "@/types/FloodMonitoring";
+import type { FloodMonitoring } from "@/types/FloodMonitoring";
 
 export const useFloodMonitoringStore = defineStore("flood-monitoring", () => {
     const floodMonitorings: FloodMonitoring[] = reactive([]);

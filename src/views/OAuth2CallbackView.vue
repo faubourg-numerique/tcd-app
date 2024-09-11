@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import api from "@/api";
 import { useCityStore } from "@/stores/city-store";
-import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
+import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useFloodMonitoringStore } from "@/stores/flood-monitoring-store";
 import { useMainStore } from "@/stores/main-store";
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";

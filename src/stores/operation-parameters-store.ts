@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import OperationParametersNotFoundError from "@/errors/NotFoundError/OperationParametersNotFoundError";
 
-import type OperationParameters from "@/types/OperationParameters";
+import type { OperationParameters } from "@/types/OperationParameters";
 
 export const useOperationParametersStore = defineStore("operation-parameters", () => {
     const operationParameters: OperationParameters[] = reactive([]);

@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import DeviceMeasurementInformations from "@/components/DeviceMeasurementInformations.vue";
 import DeviceMeasurementAlerts from "@/components/DeviceMeasurementAlerts.vue";
 import DeviceMeasurementVisualizations from "@/components/DeviceMeasurementVisualizations.vue";
-import { useDeviceMeasurementStore } from "@/stores/device-Measurement-store";
+import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 
 const route = useRoute();
 

@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import StreetlightNotFoundError from "@/errors/NotFoundError/StreetlightNotFoundError";
 
-import type Streetlight from "@/types/Streetlight";
+import type { Streetlight } from "@/types/Streetlight";
 
 export const useStreetlightStore = defineStore("streetlight", () => {
     const streetlights: Streetlight[] = reactive([]);

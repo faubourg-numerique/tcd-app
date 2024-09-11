@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import api from "@/api";
 import OperationNotFoundError from "@/errors/NotFoundError/OperationNotFoundError";
 
-import type Operation from "@/types/Operation";
+import type { Operation } from "@/types/Operation";
 
 export const useOperationStore = defineStore("operation", () => {
     const operations: Operation[] = reactive([]);
