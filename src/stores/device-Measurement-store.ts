@@ -1,29 +1,31 @@
-import { defineStore } from 'pinia';
-import { reactive, ref } from 'vue';
-import { useMainStore } from '@/stores/main-store';
+import { defineStore } from "pinia";
+import { reactive } from "vue";
 
-export const useDeviceMeasurementStore = defineStore('deviceMeasurementStore', () => {
-    const measurements = reactive<any[]>([]);
-    
-    
-    const mainStore = useMainStore();
+import api from "@/api";
+import DeviceMeasurementNotFoundError from "@/errors/NotFoundError/DeviceMeasurementNotFoundError";
+
+import type DeviceMeasurement from "@/types/DeviceMeasurement";
+
+export const useDeviceMeasurementStore = defineStore("device-measurement", () => {
+    const deviceMeasurements: DeviceMeasurement[] = reactive([]);
 
     function getDeviceMeasurement(deviceMeasurementId: string) {
-        return measurements.find((measurement) => measurement.id === deviceMeasurementId);
+        const deviceMeasurement = deviceMeasurements.find((deviceMeasurement) => deviceMeasurement.id === deviceMeasurementId);
+        if (!deviceMeasurement) {
+            throw new DeviceMeasurementNotFoundError(deviceMeasurementId);
+        }
+        return deviceMeasurement;
     }
 
     async function fetchDeviceMeasurements() {
-        try {
-            const response = await mainStore.api.get('/device-measurements'); 
-            measurements.push(...response.data);         
-        } catch (error) {
-            console.error('Erreur lors de la récupération des mesures des appareils:', error);
-        }
+        $reset();
+        const response = await api.get("/device-measurements");
+        deviceMeasurements.push(...response.data);
     }
 
-    return {  
-        measurements,
-        getDeviceMeasurement,
-        fetchDeviceMeasurements
-    };
+    function $reset() {
+        deviceMeasurements.length = 0;
+    }
+
+    return { deviceMeasurements, getDeviceMeasurement, fetchDeviceMeasurements, $reset };
 });

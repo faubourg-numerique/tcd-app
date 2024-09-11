@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import api from "@/api";
 import WasteContainerNotFoundError from "@/errors/NotFoundError/WasteContainerNotFoundError";
-import type { WasteContainer } from "@/models/WasteContainer";
-import { useMainStore } from "@/stores/main-store";
+
+import type WasteContainer from "@/types/WasteContainer";
 
 export const useWasteContainerStore = defineStore("waste-container", () => {
-    const mainStore = useMainStore();
-
     const wasteContainers: WasteContainer[] = reactive([]);
 
     function getWasteContainer(wasteContainerId: string) {
@@ -23,8 +22,8 @@ export const useWasteContainerStore = defineStore("waste-container", () => {
     }
 
     async function fetchWasteContainers() {
-        wasteContainers.length = 0;
-        const response = await mainStore.api.get("/waste-containers");
+        $reset();
+        const response = await api.get("/waste-containers");
         wasteContainers.push(...response.data);
     }
 

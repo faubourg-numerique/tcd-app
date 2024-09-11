@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import api from "@/api";
 import FloodMonitoringNotFoundError from "@/errors/NotFoundError/FloodMonitoringNotFoundError";
-import type { FloodMonitoring } from "@/models/FloodMonitoring";
-import { useMainStore } from "@/stores/main-store";
+
+import type FloodMonitoring from "@/types/FloodMonitoring";
 
 export const useFloodMonitoringStore = defineStore("flood-monitoring", () => {
-    const mainStore = useMainStore();
-
     const floodMonitorings: FloodMonitoring[] = reactive([]);
 
     function getFloodMonitoring(floodMonitoringId: string) {
@@ -23,8 +22,8 @@ export const useFloodMonitoringStore = defineStore("flood-monitoring", () => {
     }
 
     async function fetchFloodMonitorings() {
-        floodMonitorings.length = 0;
-        const response = await mainStore.api.get("/flood-monitorings");
+        $reset();
+        const response = await api.get("/flood-monitorings");
         floodMonitorings.push(...response.data);
     }
 

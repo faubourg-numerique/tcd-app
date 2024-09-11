@@ -11,60 +11,60 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
     <nav class="navbar navbar-expand-xl navbar-light bg-light">
         <div class="container-fluid">
             <span class="navbar-brand d-flex align-items-center">
-                <img alt="dRURAL" class="logo" src="@/assets/images/logos/drural.png" width="68" height="50" />
+                <img alt="dRural" class="logo" src="@/assets/images/logos/drural.png" width="68" height="50" />
                 <img alt="Somme Numérique" class="logo" src="@/assets/images/logos/somme-numerique.png" width="50" height="50" />
-                <span class="ms-2 d-none d-sm-inline text-danger">{{ $t("nav.mainTitle") }}</span>
+                <span class="ms-2 d-none d-sm-inline text-danger">{{ $t("main.title") }}</span>
             </span>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler"  data-bs-toggle="collapse" data-bs-target="#navbar-nav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div v-if="mainStore.isAuthenticated && mainStore.isAuthorized" id="navbarNav" class="collapse navbar-collapse justify-content-end">
+            <div v-if="mainStore.isAuthenticated && mainStore.isAuthorized" id="navbar-nav" class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <RouterLink class="nav-link" :to="{ name: 'dashboard' }">{{ $t("nav.Dashboard") }}</RouterLink>
+                        <RouterLink class="nav-link" :to="{ name: 'dashboard' }">{{ $t("main.dashboard") }}</RouterLink>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ $t("nav.myResponsibilities") }}</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{{ $t("main.myResponsibilities") }}</a>
                         <ul class="dropdown-menu">
                             <li>
-                                <RouterLink class="dropdown-item bi bi-houses-fill" :to="{ name: 'responsibilities.buildings' }">{{ $t("nav.Buildings") }}</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.buildings' }"><FontAwesomeIcon :icon="['fas', 'recycle']" class="me-2" />{{ $t("main.buildings") }}</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item bi bi-lightbulb-fill" :to="{ name: 'responsibilities.lighting' }">{{ $t("nav.Lighting") }}</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.lighting' }"><FontAwesomeIcon :icon="['fas', 'lightbulb']" class="me-2" />{{ $t("main.lighting") }}</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item bi bi-water" :to="{ name: 'responsibilities.watercourse' }">{{ $t("nav.watercourse") }}</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.watercourses' }"><FontAwesomeIcon :icon="['fas', 'water']" class="me-2" />{{ $t("main.watercourses") }}</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item bi bi-trash-fill" :to="{ name: 'responsibilities.wastecontainer' }">{{ $t("nav.waste-container") }}</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.voluntaryContributionPoints' }"><FontAwesomeIcon :icon="['fas', 'recycle']" class="me-2" />{{ $t("main.voluntaryContributionPoints") }}</RouterLink>
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ $t("nav.DemoVisualisation") }}</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{{ $t("main.visualization") }}</a>
                         <ul class="dropdown-menu">
                             <li>
-                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'water-level' }">{{ $t("nav.waterLevel") }}</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{ name: 'water-level' }"><FontAwesomeIcon :icon="['fas', 'chart-line']" class="me-2" />{{ $t("main.waterLevel") }}</RouterLink>
                             </li>
                             <li>
-                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'indoor-ambiance' }">{{ $t("nav.indoorAmbiance") }}</RouterLink>
+                                <RouterLink class="dropdown-item" :to="{ name: 'indoor-ambiance' }"><FontAwesomeIcon :icon="['fas', 'chart-line']" class="me-2" />{{ $t("main.indoorAmbiance") }}</RouterLink>
+                            </li>
+                            <li>
+                                <RouterLink class="dropdown-item" :to="{ name: 'air-quality' }"><FontAwesomeIcon :icon="['fas', 'chart-line']" class="me-2" />{{ $t("main.airQuality") }}</RouterLink>
                             </li>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <RouterLink class="nav-link" :to="{ name: 'exemple-dashboard' }">{{ $t("nav.ExempleDashboard") }}</RouterLink>
                     </li>
                     <li class="nav-item dropdown d-flex align-items-center">
-                        <a class="nav-link dropdown-toggle bi bi-person-circle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">&nbsp;&nbsp;{{ mainStore.username }}</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><FontAwesomeIcon :icon="['fas', 'user']" class="me-2" />{{ mainStore.username }}</a>
                         <ul class="dropdown-menu">
                             <li>
-                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'user-information' }">{{ $t("nav.information") }}</RouterLink>
+                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'user' }">{{ $t("main.informations") }}</RouterLink>
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item">
                         <a :href="logoutUrl">
-                            <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+                            <FontAwesomeIcon :icon="['fas', 'right-from-bracket']" />
                         </a>
                     </li>
                 </ul>

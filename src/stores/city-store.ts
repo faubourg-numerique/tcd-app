@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import api from "@/api";
 import CityNotFoundError from "@/errors/NotFoundError/CityNotFoundError";
-import type { City } from "@/models/City";
-import { useMainStore } from "@/stores/main-store";
+
+import type City from "@/types/City";
 
 export const useCityStore = defineStore("city", () => {
-    const mainStore = useMainStore();
-
     const cities: City[] = reactive([]);
 
     function getCity(cityId: string) {
@@ -19,8 +18,8 @@ export const useCityStore = defineStore("city", () => {
     }
 
     async function fetchCities() {
-        cities.length = 0;
-        const response = await mainStore.api.get("/cities");
+        $reset();
+        const response = await api.get("/cities");
         cities.push(...response.data);
     }
 

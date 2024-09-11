@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import api from "@/api";
 import ThermostatNotFoundError from "@/errors/NotFoundError/ThermostatNotFoundError";
-import type { Thermostat } from "@/models/Thermostat";
-import { useMainStore } from "@/stores/main-store";
+
+import type Thermostat from "@/types/Thermostat";
 
 export const useThermostatStore = defineStore("thermostat", () => {
-    const mainStore = useMainStore();
-
     const thermostats: Thermostat[] = reactive([]);
 
     function getThermostat(thermostatId: string) {
@@ -23,22 +22,14 @@ export const useThermostatStore = defineStore("thermostat", () => {
     }
 
     async function fetchThermostats() {
-        thermostats.length = 0;
-        const response = await mainStore.api.get("/thermostats");
+        $reset();
+        const response = await api.get("/thermostats");
         thermostats.push(...response.data);
-    }
-
-    async function updateThermostat(cityId: string, zoneId: string, thermostatId: string) {
-        const thermostat = getThermostat(thermostatId);
-        const data = {
-            temperature: thermostat.temperature
-        };
-        await mainStore.api.patch(`/cities/${cityId}/zones/${zoneId}/thermostats/${thermostatId}`, data);
     }
 
     function $reset() {
         thermostats.length = 0;
     }
 
-    return { thermostats, getThermostat, getThermostatsByZoneId, fetchThermostats, updateThermostat, $reset };
+    return { thermostats, getThermostat, getThermostatsByZoneId, fetchThermostats, $reset };
 });
