@@ -100,7 +100,7 @@ watch(subscriptionQueryValue, () => {
 });
 
 watch(subscriptionEmails, () => {
-    subscription.notification.endpoint.uri = `${import.meta.env.VITE_URL_NOTIFICATION}emails=${encodeURIComponent(subscriptionEmails.value)}`;
+    subscription.notification.endpoint.uri = `${import.meta.env.VITE_ALERT_NOTIFICATION_URL}emails=${encodeURIComponent(subscriptionEmails.value)}`;
 });
 
 onMounted(() => {
