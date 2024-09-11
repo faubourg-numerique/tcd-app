@@ -25,11 +25,11 @@ const thermostatStore = useThermostatStore();
 const wasteContainerStore = useWasteContainerStore();
 const zoneStore = useZoneStore();
 
-const cityIcon = L.divIcon({ iconSize: [32, 32], html: undefined }) as L.Icon;
-const floodMonitoringIcon = L.divIcon({ iconSize: [32, 32], html: undefined }) as L.Icon;
-const streetlightIcon = L.divIcon({ iconSize: [32, 32], html: undefined }) as L.Icon;
-const thermostatIcon = L.divIcon({ iconSize: [32, 32], html: undefined }) as L.Icon;
-const wasteContainerIcon = L.divIcon({ iconSize: [32, 32], html: undefined }) as L.Icon;
+const cityIcon = new L.Icon({ iconSize: [32, 32], iconUrl: "/images/icons/city.svg" });
+const floodMonitoringIcon = new L.Icon({ iconSize: [32, 32], iconUrl: "/images/icons/flood-monitoring.svg" });
+const streetlightIcon = new L.Icon({ iconSize: [32, 32], iconUrl: "/images/icons/streetlight.svg" });
+const thermostatIcon = new L.Icon({ iconSize: [32, 32], iconUrl: "/images/icons/thermostat.svg" });
+const wasteContainerIcon = new L.Icon({ iconSize: [32, 32], iconUrl: "/images/icons/waste-container.svg" });
 
 function openFloodMonitoring(floodMonitoringId: string) {
     const floodMonitoring = floodMonitoringStore.getFloodMonitoring(floodMonitoringId);

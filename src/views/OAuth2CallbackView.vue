@@ -11,6 +11,7 @@ import { useOperationParametersStore } from "@/stores/operation-parameters-store
 import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
 import { useOperationStore } from "@/stores/operation-store";
 import { useStreetlightStore } from "@/stores/streetlight-store";
+import { useSubscriptionStore } from "@/stores/subscription-store";
 import { useThermostatStore } from "@/stores/thermostat-store";
 import { useWasteContainerStore } from "@/stores/waste-container-store";
 import { useZoneStore } from "@/stores/zone-store";
@@ -26,6 +27,7 @@ const operationParametersStore = useOperationParametersStore();
 const operationScheduleStore = useOperationScheduleStore();
 const operationStore = useOperationStore();
 const streetlightStore = useStreetlightStore();
+const subscriptionStore = useSubscriptionStore();
 const thermostatStore = useThermostatStore();
 const wasteContainerStore = useWasteContainerStore();
 const zoneStore = useZoneStore();
@@ -54,6 +56,7 @@ async function main() {
     await operationScheduleStore.fetchOperationSchedules();
     await operationStore.fetchOperations();
     await streetlightStore.fetchStreetlights();
+    await subscriptionStore.fetchSubscriptions();
     await thermostatStore.fetchThermostats();
     await wasteContainerStore.fetchWasteContainers();
     await zoneStore.fetchZones();

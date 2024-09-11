@@ -43,7 +43,7 @@ export const useOperationScheduleStore = defineStore("operation-schedule", () =>
 
     async function updateOperationSchedule(operationSchedule: OperationSchedule) {
         const index = getOperationScheduleIndex(operationSchedule.id);
-        const response = await api.put(`/operation-schedules/${operationSchedule.id}`, operationSchedule);
+        const response = await api.patch(`/operation-schedules/${operationSchedule.id}`, operationSchedule);
         operationSchedules[index] = response.data;
         return response.data;
     }

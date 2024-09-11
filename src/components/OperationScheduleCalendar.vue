@@ -213,7 +213,7 @@ async function deleteOperationSchedule(operationSchedule: OperationSchedule) {
         showCancelButton: true,
     });
 
-    if (!result) {
+    if (!result.isConfirmed) {
         return;
     }
 

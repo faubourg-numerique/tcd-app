@@ -16,11 +16,11 @@ const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? n
 
 <template>
     <div class="container">
-        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
+        <CityZonePicker class="mb-3" v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
         <template v-if="selectedCityId && selectedZoneId">
             <div class="row mb-5">
                 <div v-for="thermostat in thermostatStore.getThermostatsByZoneId(selectedZoneId)" :key="thermostat.id" class="col-md w-100">
-                    <div class="container border border-danger rounded">{{ thermostat.name }}</div>
+                    <div class="container border border-danger rounded p-3">{{ thermostat.name }}</div>
                 </div>
             </div>
             <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />

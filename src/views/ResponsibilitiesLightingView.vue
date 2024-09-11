@@ -20,7 +20,7 @@ const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? n
         <template v-if="selectedCityId && selectedZoneId">
             <div class="row mb-5">
                 <div v-for="streetlight in streetlightStore.getStreetlightsByZoneId(selectedZoneId)" :key="streetlight.id" class="col-md mb-4">
-                    <div class="p-1 rounded text-center border">{{ streetlight.name }}</div>
+                    <div class="p-1 rounded text-center border border-danger">{{ streetlight.name }}</div>
                 </div>
             </div>
             <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />

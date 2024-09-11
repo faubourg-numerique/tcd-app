@@ -42,7 +42,7 @@ export const useSubscriptionStore = defineStore("subscription", () => {
     async function deleteSubscription(subscription: any) {
         const index = getSubscriptionIndex(subscription.id);
         await api.delete(`/subscriptions/${subscription.id}`);
-        subscription.splice(index, 1);
+        subscriptions.splice(index, 1);
     }
 
     function $reset() {

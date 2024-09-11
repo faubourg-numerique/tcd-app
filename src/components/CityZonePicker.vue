@@ -13,7 +13,7 @@ const selectedZoneId = defineModel("selectedZoneId");
 
 <template>
     <div class="bg-white p-4 rounded text-center border border-danger">
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label for="city-id" class="form-label">{{ $t("main.city") }}</label>
             <select id="city-id" v-model="selectedCityId" class="form-select">
                 <option :value="null" disabled>{{ $t("main.selectACity") }}</option>

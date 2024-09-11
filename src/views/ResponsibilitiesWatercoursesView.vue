@@ -17,7 +17,7 @@ const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? n
 
 <template>
     <div class="container">
-        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
+        <CityZonePicker class="mb-4" v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
         <template v-if="selectedCityId && selectedZoneId">
             <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
             <div class="table-responsive">
@@ -34,7 +34,7 @@ const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? n
                     <tbody>
                         <tr v-for="floodMonitoring in floodMonitoringStore.getFloodMonitoringsByZoneId(selectedZoneId)" :key="floodMonitoring.id">
                             <td>
-                                <RouterLink :to="`/responsibilities/water-level/${floodMonitoring.hasDeviceMeasurement}`" class="no-link">{{ floodMonitoring.name }}</RouterLink>
+                                <RouterLink :to="`/responsibilities/watercourses/${floodMonitoring.hasDeviceMeasurement}`" class="no-link">{{ floodMonitoring.name }}</RouterLink>
                             </td>
                             <td>{{ deviceMeasurementStore.getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.distance ?? "N/A" }} mm</td>
                             <td>N/A</td>

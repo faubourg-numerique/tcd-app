@@ -15,9 +15,9 @@ const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.devi
 
 <template>
     <dl class="row">
-        <dt class="col-sm-3">{{ $t("name") }}</dt>
+        <dt class="col-sm-3">{{ $t("main.name") }}</dt>
         <dd class="col-sm-9">{{ deviceMeasurement.name }}</dd>
-        <dt class="col-sm-3">{{ $t("distance") }}</dt>
+        <dt class="col-sm-3">{{ $t("main.distance") }}</dt>
         <dd class="col-sm-9">{{ deviceMeasurement.distance ?? "N/A" }}</dd>
     </dl>
 </template>

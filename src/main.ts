@@ -5,7 +5,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { createPinia } from "pinia";
 import swal from "sweetalert2";
 import { createApp } from "vue";
-import { createI18n, useI18n } from "vue-i18n";
+import { createI18n } from "vue-i18n";
 
 import App from "@/App.vue";
 import frDialogs from "@/locales/fr/dialogs.json";
@@ -38,13 +38,11 @@ const i18n = createI18n({
 const pinia = createPinia();
 
 app.config.errorHandler = (error) => {
-    const { t } = useI18n();
-
     console.error(error);
 
     swal.fire({
         icon: "error",
-        title: t("dialogs.anErrorHasOccured"),
+        title: "An error has occured",
         text: error as string,
         customClass: {
             htmlContainer: "pre",

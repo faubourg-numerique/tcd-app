@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Modal from "bootstrap/js/dist/modal";
 import swal from "sweetalert2";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
@@ -21,7 +21,7 @@ const deviceMeasurementStore = useDeviceMeasurementStore();
 const subscriptionStore = useSubscriptionStore();
 
 const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.deviceMeasurementId);
-const subscriptions = subscriptionStore.getSubscriptionsByEntityId(deviceMeasurement.id);
+const subscriptions = computed(() => subscriptionStore.getSubscriptionsByEntityId(deviceMeasurement.id));
 
 const subscriptionFormModalElement = ref(null);
 let subscriptionFormModal: Modal|null = null;
@@ -76,9 +76,13 @@ async function createSubscription() {
         title: t("dialogs.createSubscriptionSuccessTitle"),
         text: t("dialogs.createSubscriptionSuccessText")
     });
+
+    if (subscriptionFormModal) {
+        subscriptionFormModal.hide();
+    }
 }
 
-async function deleteSubscription(subscriptionId: string) {
+async function deleteSubscription(subscription: any) {
     const result = await swal.fire({
         icon: "question",
         title: t("dialogs.deleteSubscriptionQuestionTitle"),
@@ -87,7 +91,7 @@ async function deleteSubscription(subscriptionId: string) {
     });
 
     if (result.isConfirmed) {
-        await subscriptionStore.deleteSubscription(subscriptionId);
+        await subscriptionStore.deleteSubscription(subscription);
     }
 }
 
@@ -126,7 +130,7 @@ onMounted(() => {
                     <div class="mb-3">
                         <label for="query-criteria" class="form-label">{{ $t("main.criteria") }}</label>
                         <select id="query-criteria" v-model="subscriptionQueryCriteria" class="form-control" required>
-                            <option value=">">{{ $t("main.geaterThan") }}</option>
+                            <option value=">">{{ $t("main.greaterThan") }}</option>
                             <option value="<">{{ $t("main.lessThan") }}</option>
                         </select>
                     </div>
@@ -153,7 +157,9 @@ onMounted(() => {
     <div class="container-fluid">
         <h2 class="mt-4">
             <span class="me-3">{{ $t("main.alerts") }}</span>
-            <button v-if="subscriptionFormModal" class="btn btn-sm btn-primary" @click="subscriptionFormModal.show()"></button>
+            <button class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
+                <FontAwesomeIcon :icon="['fas', 'plus']" />
+            </button>
         </h2>
         <div v-if="subscriptions.length" class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
@@ -181,8 +187,8 @@ onMounted(() => {
                         <td>{{ _subscription.notification.lastNotification ?
                             formatDate(_subscription.notification.lastNotification) : "N/A" }}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteSubscription(_subscription.id)">
-                                <i class="bi bi-trash me-3"></i>{{ $t("main.delete") }}
+                            <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteSubscription(_subscription)">
+                                {{ $t("main.delete") }}
                             </button>
                         </td>
                     </tr>

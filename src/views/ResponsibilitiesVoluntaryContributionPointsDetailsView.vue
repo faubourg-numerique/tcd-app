@@ -10,7 +10,7 @@ const route = useRoute();
 
 const deviceMeasurementStore = useDeviceMeasurementStore();
 
-const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(route.params.id as string);
+const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(route.params.deviceMeasurementId as string);
 </script>
 
 <template>
