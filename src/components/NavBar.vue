@@ -15,7 +15,7 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
                 <img alt="Somme Numérique" class="logo" src="@/assets/images/logos/somme-numerique.png" width="50" height="50" />
                 <span class="ms-2 d-none d-sm-inline text-danger">{{ $t("main.title") }}</span>
             </span>
-            <button class="navbar-toggler"  data-bs-toggle="collapse" data-bs-target="#navbar-nav">
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-nav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div v-if="mainStore.isAuthenticated && mainStore.isAuthorized" id="navbar-nav" class="collapse navbar-collapse justify-content-end">

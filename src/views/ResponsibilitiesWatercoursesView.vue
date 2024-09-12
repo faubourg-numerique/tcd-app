@@ -11,8 +11,8 @@ const route = useRoute();
 const floodMonitoringStore = useFloodMonitoringStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
 
-const selectedCityId: Ref<string | null> = ref(route.query.cityId as string ?? null);
-const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? null);
+const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
+const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
 </script>
 
 <template>

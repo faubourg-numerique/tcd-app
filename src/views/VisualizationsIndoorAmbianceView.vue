@@ -8,13 +8,7 @@ const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
 const to = reactive(new Date());
 const from = reactive(new Date(to.getTime() - sevenDaysInMilliseconds));
 
-const urls: ComputedRef<string[]> = computed(() => ([
-    import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_1_URL.replace("$from", from.getTime()).replace("$to", to.getTime()),
-    import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_2_URL.replace("$from", from.getTime()).replace("$to", to.getTime()),
-    import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_3_URL.replace("$from", from.getTime()).replace("$to", to.getTime()),
-    import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_4_URL.replace("$from", from.getTime()).replace("$to", to.getTime()),
-    import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_5_URL.replace("$from", from.getTime()).replace("$to", to.getTime())
-]));
+const urls: ComputedRef<string[]> = computed(() => [import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_1_URL.replace("$from", from.getTime()).replace("$to", to.getTime()), import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_2_URL.replace("$from", from.getTime()).replace("$to", to.getTime()), import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_3_URL.replace("$from", from.getTime()).replace("$to", to.getTime()), import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_4_URL.replace("$from", from.getTime()).replace("$to", to.getTime()), import.meta.env.VITE_INDOOR_AMBIANCE_DASHBOARD_PANEL_5_URL.replace("$from", from.getTime()).replace("$to", to.getTime())]);
 </script>
 
 <template>

@@ -13,14 +13,14 @@ const urls: { [deviceMeasurementId: string]: string } = {
     "urn:ngsi-ld:DeviceMeasurement:4b434ee0-bf2c-4115-9c5a-67d6e0b0b9d5": "https://grafana.ouranos-ws.com/d-solo/fdw6nnfyq6nswc/water-course?orgId=1&theme=light&panelId=2&from=now-24h&to=now",
     "urn:ngsi-ld:DeviceMeasurement:403445fd-d644-4c7b-bc5c-b8ad19a0cbd7": "https://grafana.ouranos-ws.com/d-solo/fdw6nnfyq6nswc/water-course?orgId=1&theme=light&panelId=3&from=now-24h&to=now",
     "urn:ngsi-ld:DeviceMeasurement:4370a32c-4362-4b4a-8305-164b67c80d63": "https://grafana.ouranos-ws.com/d-solo/fdw6nnfyq6nswc/water-course?orgId=1&theme=light&panelId=4&from=now-24h&to=now",
-    "urn:ngsi-ld:DeviceMeasurement:a6f66924-cb51-45d0-826a-06a3abb0ab12": "https://grafana.ouranos-ws.com/d-solo/fdw6nnfyq6nswc/water-course?orgId=1&theme=light&panelId=5&from=now-24h&to=now"
+    "urn:ngsi-ld:DeviceMeasurement:a6f66924-cb51-45d0-826a-06a3abb0ab12": "https://grafana.ouranos-ws.com/d-solo/fdw6nnfyq6nswc/water-course?orgId=1&theme=light&panelId=5&from=now-24h&to=now",
 };
 
 const props = defineProps({
     deviceMeasurementId: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const deviceMeasurementStore = useDeviceMeasurementStore();

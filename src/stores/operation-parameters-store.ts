@@ -18,7 +18,7 @@ export const useOperationParametersStore = defineStore("operation-parameters", (
     }
 
     function getOperationParametersByOperationId(operationId: string) {
-        return operationParameters.filter((operationParameters) => operationId === operationParameters.hasOperation)
+        return operationParameters.filter((operationParameters) => operationId === operationParameters.hasOperation);
     }
 
     async function fetchOperationParameters() {

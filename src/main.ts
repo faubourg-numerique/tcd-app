@@ -30,9 +30,9 @@ const i18n = createI18n({
     messages: {
         fr: {
             main: frMain,
-            dialogs: frDialogs
-        }
-    }
+            dialogs: frDialogs,
+        },
+    },
 });
 
 const pinia = createPinia();
@@ -46,7 +46,7 @@ app.config.errorHandler = (error) => {
         text: error as string,
         customClass: {
             htmlContainer: "pre",
-        }
+        },
     });
 };
 

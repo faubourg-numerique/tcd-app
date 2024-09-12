@@ -5,4 +5,4 @@ export type WasteContainer = {
     name: string;
     hasDeviceMeasurement: string;
     hasZone: string;
-}
+};

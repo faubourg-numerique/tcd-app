@@ -7,12 +7,11 @@ import { useI18n } from "vue-i18n";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 
-
 const props = defineProps({
     deviceMeasurementId: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const { t } = useI18n();
@@ -24,7 +23,7 @@ const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.devi
 const subscriptions = computed(() => subscriptionStore.getSubscriptionsByEntityId(deviceMeasurement.id));
 
 const subscriptionFormModalElement = ref(null);
-let subscriptionFormModal: Modal|null = null;
+let subscriptionFormModal: Modal | null = null;
 
 const subscriptionQueryCriteria = ref("<");
 const subscriptionQueryValue = ref(0);
@@ -36,20 +35,17 @@ const subscription = {
     entities: [
         {
             id: deviceMeasurement.id,
-            type: "DeviceMeasurement"
-        }
+            type: "DeviceMeasurement",
+        },
     ],
     q: "",
     throttling: 0,
     notification: {
-        attributes: [
-            "distance",
-            "name"
-        ],
+        attributes: ["distance", "name"],
         endpoint: {
-            uri: ""
-        }
-    }
+            uri: "",
+        },
+    },
 };
 
 function getEmailsFromUrl(url: string) {
@@ -74,7 +70,7 @@ async function createSubscription() {
     await swal.fire({
         icon: "success",
         title: t("dialogs.createSubscriptionSuccessTitle"),
-        text: t("dialogs.createSubscriptionSuccessText")
+        text: t("dialogs.createSubscriptionSuccessText"),
     });
 
     if (subscriptionFormModal) {
@@ -87,7 +83,7 @@ async function deleteSubscription(subscription: any) {
         icon: "question",
         title: t("dialogs.deleteSubscriptionQuestionTitle"),
         text: t("dialogs.deleteSubscriptionQuestionText"),
-        showCancelButton: true
+        showCancelButton: true,
     });
 
     if (result.isConfirmed) {
@@ -125,7 +121,7 @@ onMounted(() => {
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name" class="form-label">{{ $t("main.name") }}</label>
-                        <input id="name" type="text" v-model="subscription.subscriptionName" class="form-control" required>
+                        <input id="name" type="text" v-model="subscription.subscriptionName" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="query-criteria" class="form-label">{{ $t("main.criteria") }}</label>
@@ -136,15 +132,15 @@ onMounted(() => {
                     </div>
                     <div class="mb-3">
                         <label for="query-value" class="form-label">{{ $t("main.value") }}</label>
-                        <input id="query-value" type="number" v-model="subscriptionQueryValue" class="form-control" required>
+                        <input id="query-value" type="number" v-model="subscriptionQueryValue" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="emails" class="form-label">{{ $t("main.emails") }}</label>
-                        <input id="emails" type="text" v-model="subscriptionEmails" class="form-control" required>
+                        <input id="emails" type="text" v-model="subscriptionEmails" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="throttling" class="form-label">{{ $t("main.reminder") }}</label>
-                        <input id="throttling" type="number" v-model="subscription.throttling" class="form-control" min="1" step="1" required>
+                        <input id="throttling" type="number" v-model="subscription.throttling" class="form-control" min="1" step="1" required />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -179,13 +175,11 @@ onMounted(() => {
                         <td>{{ _subscription.status }}</td>
                         <td>
                             <ul class="list-unstyled">
-                                <li v-for="(email, index) in getEmailsFromUrl(_subscription.notification.endpoint.uri)"
-                                    :key="index">{{ email }}</li>
+                                <li v-for="(email, index) in getEmailsFromUrl(_subscription.notification.endpoint.uri)" :key="index">{{ email }}</li>
                             </ul>
                         </td>
                         <td>{{ formatSeconds(_subscription.throttling ?? 0) }}</td>
-                        <td>{{ _subscription.notification.lastNotification ?
-                            formatDate(_subscription.notification.lastNotification) : "N/A" }}</td>
+                        <td>{{ _subscription.notification.lastNotification ? formatDate(_subscription.notification.lastNotification) : "N/A" }}</td>
                         <td>
                             <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteSubscription(_subscription)">
                                 {{ $t("main.delete") }}

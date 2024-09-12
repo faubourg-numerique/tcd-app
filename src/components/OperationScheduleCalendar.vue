@@ -16,26 +16,17 @@ import FullCalendar from "@fullcalendar/vue3";
 import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
 import type { OperationSchedule } from "@/types/OperationSchedule";
 
-const weekDays = [
-    "SU",
-    "MO",
-    "TU",
-    "WE",
-    "TH",
-    "FR",
-    "SA",
-    "SU"
-];
+const weekDays = ["SU", "MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 
 const props = defineProps({
     cityId: {
         type: String,
-        required: true
+        required: true,
     },
     zoneId: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const startDate: Ref<string> = ref("");
@@ -60,11 +51,11 @@ const operationSchedule: OperationSchedule = reactive({
     startTime: "",
     hasOperation: "",
     hasOperationParameters: "",
-    hasZone: props.zoneId
+    hasZone: props.zoneId,
 });
 
 const operationScheduleFormModalElement = ref(null);
-let operationScheduleFormModal: Modal|null = null;
+let operationScheduleFormModal: Modal | null = null;
 
 const operations = operationStore.getOperationsByZoneId(props.zoneId);
 
@@ -81,9 +72,9 @@ const events = computed(() => {
                     interval: 1,
                     byweekday: operationSchedule.byDay.map((day) => weekDays[day]),
                     dtstart: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
-                    until: `${operationSchedule.endDate}T${operationSchedule.endTime}`
+                    until: `${operationSchedule.endDate}T${operationSchedule.endTime}`,
                 },
-            }
+            };
         } else {
             const date = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
             const [hours, minutes, seconds] = operationSchedule.duration.split(":").map(Number);
@@ -96,7 +87,7 @@ const events = computed(() => {
                 title: operationSchedule.name,
                 start: `${operationSchedule.startDate}T${operationSchedule.startTime}`,
                 end: date.toISOString(),
-            }
+            };
         }
     });
 });
@@ -169,9 +160,7 @@ function computeEndDateTime() {
         const date = new Date(`${endDate.value}T${endTime.value}`);
         operationSchedule.endDate = date.toISOString().slice(0, 10);
         operationSchedule.endTime = date.toISOString().slice(11, 19) + "Z";
-    } catch(error) {
-
-    }
+    } catch (error) {}
 }
 
 watch(startDate, computeStartDateTime);
@@ -180,14 +169,17 @@ watch(startTime, computeStartDateTime);
 watch(endDate, computeEndDateTime);
 watch(endTime, computeEndDateTime);
 
-watch(() => operationSchedule.byDay, () => {
-    if (!operationSchedule.byDay.length) {
-        endDate.value = "";
-        endTime.value = "";
-        operationSchedule.endDate = "";
-        operationSchedule.endTime = "";
-    }
-});
+watch(
+    () => operationSchedule.byDay,
+    () => {
+        if (!operationSchedule.byDay.length) {
+            endDate.value = "";
+            endTime.value = "";
+            operationSchedule.endDate = "";
+            operationSchedule.endTime = "";
+        }
+    },
+);
 
 async function createOperationSchedule(operationSchedule: OperationSchedule) {
     await operationScheduleStore.createOperationSchedule(operationSchedule);
@@ -242,28 +234,28 @@ onMounted(() => {
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name" class="form-label">{{ $t("main.name") }}</label>
-                        <input v-model="operationSchedule.name" id="name" type="text" class="form-control" required autofocus>
+                        <input v-model="operationSchedule.name" id="name" type="text" class="form-control" required autofocus />
                     </div>
                     <div class="mb-3">
                         <label for="start-date" class="form-label">{{ $t("main.beginDate") }}</label>
-                        <input v-model="startDate" id="start-date" type="date" class="form-control" required>
+                        <input v-model="startDate" id="start-date" type="date" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="start-time" class="form-label">{{ $t("main.beginTime") }}</label>
-                        <input v-model="startTime" id="start-time" type="time" step="1" class="form-control" required>
+                        <input v-model="startTime" id="start-time" type="time" step="1" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="duration" class="form-label">{{ $t("main.duration") }}</label>
-                        <input v-model="operationSchedule.duration" id="duration" type="time" step="1" class="form-control" required>
+                        <input v-model="operationSchedule.duration" id="duration" type="time" step="1" class="form-control" required />
                     </div>
                     <template v-if="operationSchedule.byDay.length">
                         <div class="mb-3">
                             <label for="end-date" class="form-label">{{ $t("main.endDate") }}</label>
-                            <input v-model="endDate" id="end-date" type="date" class="form-control" required>
+                            <input v-model="endDate" id="end-date" type="date" class="form-control" required />
                         </div>
                         <div class="mb-3">
                             <label for="end-time" class="form-label">{{ $t("main.endTime") }}</label>
-                            <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required>
+                            <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required />
                         </div>
                     </template>
                     <div class="mb-3">
@@ -294,7 +286,7 @@ onMounted(() => {
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t("main.close") }}</button>
                     <button v-if="operationSchedule.id" type="button" class="btn btn-danger" @click="deleteOperationSchedule(operationSchedule)">{{ $t("main.delete") }}</button>
-                    <button type="submit" class="btn" :class="{'btn-success': !operationSchedule.id, 'btn-warning': operationSchedule.id}">{{ operationSchedule.id ? $t("main.edit") : $t("main.add") }}</button>
+                    <button type="submit" class="btn" :class="{ 'btn-success': !operationSchedule.id, 'btn-warning': operationSchedule.id }">{{ operationSchedule.id ? $t("main.edit") : $t("main.add") }}</button>
                 </div>
             </form>
         </div>
