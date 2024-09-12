@@ -16,7 +16,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
 
 <template>
     <div class="container">
-        <CityZonePicker class="mb-3" v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
+        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-3" />
         <template v-if="selectedCityId && selectedZoneId">
             <div class="row mb-5">
                 <div v-for="thermostat in thermostatStore.getThermostatsByZoneId(selectedZoneId)" :key="thermostat.id" class="col-md w-100">
