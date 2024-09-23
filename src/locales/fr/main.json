@@ -52,5 +52,7 @@
     "voluntaryContributionPoints": "PAV",
     "waterLevel": "Niveau d'eau",
     "watercourses": "Cours d'eau",
-    "zone": "Zone"
+    "zone": "Zone" ,
+    "submit": "Entrer" ,
+    "selectParameters":"--Selectionner--"
 }
