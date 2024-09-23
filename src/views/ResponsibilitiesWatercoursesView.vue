@@ -19,7 +19,7 @@ const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? n
     <div class="container">
         <CityZonePicker class="mb-4" v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
         <template v-if="selectedCityId && selectedZoneId">
-            <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
+            <h1>{{ $t("main.watercourses") }}</h1>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
