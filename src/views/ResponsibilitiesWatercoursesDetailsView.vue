@@ -14,12 +14,12 @@ const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(route.para
 </script>
 
 <template>
-  <div class="container">
-      <h1 class="text-center mb-4">{{ $t("main.monitoringOfWaterLevel") }}</h1>
-      <div class="bg-light p-3 rounded shadow-sm">
-          <DeviceMeasurementInformations :device-measurement-id="deviceMeasurement.id" />
-          <DeviceMeasurementVisualizations :device-measurement-id="deviceMeasurement.id" />
-          <DeviceMeasurementAlerts :device-measurement-id="deviceMeasurement.id" />
-      </div>
-  </div>
+    <div class="container">
+        <h1 class="text-center mb-4">{{ $t("main.monitoringOfWaterLevel") }}</h1>
+        <div class="bg-light p-3 rounded shadow-sm">
+            <DeviceMeasurementInformations :device-measurement-id="deviceMeasurement.id" />
+            <DeviceMeasurementVisualizations :device-measurement-id="deviceMeasurement.id" />
+            <DeviceMeasurementAlerts :device-measurement-id="deviceMeasurement.id" />
+        </div>
+    </div>
 </template>

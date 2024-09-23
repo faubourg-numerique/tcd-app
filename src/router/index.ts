@@ -21,68 +21,68 @@ const router = createRouter({
         {
             path: "/oauth2/callback",
             name: "oauth2.callback",
-            component: OAuth2CallbackView
+            component: OAuth2CallbackView,
         },
         {
             path: "/",
             name: "dashboard",
-            component: DashboardView
+            component: DashboardView,
         },
         {
             path: "/responsibilities/buildings",
             name: "responsibilities.buildings",
-            component: ResponsibilitiesBuildingsView
+            component: ResponsibilitiesBuildingsView,
         },
         {
             path: "/responsibilities/lighting",
             name: "responsibilities.lighting",
-            component: ResponsibilitiesLightingView
+            component: ResponsibilitiesLightingView,
         },
         {
             path: "/responsibilities/watercourses",
             name: "responsibilities.watercourses",
-            component: ResponsibilitiesWatercoursesView
+            component: ResponsibilitiesWatercoursesView,
         },
         {
             path: "/responsibilities/watercourses/:deviceMeasurementId",
             name: "responsibilities.watercourses.details",
-            component: ResponsibilitiesWatercoursesDetailsView
+            component: ResponsibilitiesWatercoursesDetailsView,
         },
         {
             path: "/responsibilities/voluntary-contribution-points",
             name: "responsibilities.voluntaryContributionPoints",
-            component: ResponsibilitiesVoluntaryContributionPointsView
+            component: ResponsibilitiesVoluntaryContributionPointsView,
         },
         {
             path: "/responsibilities/voluntary-contribution-points/:deviceMeasurementId",
             name: "responsibilities.voluntaryContributionPoints.details",
-            component: ResponsibilitiesVoluntaryContributionPointsDetailsView
+            component: ResponsibilitiesVoluntaryContributionPointsDetailsView,
         },
-       
+
         {
             path: "/visualizations/water-level",
             name: "visualizations.waterLevel",
-            component: VisualizationsWaterLevelView
+            component: VisualizationsWaterLevelView,
         },
         {
             path: "/visualizations/indoor-ambiance",
             name: "visualizations.indoorAmbiance",
-            component: VisualizationsIndoorAmbianceView
+            component: VisualizationsIndoorAmbianceView,
         },
         {
             path: "/visualizations/air-quality",
             name: "visualizations.airQuality",
-            component: VisualizationsAirQualityView
+            component: VisualizationsAirQualityView,
         },
         {
             path: "/unauthorized",
             name: "unauthorized",
-            component: UnauthorizedView
+            component: UnauthorizedView,
         },
         {
             path: "/user",
             name: "user",
-            component: UserView
+            component: UserView,
         },
     ],
 });

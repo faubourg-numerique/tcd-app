@@ -11,13 +11,13 @@ const route = useRoute();
 const floodMonitoringStore = useFloodMonitoringStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
 
-const selectedCityId: Ref<string | null> = ref(route.query.cityId as string ?? null);
-const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? null);
+const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
+const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
 </script>
 
 <template>
     <div class="container">
-        <CityZonePicker class="mb-4" v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
+        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-4" />
         <template v-if="selectedCityId && selectedZoneId">
             <h1>{{ $t("main.watercourses") }}</h1>
             <div class="table-responsive">

@@ -4,8 +4,8 @@ import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 const props = defineProps({
     deviceMeasurementId: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const deviceMeasurementStore = useDeviceMeasurementStore();

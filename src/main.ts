@@ -27,18 +27,18 @@ const app = createApp(App);
 
 const i18n = createI18n({
     legacy: false,
-    locale: navigator.language ,
+    locale: navigator.language,
     fallbackLocale: "fr",
     messages: {
         en: {
             main: enMain,
-            dialogs: enDialogs
+            dialogs: enDialogs,
         },
         fr: {
             main: frMain,
-            dialogs: frDialogs
-        }
-    }
+            dialogs: frDialogs,
+        },
+    },
 });
 
 const pinia = createPinia();
@@ -52,7 +52,7 @@ app.config.errorHandler = (error) => {
         text: error as string,
         customClass: {
             htmlContainer: "pre",
-        }
+        },
     });
 };
 

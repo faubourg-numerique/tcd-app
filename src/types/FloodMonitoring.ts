@@ -5,4 +5,4 @@ export type FloodMonitoring = {
     name: string;
     hasDeviceMeasurement: string;
     hasZone: string;
-}
+};
