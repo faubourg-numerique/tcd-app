@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import api from "@/api";
 import ZoneNotFoundError from "@/errors/NotFoundError/ZoneNotFoundError";
-import type { Zone } from "@/models/Zone";
-import { useMainStore } from "@/stores/main-store";
+
+import type { Zone } from "@/types/Zone";
 
 export const useZoneStore = defineStore("zone", () => {
-    const mainStore = useMainStore();
-
     const zones: Zone[] = reactive([]);
 
     function getZone(zoneId: string) {
@@ -23,8 +22,8 @@ export const useZoneStore = defineStore("zone", () => {
     }
 
     async function fetchZones() {
-        zones.length = 0;
-        const response = await mainStore.api.get("/zones");
+        $reset();
+        const response = await api.get("/zones");
         zones.push(...response.data);
     }
 

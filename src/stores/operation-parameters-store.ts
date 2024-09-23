@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import api from "@/api";
 import OperationParametersNotFoundError from "@/errors/NotFoundError/OperationParametersNotFoundError";
-import type { OperationParameters } from "@/models/OperationParameters";
-import { useMainStore } from "@/stores/main-store";
+
+import type { OperationParameters } from "@/types/OperationParameters";
 
 export const useOperationParametersStore = defineStore("operation-parameters", () => {
-    const mainStore = useMainStore();
-
     const operationParameters: OperationParameters[] = reactive([]);
 
     function getOperationParameters(operationParametersId: string) {
@@ -19,12 +18,12 @@ export const useOperationParametersStore = defineStore("operation-parameters", (
     }
 
     function getOperationParametersByOperationId(operationId: string) {
-        return operationParameters.filter((_operationParameters) => _operationParameters.hasOperation === operationId);
+        return operationParameters.filter((operationParameters) => operationId === operationParameters.hasOperation)
     }
 
     async function fetchOperationParameters() {
-        operationParameters.length = 0;
-        const response = await mainStore.api.get("/operation-parameters");
+        $reset();
+        const response = await api.get("/operation-parameters");
         operationParameters.push(...response.data);
     }
 

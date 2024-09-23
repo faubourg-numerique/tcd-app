@@ -1,18 +1,20 @@
 @ -1,241 +0,0 @@
 <script setup lang="ts">
 import Modal from "bootstrap/js/dist/modal";
+import swal from "sweetalert2";
 import { computed, onMounted, reactive, ref, type Ref, watch } from "vue";
-import FullCalendar from "@fullcalendar/vue3";
-import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
+import { useI18n } from "vue-i18n";
+
+import { useOperationParametersStore } from "@/stores/operation-parameters-store";
+import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
+import { useOperationStore } from "@/stores/operation-store";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
-import swal from "sweetalert2";
+import FullCalendar from "@fullcalendar/vue3";
 
-import { useOperationStore } from "@/stores/operation-store";
-import { useOperationParametersStore } from "@/stores/operation-parameters-store";
-import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
-import type { OperationSchedule } from "@/models/OperationSchedule";
+import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
+import type { OperationSchedule } from "@/types/OperationSchedule";
 
 const weekDays = [
     "SU",
@@ -22,18 +24,18 @@ const weekDays = [
     "TH",
     "FR",
     "SA",
-    "SU",
+    "SU"
 ];
 
 const props = defineProps({
     cityId: {
         type: String,
-        required: true,
+        required: true
     },
     zoneId: {
         type: String,
-        required: true,
-    },
+        required: true
+    }
 });
 
 const startDate: Ref<string> = ref("");
@@ -41,22 +43,24 @@ const startTime: Ref<string> = ref("");
 const endDate: Ref<string> = ref("");
 const endTime: Ref<string> = ref("");
 
+const { t } = useI18n();
+
 const operationStore = useOperationStore();
 const operationParametersStore = useOperationParametersStore();
 const operationScheduleStore = useOperationScheduleStore();
 
 const operationSchedule: OperationSchedule = reactive({
     id: "",
-    name: "",
     byDay: [],
-    startDate: "",
-    startTime: "",
+    duration: "",
     endDate: "",
     endTime: "",
-    duration: "",
-    hasZone: props.zoneId,
+    name: "",
+    startDate: "",
+    startTime: "",
     hasOperation: "",
     hasOperationParameters: "",
+    hasZone: props.zoneId
 });
 
 const operationScheduleFormModalElement = ref(null);
@@ -161,9 +165,13 @@ function computeEndDateTime() {
         return;
     }
 
-    const date = new Date(`${endDate.value}T${endTime.value}`);
-    operationSchedule.endDate = date.toISOString().slice(0, 10);
-    operationSchedule.endTime = date.toISOString().slice(11, 19) + "Z";
+    try {
+        const date = new Date(`${endDate.value}T${endTime.value}`);
+        operationSchedule.endDate = date.toISOString().slice(0, 10);
+        operationSchedule.endTime = date.toISOString().slice(11, 19) + "Z";
+    } catch(error) {
+
+    }
 }
 
 watch(startDate, computeStartDateTime);
@@ -200,12 +208,12 @@ async function updateOperationSchedule(operationSchedule: OperationSchedule) {
 async function deleteOperationSchedule(operationSchedule: OperationSchedule) {
     const result = await swal.fire({
         icon: "question",
-        title: "Supprimer cet évènement ?",
-        text: "Êtes-vous sûr de vouloir supprimer cet évènement ?",
+        title: t("dialogs.deleteOperationScheduleQuestionTitle"),
+        text: t("dialogs.deleteOperationScheduleQuestionText"),
         showCancelButton: true,
     });
 
-    if (!result) {
+    if (!result.isConfirmed) {
         return;
     }
 
@@ -228,38 +236,38 @@ onMounted(() => {
         <div class="modal-dialog modal-dialog-scrollable">
             <form class="modal-content" @submit.prevent="operationSchedule.id ? updateOperationSchedule(operationSchedule) : createOperationSchedule(operationSchedule)">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">{{ operationSchedule.id ? "Modifier" : "Ajouter" }} un évènement</h1>
+                    <h1 class="modal-title fs-5">{{ operationSchedule.id ? $t("main.editAnEvent") : $t("main.addAnEvent") }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Nom</label>
+                        <label for="name" class="form-label">{{ $t("main.name") }}</label>
                         <input v-model="operationSchedule.name" id="name" type="text" class="form-control" required autofocus>
                     </div>
                     <div class="mb-3">
-                        <label for="start-date" class="form-label">Date de début</label>
+                        <label for="start-date" class="form-label">{{ $t("main.beginDate") }}</label>
                         <input v-model="startDate" id="start-date" type="date" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="start-time" class="form-label">Heure de début</label>
+                        <label for="start-time" class="form-label">{{ $t("main.beginTime") }}</label>
                         <input v-model="startTime" id="start-time" type="time" step="1" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="duration" class="form-label">Durée</label>
+                        <label for="duration" class="form-label">{{ $t("main.duration") }}</label>
                         <input v-model="operationSchedule.duration" id="duration" type="time" step="1" class="form-control" required>
                     </div>
                     <template v-if="operationSchedule.byDay.length">
                         <div class="mb-3">
-                            <label for="end-date" class="form-label">Date de fin</label>
+                            <label for="end-date" class="form-label">{{ $t("main.endDate") }}</label>
                             <input v-model="endDate" id="end-date" type="date" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="end-time" class="form-label">Heure de fin</label>
+                            <label for="end-time" class="form-label">{{ $t("main.endTime") }}</label>
                             <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required>
                         </div>
                     </template>
                     <div class="mb-3">
-                        <label for="by-day" class="form-label">Récurrence</label>
+                        <label for="by-day" class="form-label">{{ $t("main.recurrence") }}</label>
                         <select v-model="operationSchedule.byDay" id="by-day" class="form-select" multiple>
                             <option :value="1">Lundi</option>
                             <option :value="2">Mardi</option>
@@ -271,22 +279,22 @@ onMounted(() => {
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="by-day" class="form-label">Opération</label>
+                        <label for="by-day" class="form-label">{{ $t("main.operation") }}</label>
                         <select v-model="operationSchedule.hasOperation" id="has-operation" class="form-select" required>
                             <option :value="operation.id" v-for="operation in operations">{{ operation.name }}</option>
                         </select>
                     </div>
                     <div v-if="operationSchedule.hasOperation">
-                        <label for="has-operation-parameters" class="form-label">Paramètres</label>
+                        <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
                         <select v-model="operationSchedule.hasOperationParameters" id="has-operation-parameters" class="form-select" required>
                             <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(operationSchedule.hasOperation)" :value="operationParameters.id" :key="operationParameters.id">{{ operationParameters.name }}</option>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                    <button v-if="operationSchedule.id" type="button" class="btn btn-danger" @click="deleteOperationSchedule(operationSchedule)">Supprimer</button>
-                    <button type="submit" class="btn" :class="{'btn-success': !operationSchedule.id, 'btn-warning': operationSchedule.id}">{{ operationSchedule.id ? "Modifier" : "Ajouter" }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t("main.close") }}</button>
+                    <button v-if="operationSchedule.id" type="button" class="btn btn-danger" @click="deleteOperationSchedule(operationSchedule)">{{ $t("main.delete") }}</button>
+                    <button type="submit" class="btn" :class="{'btn-success': !operationSchedule.id, 'btn-warning': operationSchedule.id}">{{ operationSchedule.id ? $t("main.edit") : $t("main.add") }}</button>
                 </div>
             </form>
         </div>

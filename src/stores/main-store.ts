@@ -1,20 +1,18 @@
-import axios, { type AxiosInstance } from "axios";
 import { defineStore } from "pinia";
-import { ref, type Ref, reactive } from "vue";
+import { reactive, ref } from "vue";
 
 export const useMainStore = defineStore("main", () => {
-    const api: AxiosInstance = axios.create();
-    const username: Ref<string> = ref("");
+    const isAuthenticated = ref(false);
+    const isAuthorized = ref(false);
     const roles: string[] = reactive([]);
-    const isAuthenticated: Ref<boolean> = ref(false);
-    const isAuthorized: Ref<boolean> = ref(false);
+    const username = ref("");
 
     function $reset() {
-        username.value = "";
-        roles.length = 0;
         isAuthenticated.value = false;
         isAuthorized.value = false;
+        roles.length = 0;
+        username.value = "";
     }
 
-    return { api, username, roles, isAuthenticated, isAuthorized, $reset };
+    return { isAuthenticated, isAuthorized, roles, username, $reset };
 });

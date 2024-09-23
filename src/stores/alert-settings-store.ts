@@ -1,22 +1,31 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { useMainStore } from '@/stores/main-store';
+import { defineStore } from "pinia";
+import { reactive } from "vue";
 
-export const useAlertSettingsStore = defineStore('alert-settings-store', () => {
-    const alertSettings = ref([]);    
-    const mainStore = useMainStore();
+import api from "@/api";
+import AlertSettingsNotFoundError from "@/errors/NotFoundError/AlertSettingsNotFoundError";
 
-    async function getAlertSettings() {
-        try {
-            const response = await mainStore.api.get('/alert-settings'); 
-            alertSettings.value = response.data;         
-        } catch (error) {
-            console.error('Erreur lors de la récupération des Alertes :', error);
+import type { AlertSettings } from "@/types/AlertSettings";
+
+export const useAlertSettingsStore = defineStore("alert-settings", () => {
+    const alertSettings: AlertSettings[] = reactive([]);
+
+    function getAlertSettings(alertSettingsId: string) {
+        const _alertSettings = alertSettings.find((alertSettings) => alertSettings.id === alertSettingsId);
+        if (!_alertSettings) {
+            throw new AlertSettingsNotFoundError(alertSettingsId);
         }
+        return _alertSettings;
     }
 
-    return {  
-        alertSettings,
-        getAlertSettings
-    };
+    async function fetchAlertSettings() {
+        $reset();
+        const response = await api.get("/alert-settings");
+        alertSettings.push(...response.data);
+    }
+
+    function $reset() {
+        alertSettings.length = 0;
+    }
+
+    return { alertSettings, getAlertSettings, fetchAlertSettings, $reset };
 });

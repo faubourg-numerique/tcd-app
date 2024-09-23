@@ -3,86 +3,86 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useMainStore } from "@/stores/main-store";
 import DashboardView from "@/views/DashboardView.vue";
 import OAuth2CallbackView from "@/views/OAuth2CallbackView.vue";
-import ResponsibilitiesLightingView from "@/views/ResponsibilitiesLightingView.vue";
 import ResponsibilitiesBuildingsView from "@/views/ResponsibilitiesBuildingsView.vue";
+import ResponsibilitiesLightingView from "@/views/ResponsibilitiesLightingView.vue";
+import ResponsibilitiesVoluntaryContributionPointsDetailsView from "@/views/ResponsibilitiesVoluntaryContributionPointsDetailsView.vue";
+import ResponsibilitiesVoluntaryContributionPointsView from "@/views/ResponsibilitiesVoluntaryContributionPointsView.vue";
+import ResponsibilitiesWatercoursesDetailsView from "@/views/ResponsibilitiesWatercoursesDetailsView.vue";
+import ResponsibilitiesWatercoursesView from "@/views/ResponsibilitiesWatercoursesView.vue";
 import UnauthorizedView from "@/views/UnauthorizedView.vue";
-import WaterLevelView from "@/views/WaterLevelView.vue";
-import IndoorAmbianceView from "@/views/IndoorAmbianceView.vue";
-import ExempleDashboardView from "@/views/ExempleDashboardView.vue";
-import UserInformationView from "@/views/UserInformationView.vue";
-import ResponsibilitiesWatercourseView from "@/views/ResponsibilitiesWatercourseView.vue";
-import ResponsibilitiesWatercourseDetailsView from "@/views/ResponsibilitiesWatercourseDetailsView.vue";
-import ResposibilitiesWastecontainer from "@/views/ResponsibilitiesWastecontainerView.vue";
-import ResponsibilitiesWastecontainerDetailsView from "@/views/ResponsibilitiesWastecontainDetailsView.vue";
+import UserView from "@/views/UserView.vue";
+import VisualizationsAirQualityView from "@/views/VisualizationsAirQualityView.vue";
+import VisualizationsIndoorAmbianceView from "@/views/VisualizationsIndoorAmbianceView.vue";
+import VisualizationsWaterLevelView from "@/views/VisualizationsWaterLevelView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
-            path: "/",
-            name: "dashboard",
-            component: DashboardView,
-        },
-        {
             path: "/oauth2/callback",
             name: "oauth2.callback",
-            component: OAuth2CallbackView,
+            component: OAuth2CallbackView
         },
         {
-            path: "/responsibilities/lighting",
-            name: "responsibilities.lighting",
-            component: ResponsibilitiesLightingView,
+            path: "/",
+            name: "dashboard",
+            component: DashboardView
         },
         {
             path: "/responsibilities/buildings",
             name: "responsibilities.buildings",
-            component: ResponsibilitiesBuildingsView,
+            component: ResponsibilitiesBuildingsView
         },
         {
-            path: "/responsibilities/watercourse",  // ajout de la route pour les cours d'eau
-            name: "responsibilities.watercourse",
-            component: ResponsibilitiesWatercourseView,
+            path: "/responsibilities/lighting",
+            name: "responsibilities.lighting",
+            component: ResponsibilitiesLightingView
         },
         {
-            path: "/responsibilities/water-level/:id", //ajout de la route pour les détails des cours d'eau
-            name: "responsibilities.watercourse.id",
-            component: ResponsibilitiesWatercourseDetailsView,
+            path: "/responsibilities/watercourses",
+            name: "responsibilities.watercourses",
+            component: ResponsibilitiesWatercoursesView
         },
         {
-            path: "/responsibilities/wastecontainer", // ajout de la route pour les conteneurs de déchets
-            name: "responsibilities.wastecontainer",
-            component: ResposibilitiesWastecontainer,
+            path: "/responsibilities/watercourses/:deviceMeasurementId",
+            name: "responsibilities.watercourses.details",
+            component: ResponsibilitiesWatercoursesDetailsView
         },
         {
-            path: "/responsibilities/waste-level/:id", //ajout de la route pour les détails des conteneurs de déchets
-            name: "responsibilities.wastecontainer.id",
-            component: ResponsibilitiesWastecontainerDetailsView,
+            path: "/responsibilities/voluntary-contribution-points",
+            name: "responsibilities.voluntaryContributionPoints",
+            component: ResponsibilitiesVoluntaryContributionPointsView
+        },
+        {
+            path: "/responsibilities/voluntary-contribution-points/:deviceMeasurementId",
+            name: "responsibilities.voluntaryContributionPoints.details",
+            component: ResponsibilitiesVoluntaryContributionPointsDetailsView
         },
        
         {
-            path: "/water-level",
-            name: "water-level",
-            component: WaterLevelView,
+            path: "/visualizations/water-level",
+            name: "visualizations.waterLevel",
+            component: VisualizationsWaterLevelView
         },
         {
-            path: "/indoor-ambiance",
-            name: "indoor-ambiance",
-            component: IndoorAmbianceView,
+            path: "/visualizations/indoor-ambiance",
+            name: "visualizations.indoorAmbiance",
+            component: VisualizationsIndoorAmbianceView
         },
         {
-            path: "/exemple-dashboard",
-            name: "exemple-dashboard",
-            component: ExempleDashboardView,
+            path: "/visualizations/air-quality",
+            name: "visualizations.airQuality",
+            component: VisualizationsAirQualityView
         },
         {
             path: "/unauthorized",
             name: "unauthorized",
-            component: UnauthorizedView,
+            component: UnauthorizedView
         },
         {
-            path: "/user-information",
-            name: "user-information",
-            component: UserInformationView,
+            path: "/user",
+            name: "user",
+            component: UserView
         },
     ],
 });

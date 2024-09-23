@@ -1,0 +1,49 @@
+<script setup lang="ts">
+import { ref, type Ref } from "vue";
+import { useRoute } from "vue-router";
+
+import CityZonePicker from "@/components/CityZonePicker.vue";
+import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
+import { useWasteContainerStore } from "@/stores/waste-container-store";
+
+const route = useRoute();
+
+const wasteContainerStore = useWasteContainerStore();
+const deviceMeasurementStore = useDeviceMeasurementStore();
+
+const selectedCityId: Ref<string | null> = ref(route.query.cityId as string ?? null);
+const selectedZoneId: Ref<string | null> = ref(route.query.zoneId as string ?? null);
+</script>
+
+<template>
+    <div class="container">
+        <CityZonePicker class="mb-4" v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
+        <template v-if="selectedCityId && selectedZoneId">
+            <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{ $t("main.name") }}</th>
+                            <th>{{ $t("main.distance") }}</th>
+                            <th>{{ $t("main.maximumAlert") }}</th>
+                            <th>{{ $t("main.onAlert") }}</th>
+                            <th>{{ $t("main.timeout") }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="wasteContainer in wasteContainerStore.getWasteContainersByZoneId(selectedZoneId)" :key="wasteContainer.id">
+                            <td>
+                                <RouterLink :to="`/responsibilities/voluntary-contribution-points/${wasteContainer.hasDeviceMeasurement}`" class="no-link">{{ wasteContainer.name }}</RouterLink>
+                            </td>
+                            <td>{{ deviceMeasurementStore.getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.distance ?? "N/A" }} mm</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+    </div>
+</template>
