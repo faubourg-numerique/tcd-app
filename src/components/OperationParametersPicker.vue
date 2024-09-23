@@ -29,7 +29,7 @@ async function runOperation() {
 }
 </script>
 <template>
-    <form @submit.prevent="runOperation">
+    <form class="bg-white p-4 rounded text-center border border-danger" @submit.prevent="runOperation" >
         <div class="mb-3">
             <label for="has-operation" class="form-label">{{ t("main.operation") }}</label>
             <select v-model="selectedOperationId" id="has-operation" class="form-select" required>
