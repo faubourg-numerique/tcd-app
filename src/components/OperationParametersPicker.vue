@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { defineProps, computed } from 'vue';
-import { useOperationStore } from '@/stores/operation-store';
-import { useOperationParametersStore } from '@/stores/operation-parameters-store';
-import { useI18n } from 'vue-i18n';
+import { defineProps, computed } from "vue";
+import { useOperationStore } from "@/stores/operation-store";
+import { useOperationParametersStore } from "@/stores/operation-parameters-store";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
     modelValue: {
         type: Object,
-        required: true, 
+        required: true,
     },
 });
 
@@ -16,7 +16,7 @@ const operationStore = useOperationStore();
 const operationParametersStore = useOperationParametersStore();
 
 const operations = operationStore.operations;
-console.log(operationStore) ;
+console.log(operationStore);
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
 
@@ -29,7 +29,7 @@ async function runOperation() {
 }
 </script>
 <template>
-    <form class="bg-white p-4 rounded text-center border border-danger" @submit.prevent="runOperation" >
+    <form class="bg-white p-4 rounded text-center border border-danger" @submit.prevent="runOperation">
         <div class="mb-3">
             <label for="has-operation" class="form-label">{{ t("main.operation") }}</label>
             <select v-model="selectedOperationId" id="has-operation" class="form-select" required>
