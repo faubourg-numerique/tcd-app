@@ -234,33 +234,33 @@ onMounted(() => {
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name" class="form-label">{{ $t("main.name") }}</label>
-                        <input v-model="operationSchedule.name" id="name" type="text" class="form-control" required autofocus />
+                        <input id="name" v-model="operationSchedule.name" type="text" class="form-control" required autofocus />
                     </div>
                     <div class="mb-3">
                         <label for="start-date" class="form-label">{{ $t("main.beginDate") }}</label>
-                        <input v-model="startDate" id="start-date" type="date" class="form-control" required />
+                        <input id="start-date" v-model="startDate" type="date" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="start-time" class="form-label">{{ $t("main.beginTime") }}</label>
-                        <input v-model="startTime" id="start-time" type="time" step="1" class="form-control" required />
+                        <input id="start-time" v-model="startTime" type="time" step="1" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="duration" class="form-label">{{ $t("main.duration") }}</label>
-                        <input v-model="operationSchedule.duration" id="duration" type="time" step="1" class="form-control" required />
+                        <input id="duration" v-model="operationSchedule.duration" type="time" step="1" class="form-control" required />
                     </div>
                     <template v-if="operationSchedule.byDay.length">
                         <div class="mb-3">
                             <label for="end-date" class="form-label">{{ $t("main.endDate") }}</label>
-                            <input v-model="endDate" id="end-date" type="date" class="form-control" required />
+                            <input id="end-date" v-model="endDate" type="date" class="form-control" required />
                         </div>
                         <div class="mb-3">
                             <label for="end-time" class="form-label">{{ $t("main.endTime") }}</label>
-                            <input v-model="endTime" id="end-time" type="time" step="1" class="form-control" required />
+                            <input id="end-time" v-model="endTime" type="time" step="1" class="form-control" required />
                         </div>
                     </template>
                     <div class="mb-3">
                         <label for="by-day" class="form-label">{{ $t("main.recurrence") }}</label>
-                        <select v-model="operationSchedule.byDay" id="by-day" class="form-select" multiple>
+                        <select id="by-day" v-model="operationSchedule.byDay" class="form-select" multiple>
                             <option :value="1">Lundi</option>
                             <option :value="2">Mardi</option>
                             <option :value="3">Mercredi</option>
@@ -272,14 +272,14 @@ onMounted(() => {
                     </div>
                     <div class="mb-3">
                         <label for="by-day" class="form-label">{{ $t("main.operation") }}</label>
-                        <select v-model="operationSchedule.hasOperation" id="has-operation" class="form-select" required>
-                            <option :value="operation.id" v-for="operation in operations">{{ operation.name }}</option>
+                        <select id="has-operation" v-model="operationSchedule.hasOperation" class="form-select" required>
+                            <option v-for="operation in operations" :value="operation.id">{{ operation.name }}</option>
                         </select>
                     </div>
                     <div v-if="operationSchedule.hasOperation">
                         <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
-                        <select v-model="operationSchedule.hasOperationParameters" id="has-operation-parameters" class="form-select" required>
-                            <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(operationSchedule.hasOperation)" :value="operationParameters.id" :key="operationParameters.id">{{ operationParameters.name }}</option>
+                        <select id="has-operation-parameters" v-model="operationSchedule.hasOperationParameters" class="form-select" required>
+                            <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(operationSchedule.hasOperation)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
                         </select>
                     </div>
                 </div>

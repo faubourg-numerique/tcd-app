@@ -32,14 +32,14 @@ async function runOperation() {
     <form class="bg-white p-4 rounded text-center border border-danger" @submit.prevent="runOperation">
         <div class="mb-3">
             <label for="has-operation" class="form-label">{{ t("main.operation") }}</label>
-            <select v-model="selectedOperationId" id="has-operation" class="form-select" required>
+            <select id="has-operation" v-model="selectedOperationId" class="form-select" required>
                 <option :value="null" disabled>-</option>
                 <option v-for="operation in operations" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
             </select>
         </div>
         <div v-if="selectedOperationId">
             <label for="has-operation-parameters" class="form-label">{{ t("main.parameters") }}</label>
-            <select v-model="selectedOperationParametersId" id="has-operation-parameters" class="form-select" required>
+            <select id="has-operation-parameters" v-model="selectedOperationParametersId" class="form-select" required>
                 <option :value="null" disabled>{{ t("main.selectParameters") }}</option>
                 <option v-for="operationParameters in getOperationParameters(selectedOperationId as string)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
             </select>

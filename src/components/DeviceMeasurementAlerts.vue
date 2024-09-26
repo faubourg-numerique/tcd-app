@@ -115,13 +115,13 @@ onMounted(() => {
         <div class="modal-dialog">
             <form class="modal-content" @submit.prevent="createSubscription">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{ $t("main.alert") }}</h1>
+                    <h1 id="exampleModalLabel" class="modal-title fs-5">{{ $t("main.alert") }}</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name" class="form-label">{{ $t("main.name") }}</label>
-                        <input id="name" type="text" v-model="subscription.subscriptionName" class="form-control" required />
+                        <input id="name" v-model="subscription.subscriptionName" type="text" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="query-criteria" class="form-label">{{ $t("main.criteria") }}</label>
@@ -132,15 +132,15 @@ onMounted(() => {
                     </div>
                     <div class="mb-3">
                         <label for="query-value" class="form-label">{{ $t("main.value") }}</label>
-                        <input id="query-value" type="number" v-model="subscriptionQueryValue" class="form-control" required />
+                        <input id="query-value" v-model="subscriptionQueryValue" type="number" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="emails" class="form-label">{{ $t("main.emails") }}</label>
-                        <input id="emails" type="text" v-model="subscriptionEmails" class="form-control" required />
+                        <input id="emails" v-model="subscriptionEmails" type="text" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="throttling" class="form-label">{{ $t("main.reminder") }}</label>
-                        <input id="throttling" type="number" v-model="subscription.throttling" class="form-control" min="1" step="1" required />
+                        <input id="throttling" v-model="subscription.throttling" type="number" class="form-control" min="1" step="1" required />
                     </div>
                 </div>
                 <div class="modal-footer">

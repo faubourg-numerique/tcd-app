@@ -18,7 +18,7 @@ const selectedOperationParametersId: Ref<string | null> = ref(null);
 
 <template>
     <div class="container">
-        <CityZonePicker class="mb-3" v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" />
+        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-3" />
         <template v-if="selectedCityId && selectedZoneId">
             <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" />
             <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
