@@ -11,9 +11,6 @@ import ResponsibilitiesWatercoursesDetailsView from "@/views/ResponsibilitiesWat
 import ResponsibilitiesWatercoursesView from "@/views/ResponsibilitiesWatercoursesView.vue";
 import UnauthorizedView from "@/views/UnauthorizedView.vue";
 import UserView from "@/views/UserView.vue";
-import VisualizationsAirQualityView from "@/views/VisualizationsAirQualityView.vue";
-import VisualizationsIndoorAmbianceView from "@/views/VisualizationsIndoorAmbianceView.vue";
-import VisualizationsWaterLevelView from "@/views/VisualizationsWaterLevelView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,22 +54,6 @@ const router = createRouter({
             path: "/responsibilities/voluntary-contribution-points/:deviceMeasurementId",
             name: "responsibilities.voluntaryContributionPoints.details",
             component: ResponsibilitiesVoluntaryContributionPointsDetailsView,
-        },
-
-        {
-            path: "/visualizations/water-level",
-            name: "visualizations.waterLevel",
-            component: VisualizationsWaterLevelView,
-        },
-        {
-            path: "/visualizations/indoor-ambiance",
-            name: "visualizations.indoorAmbiance",
-            component: VisualizationsIndoorAmbianceView,
-        },
-        {
-            path: "/visualizations/air-quality",
-            name: "visualizations.airQuality",
-            component: VisualizationsAirQualityView,
         },
         {
             path: "/unauthorized",
