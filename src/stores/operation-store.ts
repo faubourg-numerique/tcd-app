@@ -27,9 +27,16 @@ export const useOperationStore = defineStore("operation", () => {
         operations.push(...response.data);
     }
 
+    async function runOperation(operationParametersId: string) {
+        const data = {
+            operationParametersId,
+        };
+        await api.post("/operations/run", data);
+    }
+
     function $reset() {
         operations.length = 0;
     }
 
-    return { operations, getOperation, getOperationsByZoneId, fetchOperations, $reset };
+    return { operations, getOperation, getOperationsByZoneId, fetchOperations, runOperation, $reset };
 });

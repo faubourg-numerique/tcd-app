@@ -10,6 +10,8 @@ import { createI18n } from "vue-i18n";
 import App from "@/App.vue";
 import frDialogs from "@/locales/fr/dialogs.json";
 import frMain from "@/locales/fr/main.json";
+import enDialogs from "@/locales/en/dialogs.json";
+import enMain from "@/locales/en/main.json";
 import router from "@/router";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
@@ -25,9 +27,13 @@ const app = createApp(App);
 
 const i18n = createI18n({
     legacy: false,
-    locale: "fr",
+    locale: navigator.language,
     fallbackLocale: "fr",
     messages: {
+        en: {
+            main: enMain,
+            dialogs: enDialogs,
+        },
         fr: {
             main: frMain,
             dialogs: frDialogs,

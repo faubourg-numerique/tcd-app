@@ -40,20 +40,6 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{{ $t("main.visualization") }}</a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <RouterLink class="dropdown-item" :to="{ name: 'visualizations.waterLevel' }"><FontAwesomeIcon :icon="['fas', 'chart-line']" class="me-2" />{{ $t("main.waterLevel") }}</RouterLink>
-                            </li>
-                            <li>
-                                <RouterLink class="dropdown-item" :to="{ name: 'visualizations.indoorAmbiance' }"><FontAwesomeIcon :icon="['fas', 'chart-line']" class="me-2" />{{ $t("main.indoorAmbiance") }}</RouterLink>
-                            </li>
-                            <li>
-                                <RouterLink class="dropdown-item" :to="{ name: 'visualizations.airQuality' }"><FontAwesomeIcon :icon="['fas', 'chart-line']" class="me-2" />{{ $t("main.airQuality") }}</RouterLink>
-                            </li>
-                        </ul>
-                    </li>
                     <li class="nav-item dropdown d-flex align-items-center">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><FontAwesomeIcon :icon="['fas', 'user']" class="me-2" />{{ mainStore.username }}</a>
                         <ul class="dropdown-menu">
