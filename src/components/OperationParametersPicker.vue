@@ -16,7 +16,6 @@ const operationStore = useOperationStore();
 const operationParametersStore = useOperationParametersStore();
 
 const operations = operationStore.operations;
-console.log(operationStore);
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
 
