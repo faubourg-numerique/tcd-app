@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 
+import api from "@/api";
 import StreetlightNotFoundError from "@/errors/NotFoundError/StreetlightNotFoundError";
-import type { Streetlight } from "@/models/Streetlight";
-import { useMainStore } from "@/stores/main-store";
+
+import type { Streetlight } from "@/types/Streetlight";
 
 export const useStreetlightStore = defineStore("streetlight", () => {
-    const mainStore = useMainStore();
-
     const streetlights: Streetlight[] = reactive([]);
 
     function getStreetlight(streetlightId: string) {
@@ -23,18 +22,14 @@ export const useStreetlightStore = defineStore("streetlight", () => {
     }
 
     async function fetchStreetlights() {
-        streetlights.length = 0;
-        const response = await mainStore.api.get("/streetlights");
+        $reset();
+        const response = await api.get("/streetlights");
         streetlights.push(...response.data);
-    }
-
-    async function updateStreetlight(cityId: string, zoneId: string, streetlightId: string, data: Object) {
-        await mainStore.api.patch(`/cities/${cityId}/zones/${zoneId}/streetlights/${streetlightId}`, data);
     }
 
     function $reset() {
         streetlights.length = 0;
     }
 
-    return { streetlights, getStreetlight, getStreetlightsByZoneId, fetchStreetlights, updateStreetlight, $reset };
+    return { streetlights, getStreetlight, getStreetlightsByZoneId, fetchStreetlights, $reset };
 });

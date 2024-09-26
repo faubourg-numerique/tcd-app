@@ -8,9 +8,9 @@ module.exports = {
         "vue/no-unused-vars": "warn",
         "vue/html-indent": "off",
         "vue/max-attributes-per-line": "off",
-        "vue/singleline-html-element-content-newline": "off",
+        "vue/singleline-html-element-content-newline": "off"
     },
     parserOptions: {
-        ecmaVersion: "latest",
-    },
+        ecmaVersion: "latest"
+    }
 };

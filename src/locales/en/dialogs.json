@@ -1,0 +1,8 @@
+{
+    "createSubscriptionSuccessText": "This alert has been successfully created.",
+    "createSubscriptionSuccessTitle": "Alert created!",
+    "deleteOperationScheduleQuestionText": "Are you sure you want to delete this event?",
+    "deleteOperationScheduleQuestionTitle": "Delete this event?",
+    "deleteSubscriptionQuestionText": "Are you certain you wish to remove this alert?",
+    "deleteSubscriptionQuestionTitle": "Delete this alert?"
+}

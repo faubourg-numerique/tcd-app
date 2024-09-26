@@ -1,39 +1,53 @@
 # tcd-app
 
-This template should help get you started developing with Vue 3 in Vite.
+## Prerequisites
 
-## Recommended IDE Setup
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/) >= 18
+- [npm](https://www.npmjs.com/)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Installation
 
-## Type Support for `.vue` Imports in TS
+- Clone this repository
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+```
+git clone https://github.com/faubourg-numerique/tcd-app.git
+```
 
-## Customize configuration
+- Access the cloned repository
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+```
+cd ./tcd-app
+```
 
-## Project Setup
+- Checkout to the desired tag
 
-```sh
+```
+git checkout tags/0.0.0
+```
+
+- Create the environment file
+
+```
+cp ./.env.example ./.env
+```
+
+- Edit the environment file
+
+- Install the dependencies
+
+```
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+- Build the project
 
-```sh
-npm run dev
 ```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+> The compiled files will be located in the ./dist folder.
 
-```sh
-npm run lint
-```
+## Usage
+
+- Host the entire contents of the ./dist folder on an Apache HTTP server
