@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { useOperationStore } from "@/stores/operation-store";
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
-
-const props = defineProps({
-    modelValue: {
-        type: Object,
-        required: true,
-    },
-});
 
 const operationStore = useOperationStore();
 const operationParametersStore = useOperationParametersStore();
