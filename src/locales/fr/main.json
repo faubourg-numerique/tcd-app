@@ -42,7 +42,9 @@
     "roles": "Rôles",
     "selectACity": "Sélectionner une ville",
     "selectAZone": "Sélectionner une zone",
+    "selectParameters": "--Selectionner--",
     "status": "Statut",
+    "submit": "Entrer",
     "timeout": "Temporisation",
     "title": "Territoires Connectés et Durables",
     "to": "Au",
@@ -52,7 +54,5 @@
     "voluntaryContributionPoints": "PAV",
     "waterLevel": "Niveau d'eau",
     "watercourses": "Cours d'eau",
-    "zone": "Zone",
-    "submit": "Entrer",
-    "selectParameters": "--Selectionner--"
+    "zone": "Zone"
 }

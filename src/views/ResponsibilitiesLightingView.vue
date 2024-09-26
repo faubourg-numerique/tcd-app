@@ -4,12 +4,10 @@ import { useRoute } from "vue-router";
 
 import CityZonePicker from "@/components/CityZonePicker.vue";
 import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
-import { useStreetlightStore } from "@/stores/streetlight-store";
 import OperationParametersPicker from "@/components/OperationParametersPicker.vue";
 
 const route = useRoute();
 
-const streetlightStore = useStreetlightStore();
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
 

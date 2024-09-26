@@ -4,10 +4,9 @@ import { useRoute } from "vue-router";
 
 import CityZonePicker from "@/components/CityZonePicker.vue";
 import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
-import { useThermostatStore } from "@/stores/thermostat-store";
 import OperationParametersPicker from "@/components/OperationParametersPicker.vue";
+
 const route = useRoute();
-const thermostatStore = useThermostatStore();
 
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
