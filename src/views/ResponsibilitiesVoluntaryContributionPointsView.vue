@@ -34,7 +34,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
                     <tbody>
                         <tr v-for="wasteContainer in wasteContainerStore.getWasteContainersByZoneId(selectedZoneId)" :key="wasteContainer.id">
                             <td>
-                                <RouterLink :to="`/responsibilities/voluntary-contribution-points/${wasteContainer.hasDeviceMeasurement}`" class="no-link">{{ wasteContainer.name }}</RouterLink>
+                                <RouterLink :to="{ name: 'responsibilities.voluntaryContributionPoints.details', params: { deviceMeasurementId: wasteContainer.hasDeviceMeasurement } }" class="no-link">{{ wasteContainer.name }}</RouterLink>
                             </td>
                             <td>{{ deviceMeasurementStore.getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.distance ?? "N/A" }} mm</td>
                             <td>N/A</td>
