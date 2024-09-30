@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
 import { useMainStore } from "@/stores/main-store";
+import { RouterLink } from "vue-router";
 
 const mainStore = useMainStore();
 

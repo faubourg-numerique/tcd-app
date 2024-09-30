@@ -3,8 +3,8 @@ import { ref, type Ref } from "vue";
 import { useRoute } from "vue-router";
 
 import CityZonePicker from "@/components/CityZonePicker.vue";
-import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
 import OperationParametersPicker from "@/components/OperationParametersPicker.vue";
+import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
 
 const route = useRoute();
 

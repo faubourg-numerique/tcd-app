@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import Modal from "bootstrap/js/dist/modal";
 import swal from "sweetalert2";
-import { computed, onMounted, reactive, ref, type Ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
@@ -13,8 +13,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import rrulePlugin from "@fullcalendar/rrule";
 import FullCalendar from "@fullcalendar/vue3";
 
-import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
 import type { OperationSchedule } from "@/types/OperationSchedule";
+import type { CalendarOptions, EventClickArg } from "@fullcalendar/core";
 
 const weekDays = ["SU", "MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 
