@@ -34,7 +34,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
                     <tbody>
                         <tr v-for="floodMonitoring in floodMonitoringStore.getFloodMonitoringsByZoneId(selectedZoneId)" :key="floodMonitoring.id">
                             <td>
-                                <RouterLink :to="`/responsibilities/watercourses/${floodMonitoring.hasDeviceMeasurement}`" class="no-link">{{ floodMonitoring.name }}</RouterLink>
+                                <RouterLink :to="{ name: 'responsibilities.watercourses.details', params: { deviceMeasurementId: floodMonitoring.hasDeviceMeasurement } }" class="no-link">{{ floodMonitoring.name }}</RouterLink>
                             </td>
                             <td>{{ deviceMeasurementStore.getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.distance ?? "N/A" }} mm</td>
                             <td>N/A</td>

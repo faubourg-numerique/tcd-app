@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 
-import DeviceMeasurementInformations from "@/components/DeviceMeasurementInformations.vue";
 import DeviceMeasurementAlerts from "@/components/DeviceMeasurementAlerts.vue";
+import DeviceMeasurementInformations from "@/components/DeviceMeasurementInformations.vue";
 import DeviceMeasurementVisualizations from "@/components/DeviceMeasurementVisualizations.vue";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 

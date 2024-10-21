@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useOperationStore } from "@/stores/operation-store";
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
+import { useOperationStore } from "@/stores/operation-store";
 
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
