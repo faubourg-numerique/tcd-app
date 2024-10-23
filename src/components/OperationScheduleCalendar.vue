@@ -59,6 +59,7 @@ let operationScheduleFormModal: Modal | null = null;
 
 const operations = operationStore.getOperationsByZoneId(props.zoneId);
 
+
 const events = computed(() => {
     const operationSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zoneId);
     return operationSchedules.map((operationSchedule) => {
@@ -90,6 +91,15 @@ const events = computed(() => {
             };
         }
     });
+});
+
+const sortedOperationParameters = computed(() => {
+    if (!operationSchedule.hasOperation) return [];
+
+    return operationParametersStore
+        .getOperationParametersByOperationId(operationSchedule.hasOperation)
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name));
 });
 
 const options = reactive<CalendarOptions>({
@@ -279,9 +289,10 @@ onMounted(() => {
                     <div v-if="operationSchedule.hasOperation">
                         <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
                         <select id="has-operation-parameters" v-model="operationSchedule.hasOperationParameters" class="form-select" required>
-                            <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(operationSchedule.hasOperation)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
+                            <option v-for="operationParameters in sortedOperationParameters" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
                         </select>
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t("main.close") }}</button>
