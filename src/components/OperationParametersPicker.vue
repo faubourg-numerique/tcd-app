@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationStore } from "@/stores/operation-store";
+import Swal from "sweetalert2";
+import { useI18n } from 'vue-i18n'; 
+
 
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
 
 const operationStore = useOperationStore();
 const operationParametersStore = useOperationParametersStore();
+const { t } = useI18n();
 
 async function runOperation() {
     await operationStore.runOperation(selectedOperationParametersId.value as string);
+    Swal.fire({
+        icon: 'success',
+        title: t("main.Done"),
+    })
 }
 </script>
 
