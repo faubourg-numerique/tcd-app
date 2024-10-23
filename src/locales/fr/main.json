@@ -55,5 +55,9 @@
     "waterLevel": "Niveau d'eau",
     "watercourses": "Cours d'eau",
     "zone": "Zone" ,
-    "Done" :"Terminé" 
+    "Done" :"Terminé",
+    "apply": "Appliquer",
+    "operationExecutedSuccessfully": "L'opération a été exécutée avec succès.",
+    "operationExecutionFailed": "L'exécution de l'opération a échoué.",
+    "error": "Erreur" 
 }

@@ -4,7 +4,6 @@ import { useOperationStore } from "@/stores/operation-store";
 import Swal from "sweetalert2";
 import { useI18n } from 'vue-i18n'; 
 
-
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
 
@@ -13,11 +12,20 @@ const operationParametersStore = useOperationParametersStore();
 const { t } = useI18n();
 
 async function runOperation() {
-    await operationStore.runOperation(selectedOperationParametersId.value as string);
-    Swal.fire({
-        icon: 'success',
-        title: t("main.Done"),
-    })
+    try {
+        await operationStore.runOperation(selectedOperationParametersId.value as string);
+        Swal.fire({
+            icon: 'success',
+            title: t("main.Done"),
+            text: t("main.operationExecutedSuccessfully"), 
+        });
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: t("main.error"),
+            text: t("main.operationExecutionFailed"), 
+        });
+    }
 }
 </script>
 
@@ -37,6 +45,6 @@ async function runOperation() {
                 <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(selectedOperationId as string)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">{{ $t("main.submit") }}</button>
+        <button type="submit" class="btn btn-primary">{{ $t("main.apply") }}</button>
     </form>
 </template>
