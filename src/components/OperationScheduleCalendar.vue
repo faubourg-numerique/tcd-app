@@ -54,6 +54,8 @@ const operationSchedule: OperationSchedule = reactive({
     hasZone: props.zoneId,
 });
 
+const operationScheduleDurationDays = ref(0);
+
 const operationScheduleFormModalElement = ref(null);
 let operationScheduleFormModal: Modal | null = null;
 
@@ -104,6 +106,8 @@ const options = reactive<CalendarOptions>({
             return;
         }
 
+        operationScheduleDurationDays.value = 0;
+
         operationSchedule.id = "";
         operationSchedule.name = "";
         operationSchedule.byDay = [];
@@ -129,6 +133,11 @@ const options = reactive<CalendarOptions>({
         }
 
         Object.assign(operationSchedule, operationScheduleStore.getOperationSchedule(event.id));
+
+        let [hours = 0, minutes = 0, seconds = 0] = operationSchedule.duration.split(":").map(Number);
+        operationScheduleDurationDays.value = Math.floor(hours / 24);
+        hours = hours % 24;
+        operationSchedule.duration = [hours, minutes, seconds].map((unit) => String(unit).padStart(2, "0")).join(":");
 
         const startDateTime = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
         startDate.value = `${startDateTime.getFullYear()}-${String(startDateTime.getMonth() + 1).padStart(2, "0")}-${String(startDateTime.getDate()).padStart(2, "0")}`;
@@ -183,6 +192,10 @@ watch(
 );
 
 async function createOperationSchedule(operationSchedule: OperationSchedule) {
+    let [hours = 0, minutes = 0, seconds = 0] = operationSchedule.duration.split(":").map(Number);
+    hours += operationScheduleDurationDays.value * 24;
+    operationSchedule.duration = [hours, minutes, seconds].map((unit) => String(unit).padStart(2, "0")).join(":");
+
     await operationScheduleStore.createOperationSchedule(operationSchedule);
 
     if (operationScheduleFormModal) {
@@ -191,6 +204,10 @@ async function createOperationSchedule(operationSchedule: OperationSchedule) {
 }
 
 async function updateOperationSchedule(operationSchedule: OperationSchedule) {
+    let [hours = 0, minutes = 0, seconds = 0] = operationSchedule.duration.split(":").map(Number);
+    hours += operationScheduleDurationDays.value * 24;
+    operationSchedule.duration = [hours, minutes, seconds].map((unit) => String(unit).padStart(2, "0")).join(":");
+
     await operationScheduleStore.updateOperationSchedule(operationSchedule);
 
     if (operationScheduleFormModal) {
@@ -244,6 +261,10 @@ onMounted(() => {
                     <div class="mb-3">
                         <label for="start-time" class="form-label">{{ $t("main.beginTime") }}</label>
                         <input id="start-time" v-model="startTime" type="time" step="1" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration-days" class="form-label">{{ $t("main.days") }}</label>
+                        <input id="duration-days" v-model="operationScheduleDurationDays" type="number" step="1" min="0" class="form-control" required />
                     </div>
                     <div class="mb-3">
                         <label for="duration" class="form-label">{{ $t("main.duration") }}</label>
