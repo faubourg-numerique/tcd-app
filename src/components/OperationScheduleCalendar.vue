@@ -54,6 +54,8 @@ const operationSchedule: OperationSchedule = reactive({
     hasZone: props.zoneId,
 });
 
+const operationScheduleDurationDays = ref(0);
+
 const operationScheduleFormModalElement = ref(null);
 let operationScheduleFormModal: Modal | null = null;
 
@@ -104,6 +106,8 @@ const options = reactive<CalendarOptions>({
             return;
         }
 
+        operationScheduleDurationDays.value = 0;
+
         operationSchedule.id = "";
         operationSchedule.name = "";
         operationSchedule.byDay = [];
@@ -113,7 +117,8 @@ const options = reactive<CalendarOptions>({
         operationSchedule.endTime = "";
         operationSchedule.duration = "";
         operationSchedule.hasZone = props.zoneId;
-        operationSchedule.hasOperation = "";
+        operationSchedule.hasOperation = operations.length ? operations[0].id : "";
+        operationSchedule.hasOperationParameters = "";
 
         startDate.value = dateStr;
         startTime.value = "";
@@ -128,6 +133,11 @@ const options = reactive<CalendarOptions>({
         }
 
         Object.assign(operationSchedule, operationScheduleStore.getOperationSchedule(event.id));
+
+        let [hours = 0, minutes = 0, seconds = 0] = operationSchedule.duration.split(":").map(Number);
+        operationScheduleDurationDays.value = Math.floor(hours / 24);
+        hours = hours % 24;
+        operationSchedule.duration = [hours, minutes, seconds].map((unit) => String(unit).padStart(2, "0")).join(":");
 
         const startDateTime = new Date(`${operationSchedule.startDate}T${operationSchedule.startTime}`);
         startDate.value = `${startDateTime.getFullYear()}-${String(startDateTime.getMonth() + 1).padStart(2, "0")}-${String(startDateTime.getDate()).padStart(2, "0")}`;
@@ -182,6 +192,10 @@ watch(
 );
 
 async function createOperationSchedule(operationSchedule: OperationSchedule) {
+    let [hours = 0, minutes = 0, seconds = 0] = operationSchedule.duration.split(":").map(Number);
+    hours += operationScheduleDurationDays.value * 24;
+    operationSchedule.duration = [hours, minutes, seconds].map((unit) => String(unit).padStart(2, "0")).join(":");
+
     await operationScheduleStore.createOperationSchedule(operationSchedule);
 
     if (operationScheduleFormModal) {
@@ -190,6 +204,10 @@ async function createOperationSchedule(operationSchedule: OperationSchedule) {
 }
 
 async function updateOperationSchedule(operationSchedule: OperationSchedule) {
+    let [hours = 0, minutes = 0, seconds = 0] = operationSchedule.duration.split(":").map(Number);
+    hours += operationScheduleDurationDays.value * 24;
+    operationSchedule.duration = [hours, minutes, seconds].map((unit) => String(unit).padStart(2, "0")).join(":");
+
     await operationScheduleStore.updateOperationSchedule(operationSchedule);
 
     if (operationScheduleFormModal) {
@@ -214,6 +232,12 @@ async function deleteOperationSchedule(operationSchedule: OperationSchedule) {
     if (operationScheduleFormModal) {
         operationScheduleFormModal.hide();
     }
+}
+
+function sortedOperationParameters(operationId: string) {
+    const operationParameters = operationParametersStore.getOperationParametersByOperationId(operationId);
+    operationParameters.sort((a, b) => a.name.localeCompare(b.name));
+    return operationParameters;
 }
 
 onMounted(() => {
@@ -248,6 +272,10 @@ onMounted(() => {
                         <label for="duration" class="form-label">{{ $t("main.duration") }}</label>
                         <input id="duration" v-model="operationSchedule.duration" type="time" step="1" class="form-control" required />
                     </div>
+                    <div class="mb-3">
+                        <label for="duration-days" class="form-label">{{ $t("main.days") }}</label>
+                        <input id="duration-days" v-model="operationScheduleDurationDays" type="number" step="1" min="0" class="form-control" required />
+                    </div>
                     <template v-if="operationSchedule.byDay.length">
                         <div class="mb-3">
                             <label for="end-date" class="form-label">{{ $t("main.endDate") }}</label>
@@ -273,13 +301,13 @@ onMounted(() => {
                     <div class="mb-3">
                         <label for="by-day" class="form-label">{{ $t("main.operation") }}</label>
                         <select id="has-operation" v-model="operationSchedule.hasOperation" class="form-select" required>
-                            <option v-for="operation in operations" :value="operation.id">{{ operation.name }}</option>
+                            <option v-for="operation in operations" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
                         </select>
                     </div>
                     <div v-if="operationSchedule.hasOperation">
                         <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
                         <select id="has-operation-parameters" v-model="operationSchedule.hasOperationParameters" class="form-select" required>
-                            <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(operationSchedule.hasOperation)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
+                            <option v-for="operationParameters in sortedOperationParameters(operationSchedule.hasOperation)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
                         </select>
                     </div>
                 </div>
