@@ -2,7 +2,7 @@
 import swal from "sweetalert2";
 
 import { useI18n } from "vue-i18n";
-import { computed, onMounted, watch } from "vue";
+import { onMounted, watch } from "vue";
 
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationStore } from "@/stores/operation-store";

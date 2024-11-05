@@ -301,7 +301,7 @@ onMounted(() => {
                     <div class="mb-3">
                         <label for="by-day" class="form-label">{{ $t("main.operation") }}</label>
                         <select id="has-operation" v-model="operationSchedule.hasOperation" class="form-select" required>
-                            <option v-for="operation in operations" :value="operation.id">{{ operation.name }}</option>
+                            <option v-for="operation in operations" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
                         </select>
                     </div>
                     <div v-if="operationSchedule.hasOperation">
