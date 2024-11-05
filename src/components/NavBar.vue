@@ -11,7 +11,6 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
     <nav class="navbar navbar-expand-xl navbar-light bg-light">
         <div class="container-fluid">
             <span class="navbar-brand d-flex align-items-center">
-                <img alt="dRural" class="logo" src="@/assets/images/logos/drural.png" width="68" height="50" />
                 <img alt="Somme Numérique" class="logo" src="@/assets/images/logos/somme-numerique.png" width="50" height="50" />
                 <span class="ms-2 d-none d-sm-inline text-danger">{{ $t("main.title") }}</span>
             </span>
@@ -29,9 +28,9 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
                             <li>
                                 <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.buildings' }"><FontAwesomeIcon :icon="['fas', 'recycle']" class="me-2" />{{ $t("main.buildings") }}</RouterLink>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.lighting' }"><FontAwesomeIcon :icon="['fas', 'lightbulb']" class="me-2" />{{ $t("main.lighting") }}</RouterLink>
-                            </li>
+                            </li> -->
                             <li>
                                 <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.watercourses' }"><FontAwesomeIcon :icon="['fas', 'water']" class="me-2" />{{ $t("main.watercourses") }}</RouterLink>
                             </li>
