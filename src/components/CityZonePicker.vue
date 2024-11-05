@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineModel } from "vue";
+import { defineModel, onMounted } from "vue";
 
 import { useCityStore } from "@/stores/city-store";
 import { useZoneStore } from "@/stores/zone-store";
@@ -9,6 +9,17 @@ const zoneStore = useZoneStore();
 
 const selectedCityId = defineModel("selectedCityId");
 const selectedZoneId = defineModel("selectedZoneId");
+
+onMounted(() => {
+    if (cityStore.cities.length === 1) {
+        selectedCityId.value = cityStore.cities[0].id;
+
+        const zones = zoneStore.getZonesByCityId(cityStore.cities[0].id);
+        if (zones.length === 1) {
+            selectedZoneId.value = zones[0].id;
+        }
+    }
+});
 </script>
 
 <template>
