@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import swal from "sweetalert2";
+
+import { useI18n } from "vue-i18n";
 import { onMounted, watch } from "vue";
 
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationStore } from "@/stores/operation-store";
 
 const props = defineProps<{ zoneId: string }>();
+
+const { t } = useI18n();
 
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
@@ -13,7 +18,26 @@ const operationStore = useOperationStore();
 const operationParametersStore = useOperationParametersStore();
 
 async function runOperation() {
-    await operationStore.runOperation(selectedOperationParametersId.value as string);
+    if (!selectedOperationParametersId.value) {
+        return;
+    }
+
+    try {
+        await operationStore.runOperation(selectedOperationParametersId.value as string);
+    } catch(error) {
+        await swal.fire({
+            icon: "success",
+            title: t("dialogs.operationRunErrorTitle"),
+            text: t("dialogs.operationRunErrorText"),
+        });
+        return;
+    }
+
+    await swal.fire({
+        icon: "success",
+        title: t("dialogs.operationRunSuccessTitle"),
+        text: t("dialogs.operationRunSuccessText"),
+    });
 }
 
 function setSelectedOperationId(zoneId: string) {

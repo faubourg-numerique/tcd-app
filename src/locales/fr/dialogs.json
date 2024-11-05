@@ -4,5 +4,9 @@
     "deleteOperationScheduleQuestionText": "Êtes-vous sûr de vouloir supprimer cet événement ?",
     "deleteOperationScheduleQuestionTitle": "Supprimer cet événement ?",
     "deleteSubscriptionQuestionText": "Êtes-vous sûr de vouloir supprimer cette alerte ?",
-    "deleteSubscriptionQuestionTitle": "Supprimer cette alerte ?"
+    "deleteSubscriptionQuestionTitle": "Supprimer cette alerte ?",
+    "operationRunErrorTitle": "Échec de l'exécution de l'opération",
+    "operationRunErrorText": "Une erreur s'est produite lors de l'exécution de l'opération.",
+    "operationRunSuccessTitle": "Opération exécutée avec succès",
+    "operationRunSuccessText": "L'opération a été exécutée avec succès."
 }
