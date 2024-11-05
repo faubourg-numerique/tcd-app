@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import swal from "sweetalert2";
 
-import { useI18n } from "vue-i18n";
 import { onMounted, watch } from "vue";
+import { useI18n } from "vue-i18n";
 
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationStore } from "@/stores/operation-store";
@@ -24,7 +24,7 @@ async function runOperation() {
 
     try {
         await operationStore.runOperation(selectedOperationParametersId.value as string);
-    } catch(error) {
+    } catch (error) {
         await swal.fire({
             icon: "success",
             title: t("dialogs.operationRunErrorTitle"),
