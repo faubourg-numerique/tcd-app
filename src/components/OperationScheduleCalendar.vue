@@ -234,6 +234,12 @@ async function deleteOperationSchedule(operationSchedule: OperationSchedule) {
     }
 }
 
+function sortedOperationParameters(operationId: string) {
+    const operationParameters = operationParametersStore.getOperationParametersByOperationId(operationId);
+    operationParameters.sort((a, b) => a.name.localeCompare(b.name));
+    return operationParameters;
+}
+
 onMounted(() => {
     if (operationScheduleFormModalElement.value) {
         operationScheduleFormModal = new Modal(operationScheduleFormModalElement.value);
@@ -301,7 +307,7 @@ onMounted(() => {
                     <div v-if="operationSchedule.hasOperation">
                         <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
                         <select id="has-operation-parameters" v-model="operationSchedule.hasOperationParameters" class="form-select" required>
-                            <option v-for="operationParameters in operationParametersStore.getOperationParametersByOperationId(operationSchedule.hasOperation)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
+                            <option v-for="operationParameters in sortedOperationParameters(operationSchedule.hasOperation)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
                         </select>
                     </div>
                 </div>
