@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { onMounted, watch } from "vue";
+
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationStore } from "@/stores/operation-store";
+
+const props = defineProps<{ zoneId: string }>();
 
 const selectedOperationId = defineModel("selectedOperationId");
 const selectedOperationParametersId = defineModel("selectedOperationParametersId");
@@ -11,6 +15,20 @@ const operationParametersStore = useOperationParametersStore();
 async function runOperation() {
     await operationStore.runOperation(selectedOperationParametersId.value as string);
 }
+
+function setSelectedOperationId(zoneId: string) {
+    const operations = operationStore.getOperationsByZoneId(zoneId as string);
+    selectedOperationId.value = operations.length === 1 ? operations[0].id : null;
+}
+
+onMounted(() => setSelectedOperationId(props.zoneId));
+
+watch(() => props.zoneId, setSelectedOperationId);
+
+watch(selectedOperationId, (operationId) => {
+    const operationParameters = operationParametersStore.getOperationParametersByOperationId(operationId as string);
+    selectedOperationParametersId.value = operationParameters.length === 1 ? operationParameters[0].id : null;
+});
 </script>
 
 <template>
@@ -19,7 +37,7 @@ async function runOperation() {
             <label for="has-operation" class="form-label">{{ $t("main.operation") }}</label>
             <select id="has-operation" v-model="selectedOperationId" class="form-select" required>
                 <option :value="null" disabled>-</option>
-                <option v-for="operation in operationStore.operations" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
+                <option v-for="operation in operationStore.getOperationsByZoneId(props.zoneId)" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
             </select>
         </div>
         <div v-if="selectedOperationId">

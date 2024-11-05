@@ -113,7 +113,8 @@ const options = reactive<CalendarOptions>({
         operationSchedule.endTime = "";
         operationSchedule.duration = "";
         operationSchedule.hasZone = props.zoneId;
-        operationSchedule.hasOperation = "";
+        operationSchedule.hasOperation = operations.length ? operations[0].id : "";
+        operationSchedule.hasOperationParameters = "";
 
         startDate.value = dateStr;
         startTime.value = "";
