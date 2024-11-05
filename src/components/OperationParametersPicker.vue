@@ -74,7 +74,7 @@ watch(selectedOperationId, (operationId) => {
             <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
             <select id="has-operation-parameters" v-model="selectedOperationParametersId" class="form-select" required>
                 <option :value="null" disabled>{{ $t("main.selectParameters") }}</option>
-                <option v-for="operationParameters in sortedOperationParameters(selectedOperationId)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
+                <option v-for="operationParameters in sortedOperationParameters(selectedOperationId as string)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">{{ $t("main.submit") }}</button>
