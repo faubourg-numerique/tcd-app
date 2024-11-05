@@ -269,12 +269,12 @@ onMounted(() => {
                         <input id="start-time" v-model="startTime" type="time" step="1" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label for="duration-days" class="form-label">{{ $t("main.days") }}</label>
-                        <input id="duration-days" v-model="operationScheduleDurationDays" type="number" step="1" min="0" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
                         <label for="duration" class="form-label">{{ $t("main.duration") }}</label>
                         <input id="duration" v-model="operationSchedule.duration" type="time" step="1" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration-days" class="form-label">{{ $t("main.days") }}</label>
+                        <input id="duration-days" v-model="operationScheduleDurationDays" type="number" step="1" min="0" class="form-control" required />
                     </div>
                     <template v-if="operationSchedule.byDay.length">
                         <div class="mb-3">
