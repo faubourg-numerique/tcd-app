@@ -29,9 +29,9 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
                             <li>
                                 <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.buildings' }"><FontAwesomeIcon :icon="['fas', 'recycle']" class="me-2" />{{ $t("main.buildings") }}</RouterLink>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.lighting' }"><FontAwesomeIcon :icon="['fas', 'lightbulb']" class="me-2" />{{ $t("main.lighting") }}</RouterLink>
-                            </li>
+                            </li> -->
                             <li>
                                 <RouterLink class="dropdown-item" :to="{ name: 'responsibilities.watercourses' }"><FontAwesomeIcon :icon="['fas', 'water']" class="me-2" />{{ $t("main.watercourses") }}</RouterLink>
                             </li>
