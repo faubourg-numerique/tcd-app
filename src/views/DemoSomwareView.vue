@@ -30,15 +30,28 @@ async function runOperation(operationParametersId: string) {
         title: "Commande envoyée"
     });
 }
+
+setTimeout(() => swal.fire({
+    showConfirmButton: false,
+    allowOutsideClick: false,
+    icon: "info",
+    title: "Session terminée",
+    text: "Cette session est terminée, veuillez scanner de nouveau le QR code pour en obtenir une nouvelle. Vous pouvez fermer cette page."
+}), 10 * 60 * 1000);
 </script>
 
 <template>
     <div class="container">
-        <div class="text-center mt-3 mb-5">
-            <img style="height: 80px;" alt="Somme Numérique" src="@/assets/images/logos/somme-numerique-2.png" />
+        <div class="row mt-3 mb-5">
+            <div class="col text-center">
+                <img style="height: 80px;" alt="Somme Numérique" src="@/assets/images/logos/somme-numerique-2.png" />
+            </div>
+            <div class="col text-center">
+                <img style="height: 80px;" alt="Somme Numérique" src="@/assets/images/logos/faubourg-numerique.png" />
+            </div>
         </div>
         <div class="mb-5">
-            <p class="h5 mb-3">💧 Niveau d'eau</p>
+            <p class="h5 mb-3">💧 Cours d'eau</p>
             <div class="row">
                 <div class="col">
                     <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:e5debc5c-95a5-4b3a-81de-ddc568b0d289')">0%</button>
@@ -79,7 +92,7 @@ async function runOperation(operationParametersId: string) {
                 </div>
             </div>
         </div>
-        <div>
+        <div class="mb-5">
             <p class="h5 mb-3">🔥 Chauffage</p>
             <div class="row">
                 <div class="col">
