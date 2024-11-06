@@ -31,13 +31,23 @@ async function runOperation(operationParametersId: string) {
     });
 }
 
-setTimeout(() => swal.fire({
-    showConfirmButton: false,
-    allowOutsideClick: false,
-    icon: "info",
-    title: "Session terminée",
-    text: "Cette session est terminée, veuillez scanner de nouveau le QR code pour en obtenir une nouvelle. Vous pouvez fermer cette page."
-}), 10 * 60 * 1000);
+const sessionEndDate = new Date();
+sessionEndDate.setMinutes(sessionEndDate.getMinutes() + 10);
+
+const sessionInterval = setInterval(() => {
+    const date = new Date();
+    if (date > sessionEndDate) {
+        clearInterval(sessionInterval);
+
+        swal.fire({
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            icon: "info",
+            title: "Session terminée",
+            text: "Cette session est terminée, veuillez scanner de nouveau le QR code pour en obtenir une nouvelle. Vous pouvez fermer cette page."
+        });
+    }
+}, 1000);
 </script>
 
 <template>
