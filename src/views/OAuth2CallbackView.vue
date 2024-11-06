@@ -63,7 +63,7 @@ async function main() {
 
     mainStore.isAuthenticated = true;
 
-    router.push({ name: "dashboard" });
+    router.push({ name: route.query.redirection ? route.query.redirection as string : "dashboard" });
 }
 
 main();

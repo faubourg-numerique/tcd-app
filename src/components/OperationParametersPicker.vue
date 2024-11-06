@@ -26,7 +26,7 @@ async function runOperation() {
         await operationStore.runOperation(selectedOperationParametersId.value as string);
     } catch (error) {
         await swal.fire({
-            icon: "success",
+            icon: "error",
             title: t("dialogs.operationRunErrorTitle"),
             text: t("dialogs.operationRunErrorText"),
         });
