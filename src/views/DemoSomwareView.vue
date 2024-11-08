@@ -62,7 +62,7 @@ const sessionInterval = setInterval(() => {
         </div>
         <div class="mb-5">
             <p class="h5 mb-3">💧 Cours d'eau</p>
-            <div class="row">
+            <div class="row row-cols-5">
                 <div class="col">
                     <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:e5debc5c-95a5-4b3a-81de-ddc568b0d289')">0%</button>
                 </div>
@@ -82,7 +82,7 @@ const sessionInterval = setInterval(() => {
         </div>
         <div class="mb-5">
             <p class="h5 mb-3">💡 Éclairage</p>
-            <div class="row">
+            <div class="row row-cols-2">
                 <div class="col">
                     <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:209d923c-7cba-4e33-a9a3-e6271ea293cd')">Allumer</button>
                 </div>
@@ -93,18 +93,18 @@ const sessionInterval = setInterval(() => {
         </div>
         <div class="mb-5">
             <p class="h5 mb-3">♻️ Points d'apport volontaires</p>
-            <div class="row">
+            <div class="row row-cols-2">
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:bbddea53-d46b-4a20-af95-ea16b64341de')">Jeter un sac poubelle</button>
+                    <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:bbddea53-d46b-4a20-af95-ea16b64341de')">Sac poubelle</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:a0a0bce5-b328-4a4a-b077-6c343e5b1a2e')">Jeter une bouteille en verre</button>
+                    <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:a0a0bce5-b328-4a4a-b077-6c343e5b1a2e')">Bouteille en verre</button>
                 </div>
             </div>
         </div>
         <div class="mb-5">
             <p class="h5 mb-3">🔥 Chauffage</p>
-            <div class="row">
+            <div class="row row-cols-5">
                 <div class="col">
                     <button type="button" class="btn btn-outline-primary w-100" @click="runOperation('urn:ngsi-ld:OperationParameters:5f274063-2b25-4b3e-9141-a3762a712e18')">16°</button>
                 </div>
