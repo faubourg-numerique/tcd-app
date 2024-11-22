@@ -1,7 +1,28 @@
 export type DeviceMeasurement = {
     id: string;
+    batteryVoltage?: number;
+    brokenSensor?: boolean;
+    childLock?: boolean;
+    co2?: number;
     distance?: number;
+    highMotorConsumption?: boolean;
+    humidity?: number;
+    light?: number;
+    lowMotorConsumption?: boolean;
     measurementType: string;
+    motion?: number;
+    motorPosition?: number;
+    motorRange?: number;
     name: string;
+    openWindow?: boolean;
+    pressure?: number;
+    reason?: number;
     refDevice: string;
+    relativeHumidity?: number;
+    sensorTemperature?: number;
+    targetTemperature?: number;
+    temperature?: number;
+    vdd?: number;
+    fillingLevel?: number;
+    currentLevel?: number;
 };
