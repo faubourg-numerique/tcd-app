@@ -1,4 +1,7 @@
 {
+    "targetTemperature": "Température cible",
+    "temperature": "Température",
+    "humidity": "Humidité",
     "actions": "Actions",
     "add": "Ajouter",
     "addAnEvent": "Ajouter un événement",
@@ -40,6 +43,7 @@
     "operation": "Opération",
     "parameters": "Paramètres",
     "recurrence": "Récurrence",
+    "refresh": "Refresh",
     "reminder": "Rappel",
     "roles": "Rôles",
     "selectACity": "Sélectionner une ville",

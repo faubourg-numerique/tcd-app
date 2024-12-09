@@ -22,7 +22,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
 
 const selectedOperationId: Ref<string | null> = ref(null);
 const selectedOperationParametersId: Ref<string | null> = ref(null);
-    
+
 const exportFromDate: Ref<string> = ref(new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleDateString("en-CA"));
 const exportToDate: Ref<string> = ref(new Date().toLocaleDateString("en-CA"));
 
@@ -66,10 +66,37 @@ async function exportData() {
 
 <template>
     <div class="container">
-        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-3" />
+        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId"
+            class="mb-3" />
+        <div class="table-responsive bg-white p-4 rounded border border-danger mb-3" v-if="selectedCityId && selectedZoneId">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{{ $t("main.name") }}</th>
+                        <th class="text-end">{{ $t("main.targetTemperature") }}</th>
+                        <th class="text-end">{{ $t("main.temperature") }}</th>
+                        <th class="text-end">{{ $t("main.humidity") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="deviceMeasurement in deviceMeasurementStore.getDeviceMeasurementsByZoneIdAndMeasurementType(selectedZoneId, 'thermostat')">
+                        <td>{{ deviceMeasurement.name }}</td>
+                        <td class="text-end">{{ deviceMeasurement.targetTemperature }} °C</td>
+                        <td class="text-end">{{ deviceMeasurement.sensorTemperature }} °C</td>
+                        <td class="text-end">{{ deviceMeasurement.relativeHumidity }} %</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-primary" @click="deviceMeasurementStore.fetchDeviceMeasurements()">{{ $t("main.refresh") }}</button>
+        </div>
         <template v-if="selectedCityId && selectedZoneId">
-            <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId" class="mb-3" />
-            <form v-if="selectedZoneId" class="row row-cols-lg-auto g-3 align-items-center mb-3" @submit.prevent="exportData">
+            <OperationParametersPicker v-model="selectedOperationParametersId"
+                v-model:selected-operation-id="selectedOperationId"
+                v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId"
+                class="mb-3" />
+            <form v-if="selectedZoneId" class="row row-cols-lg-auto g-3 align-items-center mb-3"
+                @submit.prevent="exportData">
                 <div class="col-12">
                     <input type="date" class="form-control" v-model="exportFromDate" required>
                 </div>
