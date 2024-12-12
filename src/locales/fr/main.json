@@ -1,4 +1,6 @@
 {
+    "voltage": "Tension",
+    "lock": "Verrouillage",
     "targetTemperature": "Température cible",
     "temperature": "Température",
     "humidity": "Humidité",

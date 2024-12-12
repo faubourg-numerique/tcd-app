@@ -1,4 +1,6 @@
 {
+    "voltage": "Voltage",
+    "lock": "Lock",
     "targetTemperature": "Target temperature",
     "temperature": "Temperature",
     "humidity": "Humidity",

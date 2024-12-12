@@ -138,6 +138,8 @@ async function exportData() {
                         <th class="text-end">{{ $t("main.targetTemperature") }}</th>
                         <th class="text-end">{{ $t("main.temperature") }}</th>
                         <th class="text-end">{{ $t("main.humidity") }}</th>
+                        <th class="text-end">{{ $t("main.voltage") }}</th>
+                        <th class="text-center">{{ $t("main.lock") }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -147,6 +149,8 @@ async function exportData() {
                         <td class="text-end">{{ deviceMeasurement.targetTemperature }} °C</td>
                         <td class="text-end">{{ deviceMeasurement.sensorTemperature }} °C</td>
                         <td class="text-end">{{ deviceMeasurement.relativeHumidity }} %</td>
+                        <td class="text-end">{{ deviceMeasurement.batteryVoltage }} V</td>
+                        <td class="text-center">{{ deviceMeasurement.childLock ? "ON" : "OFF" }}</td>
                     </tr>
                 </tbody>
             </table>
