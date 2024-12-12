@@ -73,17 +73,37 @@ watch(selectedZoneId, async () => {
     datasets.length = 0;
 
     const deviceMeasurementRowById = deviceMeasurementRows.reduce((acc, row) => ((acc[row.id] = acc[row.id] || []).push(row), acc), {});
-    Object.entries(deviceMeasurementRowById).forEach(([id, rows]) => {
-        const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        datasets.push({
-            label: deviceMeasurementStore.getDeviceMeasurement(id).name,
-            borderColor: color,
-            backgroundColor: color,
-            data: rows.filter((_, index) => index % 3 === 0).map(row => ({
-                x: row.datetime,
-                y: row.sensortemperature
-            }))
+    const dates = Array.from({ length: Math.ceil((new Date() - new Date(new Date().setDate(new Date().getDate() - 3)).setHours(0, 0, 0, 0)) / 3600000) }, (_, i) => new Date(new Date(new Date().setDate(new Date().getDate() - 3)).setHours(0, 0, 0, 0) + i * 3600000));
+    const data = {};
+
+    for (const deviceMeasurementId of Object.keys(deviceMeasurementRowById)) {
+        data[deviceMeasurementId] = dates.map((date) => {
+            const targetTime = new Date(date).getTime();
+            return deviceMeasurementRows.reduce((closest, current) => {
+                const currentTime = current.datetime ? new Date(current.datetime).getTime() : Infinity;
+                const closestTime = closest.datetime ? new Date(closest.datetime).getTime() : Infinity;
+                return Math.abs(currentTime - targetTime) < Math.abs(closestTime - targetTime) ? current : closest;
+            }, { datetime: null });
         });
+    }
+
+    const averageSensorTemperature = dates.map((date, index) => {
+        const temperaturesForDate = Object.keys(data).map(deviceMeasurementId => {
+            const deviceMeasurement = data[deviceMeasurementId][index];
+            return deviceMeasurement ? deviceMeasurement.sensortemperature : null;
+        }).filter((temp) => temp != null);
+
+        return temperaturesForDate.length > 0 ? temperaturesForDate.reduce((sum, temp) => sum + temp, 0) / temperaturesForDate.length : null;
+    });
+
+    datasets.push({
+        label: "Moyenne des températures aux thermostats",
+        borderColor: "#e74c3c",
+        backgroundColor: "#c0392b",
+        data: dates.map((date, index) => ({
+            x: date,
+            y: averageSensorTemperature[index]
+        }))
     });
 });
 
