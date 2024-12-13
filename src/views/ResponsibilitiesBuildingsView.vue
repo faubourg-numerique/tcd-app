@@ -143,15 +143,90 @@ async function exportData() {
     fileDownload(csv1, "device-measurement-current-export.csv");
     fileDownload(csv2, "device-measurement-history-export.csv");
 }
+
+const deviceMeasurementRowsModalLoading = ref(false);
+const deviceMeasurementRowsModalName = ref("");
+const deviceMeasurementRowsModalData: Reactive<DeviceMeasurementRow[]> = reactive([]);
+
+async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasurement) {
+    if (!selectedZoneId.value) {
+        return;
+    }
+
+    console.log(deviceMeasurement)
+
+    deviceMeasurementRowsModalLoading.value = true;
+    deviceMeasurementRowsModalName.value = deviceMeasurement.name;
+    deviceMeasurementRowsModalData.length = 0;
+
+    const toDate = new Date();
+    const fromDate = new Date(toDate.getTime() - (10 * 24 * 60 * 60 * 1000));
+
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
+        selectedZoneId.value,
+        "thermostat",
+        fromDate.toISOString().split("T")[0],
+        toDate.toISOString().split("T")[0]
+    );
+
+    deviceMeasurementRows.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+
+    deviceMeasurementRowsModalData.push(...deviceMeasurementRows.filter((deviceMeasurementRow) => deviceMeasurementRow.id === deviceMeasurement.id));
+    deviceMeasurementRowsModalLoading.value = false;
+}
 </script>
 
 <template>
+    <div id="device-measurement-rows-modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} ({{ deviceMeasurementRowsModalData.length }})</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center" v-if="deviceMeasurementRowsModalLoading">
+                        <div class="spinner-border"></div>
+                    </div>
+                    <template v-else>
+                        <table class="table align-middle" v-if="deviceMeasurementRowsModalData">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">{{ $t("main.date") }}</th>
+                                    <th class="text-end">{{ $t("main.targetTemperature") }}</th>
+                                    <th class="text-end">{{ $t("main.temperature") }}</th>
+                                    <th class="text-end">{{ $t("main.humidity") }}</th>
+                                    <th class="text-end">{{ $t("main.voltage") }}</th>
+                                    <th class="text-center">{{ $t("main.lock") }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(deviceMeasurementRow, index) in deviceMeasurementRowsModalData" :key="index">
+                                    <td class="text-center">{{ new Date(deviceMeasurementRow.datetime).toLocaleString() }}</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.targettemperature }} °C</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.sensortemperature }} °C</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.relativehumidity }} %</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.batteryvoltage }} V</td>
+                                    <td class="text-center">{{ deviceMeasurementRow.childlock ? "ON" : "OFF" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t("main.close")
+                        }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId"
             class="mb-3" />
         <div class="table-responsive bg-white p-4 rounded border border-danger mb-3"
             v-if="selectedCityId && selectedZoneId">
-            <table class="table">
+            <table class="table align-middle">
                 <thead>
                     <tr>
                         <th>{{ $t("main.name") }}</th>
@@ -165,7 +240,12 @@ async function exportData() {
                 <tbody>
                     <tr
                         v-for="deviceMeasurement in deviceMeasurementStore.getDeviceMeasurementsByZoneIdAndMeasurementType(selectedZoneId, 'thermostat')">
-                        <td>{{ deviceMeasurement.name }}</td>
+                        <td>
+                            <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                data-bs-target="#device-measurement-rows-modal"
+                                @click="loadDeviceMeasurementRowsModal(deviceMeasurement)">{{ deviceMeasurement.name
+                                }}</button>
+                        </td>
                         <td class="text-end">{{ deviceMeasurement.targetTemperature }} °C</td>
                         <td class="text-end">{{ deviceMeasurement.sensorTemperature }} °C</td>
                         <td class="text-end">{{ deviceMeasurement.relativeHumidity }} %</td>
