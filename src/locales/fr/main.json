@@ -1,4 +1,5 @@
 {
+    "date": "Date",
     "voltage": "Tension",
     "lock": "Verrouillage",
     "targetTemperature": "Température cible",

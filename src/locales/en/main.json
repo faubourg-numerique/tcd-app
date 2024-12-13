@@ -1,4 +1,5 @@
 {
+    "date": "Date",
     "voltage": "Voltage",
     "lock": "Lock",
     "targetTemperature": "Target temperature",
