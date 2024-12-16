@@ -19,6 +19,8 @@ import { far } from "@fortawesome/free-regular-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import "@/web-socket-clients/demo-web-socket-client";
+
 library.add(fas);
 library.add(far);
 library.add(fab);

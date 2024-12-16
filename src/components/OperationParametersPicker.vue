@@ -70,7 +70,7 @@ watch(selectedOperationId, (operationId) => {
                 <option v-for="operation in operationStore.getOperationsByZoneId(props.zoneId)" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
             </select>
         </div>
-        <div v-if="selectedOperationId">
+        <div class="mb-3" v-if="selectedOperationId">
             <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
             <select id="has-operation-parameters" v-model="selectedOperationParametersId" class="form-select" required>
                 <option :value="null" disabled>{{ $t("main.selectParameters") }}</option>
