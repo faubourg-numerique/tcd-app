@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useMainStore } from "@/stores/main-store";
 import DashboardView from "@/views/DashboardView.vue";
+import DemoSomwareView from "@/views/DemoSomwareView.vue";
 import OAuth2CallbackView from "@/views/OAuth2CallbackView.vue";
 import ResponsibilitiesBuildingsView from "@/views/ResponsibilitiesBuildingsView.vue";
 import ResponsibilitiesLightingView from "@/views/ResponsibilitiesLightingView.vue";
@@ -64,6 +65,11 @@ const router = createRouter({
             path: "/user",
             name: "user",
             component: UserView,
+        },
+        {
+            path: "/demo/somware",
+            name: "demo.somware",
+            component: DemoSomwareView,
         },
     ],
 });
