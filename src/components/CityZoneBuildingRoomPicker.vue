@@ -37,15 +37,14 @@ watch(selectedBuildingId, (buildingId) => {
 </script>
 
 <template>
-    <div class="container bg-white p-4 rounded text-center border border-danger mb-3">
+    <div class="container bg-white p-4 rounded text-center border border-danger">
         <div class="row">
             <div class="col-12 col-md">
                 <div class="form-group mb-3">
                     <label for="city-id" class="form-label">{{ $t("main.city") }}</label>
                     <select id="city-id" v-model="selectedCityId" class="form-select">
                         <option :value="null" disabled>{{ $t("main.selectACity") }}</option>
-                        <option v-for="city in cityStore.cities" :key="city.id" :value="city.id">{{ city.name }}
-                        </option>
+                        <option v-for="city in cityStore.cities" :key="city.id" :value="city.id">{{ city.name }}</option>
                     </select>
                 </div>
             </div>
@@ -54,8 +53,7 @@ watch(selectedBuildingId, (buildingId) => {
                     <label for="zone-id" class="form-label">{{ $t("main.zone") }}</label>
                     <select id="zone-id" v-model="selectedZoneId" class="form-select">
                         <option :value="null" disabled>{{ $t("main.selectAZone") }}</option>
-                        <option v-for="zone in zoneStore.getZonesByCityId(selectedCityId as string)" :key="zone.id"
-                            :value="zone.id">{{ zone.name }}</option>
+                        <option v-for="zone in zoneStore.getZonesByCityId(selectedCityId as string)" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
                     </select>
                 </div>
             </div>
