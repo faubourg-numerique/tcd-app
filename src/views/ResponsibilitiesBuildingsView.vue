@@ -8,7 +8,7 @@ import { useRoute } from "vue-router";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend, type ChartData, type ChartOptions, type ChartDataset } from "chart.js";
 import { Line } from "vue-chartjs";
 
-import CityZonePicker from "@/components/CityZonePicker.vue";
+import CityZoneBuildingRoomPicker from "@/components/CityZoneBuildingRoomPicker.vue";
 import OperationParametersPicker from "@/components/OperationParametersPicker.vue";
 import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
 
@@ -24,6 +24,8 @@ const deviceMeasurementRowStore = useDeviceMeasurementRowStore();
 
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
+const selectedBuildingId: Ref<string | null> = ref((route.query.building as string) ?? null);
+const selectedRoomId: Ref<string | null> = ref((route.query.roomId as string) ?? null);
 
 const selectedOperationId: Ref<string | null> = ref(null);
 const selectedOperationParametersId: Ref<string | null> = ref(null);
@@ -222,7 +224,7 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
     </div>
 
     <div class="container">
-        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId"
+        <CityZoneBuildingRoomPicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" v-model:selected-building-id="selectedBuildingId" v-model:selected-room-id="selectedRoomId"
             class="mb-3" />
         <div class="table-responsive bg-white p-4 rounded border border-danger mb-3"
             v-if="selectedCityId && selectedZoneId">
