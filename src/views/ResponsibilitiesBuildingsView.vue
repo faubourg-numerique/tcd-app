@@ -39,7 +39,6 @@ const deviceMeasurementChartData = computed(() => ({
 
 const deviceMeasurementChartOptions = computed(() => ({
     responsive: true,
-
     scales: {
         x: {
             type: "time",
@@ -50,6 +49,70 @@ const deviceMeasurementChartOptions = computed(() => ({
         y: {
             ticks: {
                 stepSize: 0.2
+            }
+        }
+    }
+}));
+
+const modalChartData = computed(() => ({
+    datasets: [
+        {
+            label: 'Température',
+            borderColor: '#e74c3c',
+            backgroundColor: '#c0392b',
+            yAxisID: 'temperature',
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.avg_temp
+            }))
+        },
+        {
+            label: 'Humidité',
+            borderColor: '#3498db',
+            backgroundColor: '#2980b9',
+            yAxisID: 'humidity',
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.avg_humidity
+            }))
+        }
+    ]
+}));
+
+const modalChartOptions = computed(() => ({
+    responsive: true,
+    interaction: {
+        mode: 'index',
+        intersect: false,
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'hour',
+                displayFormats: {
+                    hour: 'dd/MM HH:mm'
+                }
+            },
+            title: {
+                display: true,
+                text: 'Date et heure'
+            }
+        },
+        temperature: {
+            type: 'linear',
+            position: 'left',
+            title: {
+                display: true,
+                text: 'Température (°C)'
+            }
+        },
+        humidity: {
+            type: 'linear',
+            position: 'right',
+            title: {
+                display: true,
+                text: 'Humidité (%)'
             }
         }
     }
@@ -153,8 +216,6 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
         return;
     }
 
-    console.log(deviceMeasurement)
-
     deviceMeasurementRowsModalLoading.value = true;
     deviceMeasurementRowsModalName.value = deviceMeasurement.name;
     deviceMeasurementRowsModalData.length = 0;
@@ -162,7 +223,7 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
     const toDate = new Date();
     const fromDate = new Date(toDate.getTime() - (10 * 24 * 60 * 60 * 1000));
 
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchHourlyDeviceMeasurementRows(
         selectedZoneId.value,
         "thermostat",
         fromDate.toISOString().split("T")[0],
@@ -174,6 +235,7 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
     deviceMeasurementRowsModalData.push(...deviceMeasurementRows.filter((deviceMeasurementRow) => deviceMeasurementRow.id === deviceMeasurement.id));
     deviceMeasurementRowsModalLoading.value = false;
 }
+
 </script>
 
 <template>
@@ -189,28 +251,9 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
                         <div class="spinner-border"></div>
                     </div>
                     <template v-else>
-                        <table class="table align-middle" v-if="deviceMeasurementRowsModalData">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">{{ $t("main.date") }}</th>
-                                    <th class="text-end">{{ $t("main.targetTemperature") }}</th>
-                                    <th class="text-end">{{ $t("main.temperature") }}</th>
-                                    <th class="text-end">{{ $t("main.humidity") }}</th>
-                                    <th class="text-end">{{ $t("main.voltage") }}</th>
-                                    <th class="text-center">{{ $t("main.lock") }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(deviceMeasurementRow, index) in deviceMeasurementRowsModalData" :key="index">
-                                    <td class="text-center">{{ new Date(deviceMeasurementRow.datetime).toLocaleString() }}</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.targettemperature }} °C</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.sensortemperature }} °C</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.relativehumidity }} %</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.batteryvoltage }} V</td>
-                                    <td class="text-center">{{ deviceMeasurementRow.childlock ? "ON" : "OFF" }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div style="height: 400px;">
+                            <Line :data="modalChartData" :options="modalChartOptions" />
+                        </div>
                     </template>
                 </div>
                 <div class="modal-footer">
