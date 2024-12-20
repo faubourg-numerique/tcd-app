@@ -1,4 +1,5 @@
 {
+    "noData": "Aucune donnée.",
     "createSubscriptionSuccessText": "Cette alerte a été créée avec succès.",
     "createSubscriptionSuccessTitle": "Alerte créée !",
     "deleteOperationScheduleQuestionText": "Êtes-vous sûr de vouloir supprimer cet événement ?",
