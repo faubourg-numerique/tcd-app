@@ -1,21 +1,15 @@
 <script setup lang="ts">
-import "chartjs-adapter-date-fns";
-
 import { computed, onMounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
 import { useRoute } from "vue-router";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend, type ChartData, type ChartOptions, type ChartDataset } from "chart.js";
-import { Line } from "vue-chartjs";
 
 import CityZoneBuildingRoomPicker from "@/components/CityZoneBuildingRoomPicker.vue";
 import OperationParametersPicker from "@/components/OperationParametersPicker.vue";
 import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
-import ThermostatTable from "@/components/ThermostatTable.vue";
-import IndoorAmbianceTable from "@/components/IndoorAmbianceTable.vue";
+import ThermostatTab from "@/components/ThermostatTab.vue";
+import IndoorAmbianceTab from "@/components/IndoorAmbianceTab.vue";
 
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend);
 
 const route = useRoute();
 
@@ -29,82 +23,6 @@ const selectedRoomId: Ref<string | null> = ref((route.query.roomId as string) ??
 
 const selectedOperationId: Ref<string | null> = ref(null);
 const selectedOperationParametersId: Ref<string | null> = ref(null);
-
-const datasets: Reactive<ChartDataset[]> = reactive([]);
-
-const deviceMeasurementChartData = computed(() => ({
-    datasets: JSON.parse(JSON.stringify(datasets))
-}));
-
-const deviceMeasurementChartOptions = computed(() => ({
-    responsive: true,
-
-    scales: {
-        x: {
-            type: "time",
-            time: {
-                unit: "day"
-            }
-        },
-        y: {
-            ticks: {
-                stepSize: 0.2
-            }
-        }
-    }
-}));
-
-watch(selectedRoomId, async () => {
-    if (!selectedRoomId.value) {
-        return;
-    }
-
-    const toDate = new Date();
-    const fromDate = new Date(toDate.getTime() - (3 * 24 * 60 * 60 * 1000));
-
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
-        selectedRoomId.value,
-        "thermostat",
-        fromDate.toISOString().split("T")[0],
-        toDate.toISOString().split("T")[0]
-    );
-
-    datasets.length = 0;
-
-    const deviceMeasurementRowById = deviceMeasurementRows.reduce((acc, row) => ((acc[row.id] = acc[row.id] || []).push(row), acc), {});
-    const dates = Array.from({ length: Math.ceil((new Date() - new Date(new Date().setDate(new Date().getDate() - 3)).setHours(0, 0, 0, 0)) / 3600000) }, (_, i) => new Date(new Date(new Date().setDate(new Date().getDate() - 3)).setHours(0, 0, 0, 0) + i * 3600000));
-    const data = {};
-
-    for (const deviceMeasurementId of Object.keys(deviceMeasurementRowById)) {
-        data[deviceMeasurementId] = dates.map((date) => {
-            const targetTime = new Date(date).getTime();
-            return deviceMeasurementRows.reduce((closest, current) => {
-                const currentTime = current.datetime ? new Date(current.datetime).getTime() : Infinity;
-                const closestTime = closest.datetime ? new Date(closest.datetime).getTime() : Infinity;
-                return Math.abs(currentTime - targetTime) < Math.abs(closestTime - targetTime) ? current : closest;
-            }, { datetime: null });
-        });
-    }
-
-    const averageSensorTemperature = dates.map((date, index) => {
-        const temperaturesForDate = Object.keys(data).map(deviceMeasurementId => {
-            const deviceMeasurement = data[deviceMeasurementId][index];
-            return deviceMeasurement ? deviceMeasurement.sensortemperature : null;
-        }).filter((temp) => temp != null);
-
-        return temperaturesForDate.length > 0 ? temperaturesForDate.reduce((sum, temp) => sum + temp, 0) / temperaturesForDate.length : null;
-    });
-
-    datasets.push({
-        label: "Moyenne des températures aux thermostats",
-        borderColor: "#e74c3c",
-        backgroundColor: "#c0392b",
-        data: dates.map((date, index) => ({
-            x: date,
-            y: averageSensorTemperature[index]
-        }))
-    });
-});
 </script>
 
 <template>
@@ -124,16 +42,13 @@ watch(selectedRoomId, async () => {
             </ul>
             <div class="tab-content">
                 <div id="pills-thermostat" class="tab-pane show active" tabindex="0">
-                    <ThermostatTable :room-id="selectedRoomId"></ThermostatTable>
+                    <ThermostatTab :room-id="selectedRoomId"></ThermostatTab>
                 </div>
                 <div id="pills-indoor-ambiance" class="tab-pane" tabindex="0">
-                    <IndoorAmbianceTable :room-id="selectedRoomId"></IndoorAmbianceTable>
+                    <IndoorAmbianceTab :room-id="selectedRoomId"></IndoorAmbianceTab>
                 </div>
             </div>
 
-            <!-- <div class="bg-white p-4 rounded border border-danger mb-3" v-if="selectedCityId && selectedZoneId">
-                <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" />
-            </div> -->
             <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
         </template>
     </div>
