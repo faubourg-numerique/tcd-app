@@ -25,8 +25,13 @@ const deviceMeasurementRowsModalData: Reactive<DeviceMeasurementRow[]> = reactiv
 
 const deviceMeasurements = computed(() => deviceMeasurementStore.getDeviceMeasurementsByRoomIdAndMeasurementType(props.roomId, "indoor-ambiance"));
 
-const exportFromDate: Ref<string> = ref(new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleDateString("en-CA"));
-const exportToDate: Ref<string> = ref(new Date().toLocaleDateString("en-CA"));
+const loadingData = ref(false);
+
+const toDate = reactive(new Date());
+const fromDate = reactive(new Date(toDate.getTime() - (3 * 24 * 60 * 60 * 1000)));
+
+const toDateString: Ref<string> = ref(toDate.toLocaleDateString("en-CA"));
+const fromDateString: Ref<string> = ref(fromDate.toLocaleDateString("en-CA"));
 
 const datasets: Reactive<ChartDataset[]> = reactive([]);
 
@@ -47,14 +52,25 @@ const deviceMeasurementChartOptions = computed(() => ({
     }
 }));
 
+watch(fromDateString, async () => {
+    loadingData.value = true;
+    fromDate.setTime(new Date(`${fromDateString.value}T00:00:00Z`).getTime());
+    await loadDeviceMeasurementChartData();
+    loadingData.value = false;
+});
+
+watch(toDateString, async () => {
+    loadingData.value = true;
+    toDate.setTime(new Date(`${toDateString.value}T23:59:59Z`).getTime());
+    await loadDeviceMeasurementChartData();
+    loadingData.value = false;
+});
+
 watch(() => props.roomId, loadDeviceMeasurementChartData);
 onMounted(loadDeviceMeasurementChartData);
 
 async function loadDeviceMeasurementChartData() {
     datasets.length = 0;
-
-    const toDate = new Date();
-    const fromDate = new Date(toDate.getTime() - (3 * 24 * 60 * 60 * 1000));
 
     const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
         props.roomId,
@@ -64,7 +80,12 @@ async function loadDeviceMeasurementChartData() {
     );
 
     const deviceMeasurementRowById = deviceMeasurementRows.reduce((acc, row) => ((acc[row.id] = acc[row.id] || []).push(row), acc), {});
-    const dates = Array.from({ length: Math.ceil((new Date() - new Date(new Date().setDate(new Date().getDate() - 3)).setHours(0, 0, 0, 0)) / 3600000) }, (_, i) => new Date(new Date(new Date().setDate(new Date().getDate() - 3)).setHours(0, 0, 0, 0) + i * 3600000));
+
+    const dates = Array.from(
+        { length: Math.ceil((toDate.getTime() - fromDate.getTime()) / 3600000) },
+        (_, i) => new Date(fromDate.getTime() + i * 3600000)
+    );
+
     const data = {};
 
     for (const deviceMeasurementId of Object.keys(deviceMeasurementRowById)) {
@@ -122,9 +143,6 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
     deviceMeasurementRowsModalName.value = deviceMeasurement.name;
     deviceMeasurementRowsModalData.length = 0;
 
-    const toDate = new Date();
-    const fromDate = new Date(toDate.getTime() - (10 * 24 * 60 * 60 * 1000));
-
     const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
         props.roomId,
         "indoor-ambiance",
@@ -147,7 +165,7 @@ async function exportData() {
         return;
     }
 
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(props.roomId, "indoor-ambiance", exportFromDate.value, exportToDate.value);
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(props.roomId, "indoor-ambiance", fromDateString.value, toDateString.value);
     const deviceMeasurementRowsCleaned: any[] = [];
 
     const deviceMeasurementKeys = deviceMeasurements.flatMap((deviceMeasurement) =>
@@ -213,6 +231,14 @@ async function exportData() {
     </div>
 
     <div v-if="deviceMeasurements.length" class="table-responsive bg-white p-4 rounded border border-danger mb-3">
+        <div class="row row-cols-lg-auto g-3 align-items-center mb-3">
+            <div class="col-12">
+                <input type="date" class="form-control" v-model="fromDateString" :disabled="loadingData">
+            </div>
+            <div class="col-12">
+                <input type="date" class="form-control" v-model="toDateString" :disabled="loadingData">
+            </div>
+        </div>
         <table class="table align-middle">
             <thead>
                 <tr>
@@ -228,18 +254,8 @@ async function exportData() {
             </tbody>
         </table>
         <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
-        <button type="button" class="btn btn-primary mb-3" @click="deviceMeasurementStore.fetchDeviceMeasurements()">{{ $t("main.refresh") }}</button>
-        <form class="row row-cols-lg-auto g-3 align-items-center" @submit.prevent="exportData">
-            <div class="col-12">
-                <input type="date" class="form-control" v-model="exportFromDate" required>
-            </div>
-            <div class="col-12">
-                <input type="date" class="form-control" v-model="exportToDate" required>
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">{{ $t("main.exportData") }}</button>
-            </div>
-        </form>
+        <button type="button" class="btn btn-primary me-3" @click="deviceMeasurementStore.fetchDeviceMeasurements()">{{ $t("main.refresh") }}</button>
+        <button type="button" class="btn btn-primary" @click="exportData">{{ $t("main.exportData") }}</button>
     </div>
     <div v-else class="alert alert-info">{{ $t("dialogs.noData") }}</div>
 </template>
