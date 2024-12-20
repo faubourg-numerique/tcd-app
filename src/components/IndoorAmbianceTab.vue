@@ -175,6 +175,10 @@ async function exportData() {
     for (const deviceMeasurementRow of deviceMeasurementRows) {
         const row: any = {};
         for (const [key, value] of Object.entries(deviceMeasurementRow)) {
+            if (key === "datetime") {
+                row[key.toLowerCase()] = value;
+                continue;
+            }
             if (deviceMeasurementKeys.includes(key.toLowerCase())) {
                 row[key.toLowerCase()] = value;
             }
