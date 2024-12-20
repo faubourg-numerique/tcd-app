@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import "chartjs-adapter-date-fns";
-import fileDownload from "js-file-download";
 
-import { json2csv } from "json-2-csv";
 import { computed, onMounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
 import { useRoute } from "vue-router";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend, type ChartData, type ChartOptions, type ChartDataset } from "chart.js";
@@ -32,9 +30,6 @@ const selectedRoomId: Ref<string | null> = ref((route.query.roomId as string) ??
 const selectedOperationId: Ref<string | null> = ref(null);
 const selectedOperationParametersId: Ref<string | null> = ref(null);
 
-const exportFromDate: Ref<string> = ref(new Date(new Date().setDate(new Date().getDate() - 7)).toLocaleDateString("en-CA"));
-const exportToDate: Ref<string> = ref(new Date().toLocaleDateString("en-CA"));
-
 const datasets: Reactive<ChartDataset[]> = reactive([]);
 
 const deviceMeasurementChartData = computed(() => ({
@@ -59,8 +54,8 @@ const deviceMeasurementChartOptions = computed(() => ({
     }
 }));
 
-watch(selectedZoneId, async () => {
-    if (!selectedZoneId.value) {
+watch(selectedRoomId, async () => {
+    if (!selectedRoomId.value) {
         return;
     }
 
@@ -68,7 +63,7 @@ watch(selectedZoneId, async () => {
     const fromDate = new Date(toDate.getTime() - (3 * 24 * 60 * 60 * 1000));
 
     const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
-        selectedZoneId.value,
+        selectedRoomId.value,
         "thermostat",
         fromDate.toISOString().split("T")[0],
         toDate.toISOString().split("T")[0]
@@ -110,43 +105,6 @@ watch(selectedZoneId, async () => {
         }))
     });
 });
-
-async function exportData() {
-    if (!selectedZoneId.value) {
-        return;
-    }
-
-    await deviceMeasurementStore.fetchDeviceMeasurements();
-
-    const deviceMeasurements = deviceMeasurementStore.getDeviceMeasurementsByZoneIdAndMeasurementType(selectedZoneId.value, "thermostat");
-
-    if (!deviceMeasurements.length) {
-        return;
-    }
-
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(selectedZoneId.value, "thermostat", exportFromDate.value, exportToDate.value);
-    const deviceMeasurementRowsCleaned: any[] = [];
-
-    const deviceMeasurementKeys = deviceMeasurements.flatMap((deviceMeasurement) =>
-        Object.keys(deviceMeasurement).map((key) => key.toLowerCase())
-    );
-
-    for (const deviceMeasurementRow of deviceMeasurementRows) {
-        const row: any = {};
-        for (const [key, value] of Object.entries(deviceMeasurementRow)) {
-            if (deviceMeasurementKeys.includes(key.toLowerCase())) {
-                row[key.toLowerCase()] = value;
-            }
-        }
-        deviceMeasurementRowsCleaned.push(row);
-    }
-
-    const csv1 = json2csv(deviceMeasurements);
-    const csv2 = json2csv(deviceMeasurementRowsCleaned);
-
-    fileDownload(csv1, "device-measurement-current-export.csv");
-    fileDownload(csv2, "device-measurement-history-export.csv");
-}
 </script>
 
 <template>
@@ -166,29 +124,16 @@ async function exportData() {
             </ul>
             <div class="tab-content">
                 <div id="pills-thermostat" class="tab-pane show active" tabindex="0">
-                    <ThermostatTable :zone-id="selectedZoneId"></ThermostatTable>
+                    <ThermostatTable :room-id="selectedRoomId"></ThermostatTable>
                 </div>
                 <div id="pills-indoor-ambiance" class="tab-pane" tabindex="0">
-                    <IndoorAmbianceTable :zone-id="selectedZoneId"></IndoorAmbianceTable>
+                    <IndoorAmbianceTable :room-id="selectedRoomId"></IndoorAmbianceTable>
                 </div>
             </div>
 
             <!-- <div class="bg-white p-4 rounded border border-danger mb-3" v-if="selectedCityId && selectedZoneId">
                 <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" />
             </div> -->
-
-            <form class="row row-cols-lg-auto g-3 align-items-center mb-3" @submit.prevent="exportData">
-                <div class="col-12">
-                    <input type="date" class="form-control" v-model="exportFromDate" required>
-                </div>
-                <div class="col-12">
-                    <input type="date" class="form-control" v-model="exportToDate" required>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">{{ $t("main.exportData") }}</button>
-                </div>
-            </form>
-
             <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
         </template>
     </div>
