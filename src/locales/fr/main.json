@@ -1,4 +1,10 @@
 {
+    "selectABuilding": "Sélectionner un bâtiment",
+    "building": "Bâtiment",
+    "room": "Pièce",
+    "selectARoom": "Sélectionner une pièce",
+    "heating": "Chauffage",
+    "ambiance": "Ambiance",
     "date": "Date",
     "voltage": "Tension",
     "lock": "Verrouillage",

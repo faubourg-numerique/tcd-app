@@ -1,21 +1,15 @@
 <script setup lang="ts">
-import "chartjs-adapter-date-fns";
-import fileDownload from "js-file-download";
-
-import { json2csv } from "json-2-csv";
-import { nextTick, computed, reactive, useTemplateRef, ref, watch, type Reactive, type Ref } from "vue";
+import { computed, onMounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
 import { useRoute } from "vue-router";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend, type ChartData, type ChartOptions, type ChartDataset } from "chart.js";
-import { Line } from "vue-chartjs";
 
-import CityZonePicker from "@/components/CityZonePicker.vue";
+import CityZoneBuildingRoomPicker from "@/components/CityZoneBuildingRoomPicker.vue";
 import OperationParametersPicker from "@/components/OperationParametersPicker.vue";
 import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
+import ThermostatTab from "@/components/ThermostatTab.vue";
+import IndoorAmbianceTab from "@/components/IndoorAmbianceTab.vue";
 
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend);
 
 const route = useRoute();
 
@@ -24,6 +18,8 @@ const deviceMeasurementRowStore = useDeviceMeasurementRowStore();
 
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
+const selectedBuildingId: Ref<string | null> = ref((route.query.building as string) ?? null);
+const selectedRoomId: Ref<string | null> = ref((route.query.roomId as string) ?? null);
 
 const selectedOperationId: Ref<string | null> = ref(null);
 const selectedOperationParametersId: Ref<string | null> = ref(null);
@@ -239,87 +235,29 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
 </script>
 
 <template>
-    <div id="device-measurement-rows-modal" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} ({{ deviceMeasurementRowsModalData.length }})</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="container">
+        <CityZoneBuildingRoomPicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" v-model:selected-building-id="selectedBuildingId" v-model:selected-room-id="selectedRoomId" class="mb-3" />
+
+        <template v-if="selectedCityId && selectedZoneId && selectedBuildingId && selectedRoomId">
+            <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId" class="mb-3" />
+
+            <ul id="pills-tab" class="nav nav-pills mb-3">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-thermostat">{{ $t("main.heating") }}</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-indoor-ambiance">{{ $t("main.ambiance") }}</button>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="pills-thermostat" class="tab-pane show active" tabindex="0">
+                    <ThermostatTab :room-id="selectedRoomId"></ThermostatTab>
                 </div>
-                <div class="modal-body">
-                    <div class="d-flex justify-content-center" v-if="deviceMeasurementRowsModalLoading">
-                        <div class="spinner-border"></div>
-                    </div>
-                    <template v-else>
-                        <div style="height: 400px;">
-                            <Line :data="modalChartData" :options="modalChartOptions" />
-                        </div>
-                    </template>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t("main.close")
-                        }}</button>
+                <div id="pills-indoor-ambiance" class="tab-pane" tabindex="0">
+                    <IndoorAmbianceTab :room-id="selectedRoomId"></IndoorAmbianceTab>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="container">
-        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId"
-            class="mb-3" />
-        <div class="table-responsive bg-white p-4 rounded border border-danger mb-3"
-            v-if="selectedCityId && selectedZoneId">
-            <table class="table align-middle">
-                <thead>
-                    <tr>
-                        <th>{{ $t("main.name") }}</th>
-                        <th class="text-end">{{ $t("main.targetTemperature") }}</th>
-                        <th class="text-end">{{ $t("main.temperature") }}</th>
-                        <th class="text-end">{{ $t("main.humidity") }}</th>
-                        <th class="text-end">{{ $t("main.voltage") }}</th>
-                        <th class="text-center">{{ $t("main.lock") }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="deviceMeasurement in deviceMeasurementStore.getDeviceMeasurementsByZoneIdAndMeasurementType(selectedZoneId, 'thermostat')">
-                        <td>
-                            <button type="button" class="btn btn-link" data-bs-toggle="modal"
-                                data-bs-target="#device-measurement-rows-modal"
-                                @click="loadDeviceMeasurementRowsModal(deviceMeasurement)">{{ deviceMeasurement.name
-                                }}</button>
-                        </td>
-                        <td class="text-end">{{ deviceMeasurement.targetTemperature }} °C</td>
-                        <td class="text-end">{{ deviceMeasurement.sensorTemperature }} °C</td>
-                        <td class="text-end">{{ deviceMeasurement.relativeHumidity }} %</td>
-                        <td class="text-end">{{ deviceMeasurement.batteryVoltage }} V</td>
-                        <td class="text-center">{{ deviceMeasurement.childLock ? "ON" : "OFF" }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <button type="button" class="btn btn-primary" @click="deviceMeasurementStore.fetchDeviceMeasurements()">{{
-                $t("main.refresh") }}</button>
-        </div>
-        <div class="bg-white p-4 rounded border border-danger mb-3" v-if="selectedCityId && selectedZoneId">
-            <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" />
-        </div>
-        <template v-if="selectedCityId && selectedZoneId">
-            <OperationParametersPicker v-model="selectedOperationParametersId"
-                v-model:selected-operation-id="selectedOperationId"
-                v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId"
-                class="mb-3" />
-            <form v-if="selectedZoneId" class="row row-cols-lg-auto g-3 align-items-center mb-3"
-                @submit.prevent="exportData">
-                <div class="col-12">
-                    <input type="date" class="form-control" v-model="exportFromDate" required>
-                </div>
-                <div class="col-12">
-                    <input type="date" class="form-control" v-model="exportToDate" required>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">{{ $t("main.exportData") }}</button>
-                </div>
-            </form>
             <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
         </template>
     </div>

@@ -1,4 +1,10 @@
 {
+    "selectABuilding": "Select a building",
+    "building": "Building",
+    "room": "Room",
+    "selectARoom": "Select a room",
+    "heating": "Heating",
+    "ambiance": "Ambiance",
     "date": "Date",
     "voltage": "Voltage",
     "lock": "Lock",

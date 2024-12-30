@@ -6,9 +6,11 @@ import DeviceMeasurementNotFoundError from "@/errors/NotFoundError/DeviceMeasure
 
 import type { DeviceMeasurement } from "@/types/DeviceMeasurement";
 import { useThermostatStore } from "@/stores/thermostat-store";
+import { useIndoorEnvironmentObservedStore } from "@/stores/indoor-environment-observed-store";
 
 export const useDeviceMeasurementStore = defineStore("device-measurement", () => {
     const thermostatStore = useThermostatStore();
+    const indoorEnvironmentObservedStore = useIndoorEnvironmentObservedStore();
 
     const deviceMeasurements: DeviceMeasurement[] = reactive([]);
 
@@ -20,14 +22,23 @@ export const useDeviceMeasurementStore = defineStore("device-measurement", () =>
         return deviceMeasurement;
     }
 
-    function getDeviceMeasurementsByZoneIdAndMeasurementType(zoneId: string, measurementType: string) {
+    function getDeviceMeasurementsByRoomIdAndMeasurementType(roomId: string, measurementType: string) {
         const deviceMeasurementIds: string[] = [];
         switch(measurementType) {
             case "thermostat": {
-                const thermostats = thermostatStore.getThermostatsByZoneId(zoneId);
+                const thermostats = thermostatStore.getThermostatsByRoomId(roomId);
                 for (const thermostat of thermostats) {
                     if (thermostat.hasDeviceMeasurement) {
                         deviceMeasurementIds.push(thermostat.hasDeviceMeasurement);
+                    }
+                }
+                break;
+            }
+            case "indoor-ambiance": {
+                const indoorEnvironmentObserveds = indoorEnvironmentObservedStore.getIndoorEnvironmentObservedsByRoomId(roomId);
+                for (const indoorEnvironmentObserved of indoorEnvironmentObserveds) {
+                    if (indoorEnvironmentObserved.hasDeviceMeasurement) {
+                        deviceMeasurementIds.push(indoorEnvironmentObserved.hasDeviceMeasurement);
                     }
                 }
                 break;
@@ -52,5 +63,5 @@ export const useDeviceMeasurementStore = defineStore("device-measurement", () =>
         deviceMeasurements.length = 0;
     }
 
-    return { deviceMeasurements, getDeviceMeasurement, getDeviceMeasurementsByZoneIdAndMeasurementType, fetchDeviceMeasurements, $reset };
+    return { deviceMeasurements, getDeviceMeasurement, getDeviceMeasurementsByRoomIdAndMeasurementType, fetchDeviceMeasurements, $reset };
 });

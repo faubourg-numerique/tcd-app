@@ -3,13 +3,16 @@ import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 
 import api from "@/api";
+import { useBuildingStore } from "@/stores/building-store";
 import { useCityStore } from "@/stores/city-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useFloodMonitoringStore } from "@/stores/flood-monitoring-store";
+import { useIndoorEnvironmentObservedStore } from "@/stores/indoor-environment-observed-store";
 import { useMainStore } from "@/stores/main-store";
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
 import { useOperationStore } from "@/stores/operation-store";
+import { useRoomStore } from "@/stores/room-store";
 import { useStreetlightStore } from "@/stores/streetlight-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { useThermostatStore } from "@/stores/thermostat-store";
@@ -19,13 +22,16 @@ import { useZoneStore } from "@/stores/zone-store";
 const route = useRoute();
 const router = useRouter();
 
+const buildingStore = useBuildingStore();
 const cityStore = useCityStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
 const floodMonitoringStore = useFloodMonitoringStore();
+const indoorEnvironmentObservedStore = useIndoorEnvironmentObservedStore();
 const mainStore = useMainStore();
 const operationParametersStore = useOperationParametersStore();
 const operationScheduleStore = useOperationScheduleStore();
 const operationStore = useOperationStore();
+const roomStore = useRoomStore();
 const streetlightStore = useStreetlightStore();
 const subscriptionStore = useSubscriptionStore();
 const thermostatStore = useThermostatStore();
@@ -49,12 +55,15 @@ async function main() {
         return;
     }
 
+    await buildingStore.fetchBuildings();
     await cityStore.fetchCities();
     await deviceMeasurementStore.fetchDeviceMeasurements();
     await floodMonitoringStore.fetchFloodMonitorings();
+    await indoorEnvironmentObservedStore.fetchIndoorEnvironmentObserveds();
     await operationParametersStore.fetchOperationParameters();
     await operationScheduleStore.fetchOperationSchedules();
     await operationStore.fetchOperations();
+    await roomStore.fetchRooms();
     await streetlightStore.fetchStreetlights();
     await subscriptionStore.fetchSubscriptions();
     await thermostatStore.fetchThermostats();
