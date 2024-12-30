@@ -138,12 +138,14 @@ async function loadDeviceMeasurementChartData() {
     });
 }
 
+
+
 async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasurement) {
     deviceMeasurementRowsModalLoading.value = true;
     deviceMeasurementRowsModalName.value = deviceMeasurement.name;
     deviceMeasurementRowsModalData.length = 0;
 
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchHourlyDeviceMeasurementRows(
         props.roomId,
         "thermostat",
         fromDate.toISOString().split("T")[0],
@@ -155,6 +157,69 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
     deviceMeasurementRowsModalData.push(...deviceMeasurementRows.filter((deviceMeasurementRow) => deviceMeasurementRow.id === deviceMeasurement.id));
     deviceMeasurementRowsModalLoading.value = false;
 }
+
+const modalChartData = computed(() => ({
+    datasets: [
+        {
+            label: 'Température',
+            borderColor: '#e74c3c',
+            backgroundColor: '#c0392b',
+            yAxisID: 'temperature',
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.avg_temp
+            }))
+        },
+        {
+            label: 'Humidité',
+            borderColor: '#3498db',
+            backgroundColor: '#2980b9',
+            yAxisID: 'humidity',
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.avg_humidity
+            }))
+        }
+    ]
+}));
+const modalChartOptions = computed(() => ({
+    responsive: true,
+    interaction: {
+        mode: 'nearest',
+        intersect: false,
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'hour',
+                displayFormats: {
+                    hour: 'dd/MM HH:mm'
+                }
+            },
+            title: {
+                display: true,
+                text: 'Date et heure'
+            }
+        },
+        temperature: {
+            type: 'linear',
+            position: 'left',
+            title: {
+                display: true,
+                text: 'Température (°C)'
+            }
+        },
+        humidity: {
+            type: 'linear',
+            position: 'right',
+            title: {
+                display: true,
+                text: 'Humidité (%)'
+            }
+        }
+    }
+}));
 
 async function exportData() {
     await deviceMeasurementStore.fetchDeviceMeasurements();
@@ -192,52 +257,37 @@ async function exportData() {
     fileDownload(csv1, "device-measurement-thermostat-current-export.csv");
     fileDownload(csv2, "device-measurement-thermostat-history-export.csv");
 }
+
 </script>
 
 <template>
     <div id="thermostat-device-measurement-rows-modal" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} ({{ deviceMeasurementRowsModalData.length }})</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex justify-content-center" v-if="deviceMeasurementRowsModalLoading">
-                        <div class="spinner-border"></div>
+            <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <template v-else>
-                        <table class="table align-middle" v-if="deviceMeasurementRowsModalData">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">{{ $t("main.date") }}</th>
-                                    <th class="text-end">{{ $t("main.targetTemperature") }}</th>
-                                    <th class="text-end">{{ $t("main.temperature") }}</th>
-                                    <th class="text-end">{{ $t("main.humidity") }}</th>
-                                    <th class="text-end">{{ $t("main.voltage") }}</th>
-                                    <th class="text-center">{{ $t("main.lock") }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(deviceMeasurementRow, index) in deviceMeasurementRowsModalData" :key="index">
-                                    <td class="text-center">{{ new Date(deviceMeasurementRow.datetime).toLocaleString() }}</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.targettemperature }} °C</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.sensortemperature }} °C</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.relativehumidity }} %</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.batteryvoltage }} V</td>
-                                    <td class="text-center">{{ deviceMeasurementRow.childlock ? "ON" : "OFF" }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </template>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t("main.close")
-                        }}</button>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-center" v-if="deviceMeasurementRowsModalLoading">
+                            <div class="spinner-border"></div>
+                        </div>
+                        <template v-else>
+                            <Line
+                                :data="modalChartData"
+                                :options="modalChartOptions"
+                            />
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ $t("main.close") }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
 
     <div v-if="deviceMeasurements.length" class="table-responsive bg-white p-4 rounded border border-danger mb-3">
         <div class="row row-cols-lg-auto g-3 align-items-center mb-3">

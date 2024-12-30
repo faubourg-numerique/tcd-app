@@ -225,6 +225,7 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
         fromDate.toISOString().split("T")[0],
         toDate.toISOString().split("T")[0]
     );
+    console.log(deviceMeasurementRows);
 
     deviceMeasurementRows.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
 
