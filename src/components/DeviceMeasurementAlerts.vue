@@ -22,15 +22,16 @@ const subscriptionStore = useSubscriptionStore();
 const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.deviceMeasurementId);
 const subscriptions = computed(() => subscriptionStore.getSubscriptionsByEntityId(deviceMeasurement.id));
 
+const watchedAttribute = deviceMeasurement.measurementType === "waste-level" ? "fillingLevel" : "currentLevel";
+
 const subscriptionFormModalElement = ref(null);
 let subscriptionFormModal: Modal | null = null;
 
-const subscriptionQueryCriteria = ref("<");
+const subscriptionQueryCriteria = ref(">");
 const subscriptionQueryValue = ref(0);
 const subscriptionEmails = ref("");
 
 const subscription = {
-    subscriptionName: "",
     type: "Subscription",
     entities: [
         {
@@ -41,7 +42,7 @@ const subscription = {
     q: "",
     throttling: 0,
     notification: {
-        attributes: ["distance", "name"],
+        attributes: [watchedAttribute, "name"],
         endpoint: {
             uri: "",
         },
@@ -92,11 +93,11 @@ async function deleteSubscription(subscription: any) {
 }
 
 watch(subscriptionQueryCriteria, () => {
-    subscription.q = `distance${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
+    subscription.q = `${watchedAttribute}${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
 });
 
 watch(subscriptionQueryValue, () => {
-    subscription.q = `distance${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
+    subscription.q = `${watchedAttribute}${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
 });
 
 watch(subscriptionEmails, () => {
@@ -120,10 +121,6 @@ onMounted(() => {
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">{{ $t("main.name") }}</label>
-                        <input id="name" v-model="subscription.subscriptionName" type="text" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
                         <label for="query-criteria" class="form-label">{{ $t("main.criteria") }}</label>
                         <select id="query-criteria" v-model="subscriptionQueryCriteria" class="form-control" required>
                             <option value=">">{{ $t("main.greaterThan") }}</option>
@@ -137,10 +134,12 @@ onMounted(() => {
                     <div class="mb-3">
                         <label for="emails" class="form-label">{{ $t("main.emails") }}</label>
                         <input id="emails" v-model="subscriptionEmails" type="text" class="form-control" required />
+                        <div class="form-text">{{ $t("dialogs.alertEmailsInputDescription") }}</div>
                     </div>
                     <div class="mb-3">
                         <label for="throttling" class="form-label">{{ $t("main.reminder") }}</label>
                         <input id="throttling" v-model="subscription.throttling" type="number" class="form-control" min="1" step="1" required />
+                        <div class="form-text">{{ $t("dialogs.alertThrottlingInputDescription") }}</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -150,7 +149,7 @@ onMounted(() => {
             </form>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid mb-5">
         <h2 class="mt-4">
             <span class="me-3">{{ $t("main.alerts") }}</span>
             <button class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
@@ -174,9 +173,7 @@ onMounted(() => {
                         <td>{{ _subscription.q }}</td>
                         <td>{{ _subscription.status }}</td>
                         <td>
-                            <ul class="list-unstyled">
-                                <li v-for="(email, index) in getEmailsFromUrl(_subscription.notification.endpoint.uri)" :key="index">{{ email }}</li>
-                            </ul>
+                            <div v-for="(email, index) in getEmailsFromUrl(_subscription.notification.endpoint.uri)" :key="index">{{ email }}</div>
                         </td>
                         <td>{{ formatSeconds(_subscription.throttling ?? 0) }}</td>
                         <td>{{ _subscription.notification.lastNotification ? formatDate(_subscription.notification.lastNotification) : "N/A" }}</td>

@@ -25,10 +25,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
                     <thead>
                         <tr>
                             <th>{{ $t("main.name") }}</th>
-                            <th>{{ $t("main.distance") }}</th>
-                            <th>{{ $t("main.maximumAlert") }}</th>
-                            <th>{{ $t("main.onAlert") }}</th>
-                            <th>{{ $t("main.timeout") }}</th>
+                            <th class="text-end">{{ $t("main.waterLevel") }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,10 +33,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
                             <td>
                                 <RouterLink :to="{ name: 'responsibilities.watercourses.details', params: { deviceMeasurementId: floodMonitoring.hasDeviceMeasurement } }" class="no-link">{{ floodMonitoring.name }}</RouterLink>
                             </td>
-                            <td>{{ deviceMeasurementStore.getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.distance ?? "N/A" }} mm</td>
-                            <td>N/A</td>
-                            <td>N/A</td>
-                            <td>N/A</td>
+                            <td class="text-end">{{ deviceMeasurementStore.getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.currentLevel ?? "N/A" }} mm</td>
                         </tr>
                     </tbody>
                 </table>

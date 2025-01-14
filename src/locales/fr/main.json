@@ -69,5 +69,6 @@
     "voluntaryContributionPoints": "PAV",
     "waterLevel": "Niveau d'eau",
     "watercourses": "Cours d'eau",
-    "zone": "Zone"
+    "zone": "Zone",
+    "fillingLevel": "Niveau de remplissage"
 }

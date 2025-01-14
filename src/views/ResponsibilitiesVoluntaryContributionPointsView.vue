@@ -25,10 +25,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
                     <thead>
                         <tr>
                             <th>{{ $t("main.name") }}</th>
-                            <th>{{ $t("main.distance") }}</th>
-                            <th>{{ $t("main.maximumAlert") }}</th>
-                            <th>{{ $t("main.onAlert") }}</th>
-                            <th>{{ $t("main.timeout") }}</th>
+                            <th class="text-end">{{ $t("main.fillingLevel") }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,10 +33,7 @@ const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ??
                             <td>
                                 <RouterLink :to="{ name: 'responsibilities.voluntaryContributionPoints.details', params: { deviceMeasurementId: wasteContainer.hasDeviceMeasurement } }" class="no-link">{{ wasteContainer.name }}</RouterLink>
                             </td>
-                            <td>{{ deviceMeasurementStore.getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.distance ?? "N/A" }} mm</td>
-                            <td>N/A</td>
-                            <td>N/A</td>
-                            <td>N/A</td>
+                            <td class="text-end">{{ deviceMeasurementStore.getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.fillingLevel ? Math.floor(deviceMeasurementStore.getDeviceMeasurement(wasteContainer.hasDeviceMeasurement).fillingLevel ?? 0) : "N/A" }} %</td>
                         </tr>
                     </tbody>
                 </table>
