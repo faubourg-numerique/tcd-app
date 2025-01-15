@@ -8,7 +8,7 @@ import { Line } from "vue-chartjs";
 
 import { useDemoStore } from "@/stores/demo-store";
 import { useOperationStore } from "@/stores/operation-store";
-import { demoWebSocketClient } from "@/web-socket-clients/demo-web-socket-client";
+// import { demoWebSocketClient } from "@/web-socket-clients/demo-web-socket-client";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
