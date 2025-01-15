@@ -30,6 +30,7 @@ let subscriptionFormModal: Modal | null = null;
 const subscriptionQueryCriteria = ref(">");
 const subscriptionQueryValue = ref(0);
 const subscriptionEmails = ref("");
+const subscriptionThrottlingDays = ref(0);
 
 const subscription = {
     type: "Subscription",
@@ -55,11 +56,8 @@ function getEmailsFromUrl(url: string) {
     return emails?.split(",") ?? [];
 }
 
-function formatSeconds(seconds: number) {
-    const formattedHours = Math.floor(seconds / 3600);
-    const formattedMinutes = ("0" + Math.floor((seconds % 3600) / 60)).slice(-2);
-    const formattedSeconds = ("0" + (seconds % 60)).slice(-2);
-    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+function formatSecondsToDays(seconds: number) {
+    return Math.floor(seconds / (24 * 60 * 60));
 }
 
 function formatDate(date: string) {
@@ -67,6 +65,7 @@ function formatDate(date: string) {
 }
 
 async function createSubscription() {
+    subscription.throttling = subscriptionThrottlingDays.value * 24 * 60 * 60;
     await subscriptionStore.createSubscription(subscription);
     await swal.fire({
         icon: "success",
@@ -138,7 +137,7 @@ onMounted(() => {
                     </div>
                     <div class="mb-3">
                         <label for="throttling" class="form-label">{{ $t("main.reminder") }}</label>
-                        <input id="throttling" v-model="subscription.throttling" type="number" class="form-control" min="1" step="1" required />
+                        <input id="throttling" v-model="subscriptionThrottlingDays" type="number" class="form-control" min="1" step="1" required />
                         <div class="form-text">{{ $t("dialogs.alertThrottlingInputDescription") }}</div>
                     </div>
                 </div>
@@ -175,7 +174,7 @@ onMounted(() => {
                         <td>
                             <div v-for="(email, index) in getEmailsFromUrl(_subscription.notification.endpoint.uri)" :key="index">{{ email }}</div>
                         </td>
-                        <td>{{ formatSeconds(_subscription.throttling ?? 0) }}</td>
+                        <td>{{ formatSecondsToDays(_subscription.throttling ?? 0) }} J</td>
                         <td>{{ _subscription.notification.lastNotification ? formatDate(_subscription.notification.lastNotification) : "N/A" }}</td>
                         <td>
                             <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteSubscription(_subscription)">

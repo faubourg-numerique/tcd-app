@@ -11,5 +11,5 @@
     "operationRunSuccessTitle": "Opération exécutée avec succès",
     "operationRunSuccessText": "L'opération a été exécutée avec succès.",
     "alertEmailsInputDescription": "Liste d'emails séparés par des virgules.",
-    "alertThrottlingInputDescription": "Délai, en seconde, avant nouvel envoi d'email."
+    "alertThrottlingInputDescription": "Délai, en jours, avant nouvel envoi d'email."
 }
