@@ -38,9 +38,9 @@ function formatDate(date: string) {
                     <thead>
                         <tr>
                             <th>{{ $t("main.name") }}</th>
-                            <th>GT</th>
-                            <th>LT</th>
                             <th class="text-end">{{ $t("main.waterLevel") }}</th>
+                            <th>Seuil minimum</th>
+                            <th>Seuil maximum</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,6 +48,7 @@ function formatDate(date: string) {
                             <td>
                                 <RouterLink :to="{ name: 'responsibilities.watercourses.details', params: { deviceMeasurementId: floodMonitoring.hasDeviceMeasurement } }" class="no-link">{{ floodMonitoring.name }}</RouterLink>
                             </td>
+                            <td class="text-end">{{ deviceMeasurementStore.getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.currentLevel ?? "N/A" }} mm</td>
                             <td>
                                 <template v-if="getAlertSettings(floodMonitoring.hasDeviceMeasurement, 'GT').length">
                                     {{ getAlertSettings(floodMonitoring.hasDeviceMeasurement, 'GT')[0].criteriaValue }} mm
@@ -64,7 +65,6 @@ function formatDate(date: string) {
                                     </template>
                                 </template>
                             </td>
-                            <td class="text-end">{{ deviceMeasurementStore.getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.currentLevel ?? "N/A" }} mm</td>
                         </tr>
                     </tbody>
                 </table>
