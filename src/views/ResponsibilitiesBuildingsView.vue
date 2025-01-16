@@ -253,13 +253,12 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
             <div class="tab-content">
                 <div id="pills-thermostat" class="tab-pane show active" tabindex="0">
                     <ThermostatTab :room-id="selectedRoomId"></ThermostatTab>
+                    <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
                 </div>
                 <div id="pills-indoor-ambiance" class="tab-pane" tabindex="0">
                     <IndoorAmbianceTab :room-id="selectedRoomId"></IndoorAmbianceTab>
                 </div>
             </div>
-
-            <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
         </template>
     </div>
 </template>
