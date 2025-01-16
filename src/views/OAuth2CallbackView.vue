@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 
 import api from "@/api";
+import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useBuildingStore } from "@/stores/building-store";
 import { useCityStore } from "@/stores/city-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
@@ -22,6 +23,7 @@ import { useZoneStore } from "@/stores/zone-store";
 const route = useRoute();
 const router = useRouter();
 
+const alertSettingsStore = useAlertSettingsStore();
 const buildingStore = useBuildingStore();
 const cityStore = useCityStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
@@ -55,6 +57,7 @@ async function main() {
         return;
     }
 
+    await alertSettingsStore.fetchAlertSettings();
     await buildingStore.fetchBuildings();
     await cityStore.fetchCities();
     await deviceMeasurementStore.fetchDeviceMeasurements();

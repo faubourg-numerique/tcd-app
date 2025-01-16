@@ -81,8 +81,8 @@ async function loadDeviceMeasurementChartData() {
         backgroundColor,
         data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
             x: deviceMeasurementRow.datetime,
-            // y: deviceMeasurementRow.measurementType === "waste-level" ? deviceMeasurementRow.fillinglevel : deviceMeasurementRow.currentlevel
-            y: deviceMeasurementRow.distance
+            y: deviceMeasurementRow.measurementType === "waste-level" ? deviceMeasurementRow.fillinglevel : deviceMeasurementRow.currentlevel,
+            // y: deviceMeasurementRow.distance,
         }))
     };
 

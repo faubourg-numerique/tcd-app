@@ -4,8 +4,10 @@ import swal from "sweetalert2";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
+import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
+import type { AlertSettings } from "@/types/AlertSettings";
 
 const props = defineProps({
     deviceMeasurementId: {
@@ -16,11 +18,12 @@ const props = defineProps({
 
 const { t } = useI18n();
 
+const alertSettingsStore = useAlertSettingsStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
 const subscriptionStore = useSubscriptionStore();
 
 const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.deviceMeasurementId);
-const subscriptions = computed(() => subscriptionStore.getSubscriptionsByEntityId(deviceMeasurement.id));
+const alertSettings = computed(() => alertSettingsStore.getAlertSettingsByEntityId(deviceMeasurement.id));
 
 const watchedAttribute = deviceMeasurement.measurementType === "waste-level" ? "fillingLevel" : "currentLevel";
 
@@ -33,6 +36,7 @@ const subscriptionEmails = ref("");
 const subscriptionThrottlingDays = ref(0);
 
 const subscription = {
+    subscriptionName: "",
     type: "Subscription",
     entities: [
         {
@@ -65,8 +69,22 @@ function formatDate(date: string) {
 }
 
 async function createSubscription() {
+    subscription.subscriptionName = `${watchedAttribute} ${subscriptionQueryCriteria.value} ${subscriptionQueryValue.value} - ${deviceMeasurement.name}`;
+    subscription.q = `${watchedAttribute}${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
     subscription.throttling = subscriptionThrottlingDays.value * 24 * 60 * 60;
-    await subscriptionStore.createSubscription(subscription);
+
+    const _subscription = await subscriptionStore.createSubscription(subscription);
+
+    const _alertSettings = {
+        criteriaType: subscriptionQueryCriteria.value === "<" ? "LT" : "GT",
+        criteriaValue: subscriptionQueryValue.value,
+        name: subscription.subscriptionName,
+        propertyName: watchedAttribute,
+        hasEntity: deviceMeasurement.id,
+        hasSubscription: _subscription.id
+    };
+    await alertSettingsStore.createAlertSettings(_alertSettings as AlertSettings);
+
     await swal.fire({
         icon: "success",
         title: t("dialogs.createSubscriptionSuccessTitle"),
@@ -78,26 +96,20 @@ async function createSubscription() {
     }
 }
 
-async function deleteSubscription(subscription: any) {
+async function deleteAlertSettings(_alertSettings: AlertSettings) {
     const result = await swal.fire({
         icon: "question",
-        title: t("dialogs.deleteSubscriptionQuestionTitle"),
-        text: t("dialogs.deleteSubscriptionQuestionText"),
+        title: t("dialogs.deleteAlertQuestionTitle"),
+        text: t("dialogs.deleteAlertQuestionText"),
         showCancelButton: true,
     });
 
     if (result.isConfirmed) {
-        await subscriptionStore.deleteSubscription(subscription);
+        const _subscription = subscriptionStore.getSubscription(_alertSettings.hasSubscription);
+        await alertSettingsStore.deleteAlertSettings(_alertSettings);
+        await subscriptionStore.deleteSubscription(_subscription);
     }
 }
-
-watch(subscriptionQueryCriteria, () => {
-    subscription.q = `${watchedAttribute}${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
-});
-
-watch(subscriptionQueryValue, () => {
-    subscription.q = `${watchedAttribute}${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
-});
 
 watch(subscriptionEmails, () => {
     subscription.notification.endpoint.uri = `${import.meta.env.VITE_ALERT_NOTIFICATION_URL}emails=${encodeURIComponent(subscriptionEmails.value)}`;
@@ -122,8 +134,8 @@ onMounted(() => {
                     <div class="mb-3">
                         <label for="query-criteria" class="form-label">{{ $t("main.criteria") }}</label>
                         <select id="query-criteria" v-model="subscriptionQueryCriteria" class="form-control" required>
-                            <option value=">">{{ $t("main.greaterThan") }}</option>
-                            <option value="<">{{ $t("main.lessThan") }}</option>
+                            <option v-if="!alertSettings.some((_alertSettings) => _alertSettings.criteriaType === 'GT')" value=">">{{ $t("main.greaterThan") }}</option>
+                            <option v-if="!alertSettings.some((_alertSettings) => _alertSettings.criteriaType === 'LT')" value="<">{{ $t("main.lessThan") }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -151,11 +163,11 @@ onMounted(() => {
     <div class="container-fluid mb-5">
         <h2 class="mt-4">
             <span class="me-3">{{ $t("main.alerts") }}</span>
-            <button class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
+            <button v-if="alertSettings.length < 2" class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
                 <FontAwesomeIcon :icon="['fas', 'plus']" />
             </button>
         </h2>
-        <div v-if="subscriptions.length" class="table-responsive">
+        <div v-if="alertSettings.length" class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
                 <thead>
                     <tr>
@@ -168,16 +180,16 @@ onMounted(() => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="_subscription in subscriptions" :key="_subscription.id">
-                        <td>{{ _subscription.q }}</td>
-                        <td>{{ _subscription.status }}</td>
+                    <tr v-for="_alertSettings in alertSettings" :key="_alertSettings.id">
+                        <td>{{ subscriptionStore.getSubscription(_alertSettings.hasSubscription).q }}</td>
+                        <td>{{ subscriptionStore.getSubscription(_alertSettings.hasSubscription).status }}</td>
                         <td>
-                            <div v-for="(email, index) in getEmailsFromUrl(_subscription.notification.endpoint.uri)" :key="index">{{ email }}</div>
+                            <div v-for="(email, index) in getEmailsFromUrl(subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.endpoint.uri)" :key="index">{{ email }}</div>
                         </td>
-                        <td>{{ formatSecondsToDays(_subscription.throttling ?? 0) }} J</td>
-                        <td>{{ _subscription.notification.lastNotification ? formatDate(_subscription.notification.lastNotification) : "N/A" }}</td>
+                        <td>{{ formatSecondsToDays(subscriptionStore.getSubscription(_alertSettings.hasSubscription).throttling ?? 0) }} J</td>
+                        <td>{{ subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.lastNotification ? formatDate(subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.lastNotification) : "N/A" }}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteSubscription(_subscription)">
+                            <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteAlertSettings(_alertSettings)">
                                 {{ $t("main.delete") }}
                             </button>
                         </td>
