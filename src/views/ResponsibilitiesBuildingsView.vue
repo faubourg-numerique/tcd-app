@@ -240,7 +240,7 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
         <CityZoneBuildingRoomPicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" v-model:selected-building-id="selectedBuildingId" v-model:selected-room-id="selectedRoomId" class="mb-3" />
 
         <template v-if="selectedCityId && selectedZoneId && selectedBuildingId && selectedRoomId">
-            <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId" class="mb-3" />
+            <!-- <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId" class="mb-3" /> -->
 
             <ul id="pills-tab" class="nav nav-pills mb-3">
                 <li class="nav-item">
