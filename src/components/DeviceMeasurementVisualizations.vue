@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import "chartjs-adapter-date-fns";
 
+import fileDownload from "js-file-download";
+import { json2csv } from "json-2-csv";
 import { reactive, ref, computed, watch, onMounted, type Reactive, type Ref } from "vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend, type ChartData, type ChartOptions, type ChartDataset } from "chart.js";
 import { Line } from "vue-chartjs";
@@ -22,8 +24,13 @@ const deviceMeasurementRowStore = useDeviceMeasurementRowStore();
 
 const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.deviceMeasurementId);
 
+const loadingData = ref(false);
+
 const toDate = reactive(new Date());
 const fromDate = reactive(new Date(toDate.getTime() - (3 * 24 * 60 * 60 * 1000)));
+
+const toDateString: Ref<string> = ref(toDate.toLocaleDateString("en-CA"));
+const fromDateString: Ref<string> = ref(fromDate.toLocaleDateString("en-CA"));
 
 const datasets: Reactive<ChartDataset[]> = reactive([]);
 
@@ -89,10 +96,63 @@ async function loadDeviceMeasurementChartData() {
     datasets.push(dataset);
 }
 
+async function exportData() {
+    await deviceMeasurementStore.fetchDeviceMeasurements();
+
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRowsById(deviceMeasurement.id, fromDateString.value, toDateString.value);
+    const deviceMeasurementRowsCleaned: any[] = [];
+
+    const deviceMeasurementKeys = Object.keys(deviceMeasurement).map((key) => key.toLowerCase());
+
+    for (const deviceMeasurementRow of deviceMeasurementRows) {
+        const row: any = {};
+        for (const [key, value] of Object.entries(deviceMeasurementRow)) {
+            if (key === "datetime") {
+                row[key.toLowerCase()] = value;
+                continue;
+            }
+            if (deviceMeasurementKeys.includes(key.toLowerCase())) {
+                row[key.toLowerCase()] = value;
+            }
+        }
+        deviceMeasurementRowsCleaned.push(row);
+    }
+
+    const csv1 = json2csv([deviceMeasurement]);
+    const csv2 = json2csv(deviceMeasurementRowsCleaned);
+
+    fileDownload(csv1, "device-measurement-current-export.csv");
+    fileDownload(csv2, "device-measurement-history-export.csv");
+}
+
+watch(fromDateString, async () => {
+    loadingData.value = true;
+    fromDate.setTime(new Date(`${fromDateString.value}T00:00:00Z`).getTime());
+    await loadDeviceMeasurementChartData();
+    loadingData.value = false;
+});
+
+watch(toDateString, async () => {
+    loadingData.value = true;
+    toDate.setTime(new Date(`${toDateString.value}T23:59:59Z`).getTime());
+    await loadDeviceMeasurementChartData();
+    loadingData.value = false;
+});
+
 onMounted(loadDeviceMeasurementChartData);
 </script>
 
 <template>
     <h2>{{ $t("main.visualization") }}</h2>
+    <div class="row row-cols-lg-auto g-3 align-items-center mb-3">
+        <div class="col-12">
+            <input type="date" class="form-control" v-model="fromDateString" :disabled="loadingData">
+        </div>
+        <div class="col-12">
+            <input type="date" class="form-control" v-model="toDateString" :disabled="loadingData">
+        </div>
+    </div>
     <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
+    <button type="button" class="btn btn-primary me-3" @click="loadDeviceMeasurementChartData">{{ $t("main.refresh") }}</button>
+    <button type="button" class="btn btn-primary" @click="exportData">{{ $t("main.exportData") }}</button>
 </template>
