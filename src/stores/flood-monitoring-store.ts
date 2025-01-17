@@ -21,6 +21,10 @@ export const useFloodMonitoringStore = defineStore("flood-monitoring", () => {
         return floodMonitorings.filter((floodMonitoring) => floodMonitoring.hasZone === zoneId);
     }
 
+    function getFloodMonitoringByDeviceMeasurementId(deviceMeasurementId: string) {
+        return floodMonitorings.find((floodMonitoring) => floodMonitoring.hasDeviceMeasurement === deviceMeasurementId);
+    }
+
     async function fetchFloodMonitorings() {
         $reset();
         const response = await api.get("/flood-monitorings");
@@ -31,5 +35,5 @@ export const useFloodMonitoringStore = defineStore("flood-monitoring", () => {
         floodMonitorings.length = 0;
     }
 
-    return { floodMonitorings, getFloodMonitoring, getFloodMonitoringsByZoneId, fetchFloodMonitorings, $reset };
+    return { floodMonitorings, getFloodMonitoring, getFloodMonitoringsByZoneId, getFloodMonitoringByDeviceMeasurementId, fetchFloodMonitorings, $reset };
 });

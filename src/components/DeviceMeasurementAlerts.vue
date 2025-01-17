@@ -4,9 +4,13 @@ import swal from "sweetalert2";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
+import { useMainStore } from "@/stores/main-store";
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
+import { useFloodMonitoringStore } from "@/stores/flood-monitoring-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
+import { useWasteContainerStore } from "@/stores/waste-container-store";
+import { useZoneStore } from "@/stores/zone-store";
 import type { AlertSettings } from "@/types/AlertSettings";
 
 const props = defineProps({
@@ -18,17 +22,33 @@ const props = defineProps({
 
 const { t } = useI18n();
 
+const mainStore = useMainStore();
 const alertSettingsStore = useAlertSettingsStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
+const floodMonitoringStore = useFloodMonitoringStore();
 const subscriptionStore = useSubscriptionStore();
+const wasteContainerStore = useWasteContainerStore();
+const zoneStore = useZoneStore();
 
 const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.deviceMeasurementId);
 const alertSettings = computed(() => alertSettingsStore.getAlertSettingsByEntityId(deviceMeasurement.id));
+
+let entity;
+if (deviceMeasurement.measurementType === "waste-level") {
+    entity = wasteContainerStore.getWasteContainerByDeviceMeasurementId(deviceMeasurement.id);
+} else {
+    entity = floodMonitoringStore.getFloodMonitoringByDeviceMeasurementId(deviceMeasurement.id);
+}
+
+const zone = zoneStore.getZone(entity.hasZone);
 
 const watchedAttribute = deviceMeasurement.measurementType === "waste-level" ? "fillingLevel" : "currentLevel";
 
 const subscriptionFormModalElement = ref(null);
 let subscriptionFormModal: Modal | null = null;
+
+const canReadAlerts = mainStore.hasRole(`${zone.role}AlertsRead`);
+const canWriteAlerts = mainStore.hasRole(`${zone.role}AlertsWrite`);
 
 const subscriptionQueryCriteria = ref(">");
 const subscriptionQueryValue = ref(0);
@@ -160,10 +180,10 @@ onMounted(() => {
             </form>
         </div>
     </div>
-    <div class="container-fluid mb-5">
+    <div v-if="canReadAlerts" class="container-fluid mb-5">
         <h2 class="mt-4">
             <span class="me-3">{{ $t("main.alerts") }}</span>
-            <button v-if="alertSettings.length < 2" class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
+            <button v-if="canWriteAlerts && alertSettings.length < 2" class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
                 <FontAwesomeIcon :icon="['fas', 'plus']" />
             </button>
         </h2>
@@ -176,7 +196,7 @@ onMounted(() => {
                         <th>{{ $t("main.emails") }}</th>
                         <th>{{ $t("main.reminder") }}</th>
                         <th>{{ $t("main.lastAlert") }}</th>
-                        <th>{{ $t("main.actions") }}</th>
+                        <th v-if="canWriteAlerts">{{ $t("main.actions") }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -188,7 +208,7 @@ onMounted(() => {
                         </td>
                         <td>{{ formatSecondsToDays(subscriptionStore.getSubscription(_alertSettings.hasSubscription).throttling ?? 0) }} J</td>
                         <td>{{ subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.lastNotification ? formatDate(subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.lastNotification) : "N/A" }}</td>
-                        <td>
+                        <td v-if="canWriteAlerts">
                             <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteAlertSettings(_alertSettings)">
                                 {{ $t("main.delete") }}
                             </button>
