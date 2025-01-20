@@ -100,6 +100,7 @@ function resolveRoute(event) {
         <template v-if="selectedCityId && selectedZoneId">
             <h1>{{ $t("main.watercourses") }}</h1>
             <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
+            <div class="mb-5"></div>
         </template>
     </div>
 </template>

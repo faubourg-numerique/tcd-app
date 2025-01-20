@@ -132,6 +132,7 @@ function resolveRoute(event) {
                 </div>
             </form>
             <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
+            <div class="mb-5"></div>
         </template>
     </div>
 </template>
