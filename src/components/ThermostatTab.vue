@@ -276,6 +276,7 @@ async function exportData() {
                             <Line
                                 :data="modalChartData"
                                 :options="modalChartOptions"
+                                class="w-100"
                             />
                         </template>
                     </div>
