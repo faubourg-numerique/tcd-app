@@ -3,6 +3,7 @@ export type WasteContainer = {
     fillingLevel: number;
     location: [number, number];
     name: string;
+    storedWasteKind: string;
     hasDeviceMeasurement: string;
     hasZone: string;
 };

@@ -29,6 +29,10 @@ const deviceMeasurementStore = useDeviceMeasurementStore();
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
 
+const filterPaper = ref(true);
+const filterPlastic = ref(true);
+const filterGlass = ref(true);
+
 const options = {
     language,
     columns: [
@@ -56,12 +60,20 @@ const options = {
 
 const data = computed(() => {
     const rows = [];
+    for (const wasteContainer of wasteContainerStore.wasteContainers) {
+        if (!filterPaper.value && wasteContainer.storedWasteKind === "paper") {
+            continue;
+        }
+        if (!filterPlastic.value && wasteContainer.storedWasteKind === "plastic") {
+            continue;
+        }
+        if (!filterGlass.value && wasteContainer.storedWasteKind === "glass") {
+            continue;
+        }
+        if (selectedZoneId.value && (wasteContainer.hasZone !== selectedZoneId.value)) {
+            continue;
+        }
 
-    if (!selectedZoneId.value) {
-        return rows;
-    }
-
-    for (const wasteContainer of wasteContainerStore.getWasteContainersByZoneId(selectedZoneId.value)) {
         const row = {
             deviceMeasurementId: wasteContainer.hasDeviceMeasurement,
             name: wasteContainer.name,
@@ -97,8 +109,28 @@ function resolveRoute(event) {
 <template>
     <div class="container">
         <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-4" />
-        <template v-if="selectedCityId && selectedZoneId">
+        <template v-if="selectedCityId">
             <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
+            <form class="row row-cols-lg-auto g-3 align-items-center">
+                <div class="col-12">
+                    <div class="form-check">
+                        <input id="filter-paper" class="form-check-input" type="checkbox" v-model="filterPaper">
+                        <label for="filter-paper" class="form-check-label">Carton</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input id="filter-plastic" class="form-check-input" type="checkbox" v-model="filterPlastic">
+                        <label for="filter-plastic" class="form-check-label">Plastique</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input id="filter-glass" class="form-check-input" type="checkbox" v-model="filterGlass">
+                        <label for="filter-glass" class="form-check-label">Verre</label>
+                    </div>
+                </div>
+            </form>
             <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
         </template>
     </div>

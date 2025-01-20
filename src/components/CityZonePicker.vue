@@ -36,7 +36,7 @@ watch(selectedCityId, (zoneId) => {
                 <div class="form-group">
                     <label for="zone-id" class="form-label">{{ $t("main.zone") }}</label>
                     <select id="zone-id" v-model="selectedZoneId" class="form-select">
-                        <option :value="null" disabled>{{ $t("main.selectAZone") }}</option>
+                        <option :value="null">{{ $t("main.selectAZone") }}</option>
                         <option v-for="zone in zoneStore.getZonesByCityId(selectedCityId as string)" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
                     </select>
                 </div>
