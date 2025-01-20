@@ -6,6 +6,7 @@ import { useI18n } from "vue-i18n";
 
 import { useMainStore } from "@/stores/main-store";
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
+import { useCityStore } from "@/stores/city-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useFloodMonitoringStore } from "@/stores/flood-monitoring-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
@@ -24,6 +25,7 @@ const { t } = useI18n();
 
 const mainStore = useMainStore();
 const alertSettingsStore = useAlertSettingsStore();
+const cityStore = useCityStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
 const floodMonitoringStore = useFloodMonitoringStore();
 const subscriptionStore = useSubscriptionStore();
@@ -41,14 +43,15 @@ if (deviceMeasurement.measurementType === "waste-level") {
 }
 
 const zone = zoneStore.getZone(entity.hasZone);
+const city = cityStore.getCity(zone.hasCity);
 
 const watchedAttribute = deviceMeasurement.measurementType === "waste-level" ? "fillingLevel" : "currentLevel";
 
 const subscriptionFormModalElement = ref(null);
 let subscriptionFormModal: Modal | null = null;
 
-const canReadAlerts = mainStore.hasRole(`${zone.role}AlertsRead`);
-const canWriteAlerts = mainStore.hasRole(`${zone.role}AlertsWrite`);
+const canReadAlerts = mainStore.hasRole(`${city.role}AlertsRead`);
+const canWriteAlerts = mainStore.hasRole(`${city.role}AlertsWrite`);
 
 const subscriptionQueryCriteria = ref(">");
 const subscriptionQueryValue = ref(0);
