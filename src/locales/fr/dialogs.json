@@ -11,5 +11,7 @@
     "operationRunSuccessTitle": "Opération exécutée avec succès",
     "operationRunSuccessText": "L'opération a été exécutée avec succès.",
     "alertEmailsInputDescription": "Liste d'emails séparés par des virgules.",
-    "alertThrottlingInputDescription": "Délai, en jours, avant nouvel envoi d'email."
+    "alertThrottlingInputDescription": "Délai, en jours, avant nouvel envoi d'email.",
+    "deleteAlertQuestionTitle": "Êtes-vous sûr de vouloir supprimer cette alerte ?",
+    "deleteAlertQuestionText": "Supprimer cette alerte ?"
 }

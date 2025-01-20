@@ -11,5 +11,7 @@
     "operationRunSuccessTitle": "Operation run success",
     "operationRunSuccessText": "The operation was run successfully.",
     "alertEmailsInputDescription": "Comma separated list of emails.",
-    "alertThrottlingInputDescription": "Delay, in days, before sending a new email."
+    "alertThrottlingInputDescription": "Delay, in days, before sending a new email.",
+    "deleteAlertQuestionTitle": "Are you sure you want to delete this alert?",
+    "deleteAlertQuestionText": "Delete this alert?"
 }
