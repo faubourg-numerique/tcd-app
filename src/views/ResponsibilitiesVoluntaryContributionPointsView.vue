@@ -55,11 +55,11 @@ const options = {
         },
         {
             data: "minimumThreshold",
-            title: "Seuil minimum"
+            title: "Seuil min"
         },
         {
             data: "maximumThreshold",
-            title: "Seuil maximum"
+            title: "Seuil max"
         }
     ]
 };
@@ -138,7 +138,9 @@ function resolveRoute(event) {
                     </div>
                 </div>
             </form>
-            <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
+            <div class="table-responsive">
+                <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
+            </div>
             <div class="mb-5"></div>
         </template>
     </div>

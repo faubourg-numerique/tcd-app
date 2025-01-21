@@ -14,3 +14,9 @@ const route = useRoute();
     </header>
     <RouterView />
 </template>
+
+<style>
+td {
+    white-space: nowrap;
+}
+</style>

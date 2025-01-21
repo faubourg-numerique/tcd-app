@@ -51,11 +51,11 @@ const options = {
         },
         {
             data: "minimumThreshold",
-            title: "Seuil minimum"
+            title: "Seuil min"
         },
         {
             data: "maximumThreshold",
-            title: "Seuil maximum"
+            title: "Seuil max"
         }
     ]
 };
@@ -106,7 +106,9 @@ function resolveRoute(event) {
         <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-4" />
         <template v-if="selectedCityId && selectedZoneId">
             <h1>{{ $t("main.watercourses") }}</h1>
-            <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
+            <div class="table-responsive">
+                <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
+            </div>
             <div class="mb-5"></div>
         </template>
     </div>
