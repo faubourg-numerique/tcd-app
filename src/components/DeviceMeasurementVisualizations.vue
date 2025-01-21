@@ -6,11 +6,14 @@ import { json2csv } from "json-2-csv";
 import { reactive, ref, computed, watch, onMounted, type Reactive, type Ref } from "vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend, type ChartData, type ChartOptions, type ChartDataset } from "chart.js";
 import { Line } from "vue-chartjs";
+import ChartAnnotation from "chartjs-plugin-annotation";
 
+import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend);
+ChartJS.register(ChartAnnotation);
 
 const props = defineProps({
     deviceMeasurementId: {
@@ -19,6 +22,7 @@ const props = defineProps({
     },
 });
 
+const alertSettingsStore = useAlertSettingsStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
 const deviceMeasurementRowStore = useDeviceMeasurementRowStore();
 
@@ -40,7 +44,16 @@ const deviceMeasurementChartData = computed(() => ({
 
 const deviceMeasurementChartOptions = computed(() => ({
     responsive: true,
-
+    plugins: {
+        annotation: {
+            annotations: alertSettingsStore.getAlertSettingsByEntityId(deviceMeasurement.id).map((alertSetting) => ({
+                type: "line",
+                yMin: alertSetting.criteriaValue,
+                yMax: alertSetting.criteriaValue,
+                borderWidth: 2
+            }))
+        }
+    },
     scales: {
         x: {
             type: "time",
@@ -64,7 +77,7 @@ async function loadDeviceMeasurementChartData() {
     let borderColor = "";
     let backgroundColor = "";
 
-    switch(deviceMeasurement.measurementType) {
+    switch (deviceMeasurement.measurementType) {
         case "waste-level": {
             label = "Niveau de remplissage (%)";
             borderColor = "#27ae60";
