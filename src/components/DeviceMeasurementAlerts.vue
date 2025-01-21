@@ -183,9 +183,9 @@ onMounted(() => {
             </form>
         </div>
     </div>
-    <div v-if="canReadAlerts" class="container-fluid mb-5">
-        <h2 class="mt-4">
-            <span class="me-3">{{ $t("main.alerts") }}</span>
+    <div v-if="canReadAlerts" class="mb-3">
+        <h2>
+            <span>{{ $t("main.alerts") }}</span>
             <button v-if="canWriteAlerts && alertSettings.length < 2" class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
                 <FontAwesomeIcon :icon="['fas', 'plus']" />
             </button>

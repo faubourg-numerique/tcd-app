@@ -118,20 +118,20 @@ function resolveRoute(event) {
         <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-4" />
         <template v-if="selectedCityId">
             <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
-            <form class="row row-cols-lg-auto g-3 align-items-center">
-                <div class="col-12">
+            <form class="row align-items-center d-flex flex-wrap">
+                <div class="col-auto">
                     <div class="form-check">
                         <input id="filter-paper" class="form-check-input" type="checkbox" v-model="filterPaper">
                         <label for="filter-paper" class="form-check-label">Carton</label>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-auto">
                     <div class="form-check">
                         <input id="filter-plastic" class="form-check-input" type="checkbox" v-model="filterPlastic">
                         <label for="filter-plastic" class="form-check-label">Plastique</label>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-auto">
                     <div class="form-check">
                         <input id="filter-glass" class="form-check-input" type="checkbox" v-model="filterGlass">
                         <label for="filter-glass" class="form-check-label">Verre</label>
