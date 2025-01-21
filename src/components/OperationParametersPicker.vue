@@ -26,7 +26,7 @@ async function runOperation() {
         await operationStore.runOperation(selectedOperationParametersId.value as string);
     } catch (error) {
         await swal.fire({
-            icon: "success",
+            icon: "error",
             title: t("dialogs.operationRunErrorTitle"),
             text: t("dialogs.operationRunErrorText"),
         });
@@ -62,21 +62,29 @@ watch(selectedOperationId, (operationId) => {
 </script>
 
 <template>
-    <form class="bg-white p-4 rounded text-center border border-danger" @submit.prevent="runOperation">
-        <div class="mb-3">
-            <label for="has-operation" class="form-label">{{ $t("main.operation") }}</label>
-            <select id="has-operation" v-model="selectedOperationId" class="form-select" required>
-                <option :value="null" disabled>-</option>
-                <option v-for="operation in operationStore.getOperationsByZoneId(props.zoneId)" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
-            </select>
+    <form class="container bg-white p-4 rounded text-center border border-danger" @submit.prevent="runOperation">
+        <div class="row">
+            <div class="col-12 col-md">
+                <div class="mb-3">
+                    <label for="has-operation" class="form-label">{{ $t("main.operation") }}</label>
+                    <select id="has-operation" v-model="selectedOperationId" class="form-select" required>
+                        <option :value="null" disabled>-</option>
+                        <option v-for="operation in operationStore.getOperationsByZoneId(props.zoneId)" :key="operation.id" :value="operation.id">{{ operation.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div v-if="selectedOperationId" class="col-12 col-md">
+                <div class="mb-3">
+                    <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
+                    <select id="has-operation-parameters" v-model="selectedOperationParametersId" class="form-select" required>
+                        <option :value="null" disabled>{{ $t("main.selectParameters") }}</option>
+                        <option v-for="operationParameters in sortedOperationParameters(selectedOperationId as string)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
+                    </select>
+                </div>
+            </div>
+            <div v-if="selectedOperationId && selectedOperationParametersId" class="col-12 col-md d-flex flex-column">
+                <button type="submit" class="btn btn-primary w-100 mt-auto mb-3">{{ $t("main.submit") }}</button>
+            </div>
         </div>
-        <div v-if="selectedOperationId">
-            <label for="has-operation-parameters" class="form-label">{{ $t("main.parameters") }}</label>
-            <select id="has-operation-parameters" v-model="selectedOperationParametersId" class="form-select" required>
-                <option :value="null" disabled>{{ $t("main.selectParameters") }}</option>
-                <option v-for="operationParameters in sortedOperationParameters(selectedOperationId as string)" :key="operationParameters.id" :value="operationParameters.id">{{ operationParameters.name }}</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">{{ $t("main.submit") }}</button>
     </form>
 </template>

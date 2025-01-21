@@ -21,6 +21,10 @@ export const useWasteContainerStore = defineStore("waste-container", () => {
         return wasteContainers.filter((wasteContainer) => wasteContainer.hasZone === zoneId);
     }
 
+    function getWasteContainerByDeviceMeasurementId(deviceMeasurementId: string) {
+        return wasteContainers.find((wasteContainer) => wasteContainer.hasDeviceMeasurement === deviceMeasurementId);
+    }
+
     async function fetchWasteContainers() {
         $reset();
         const response = await api.get("/waste-containers");
@@ -31,5 +35,5 @@ export const useWasteContainerStore = defineStore("waste-container", () => {
         wasteContainers.length = 0;
     }
 
-    return { wasteContainers, getWasteContainer, getWasteContainersByZoneId, fetchWasteContainers, $reset };
+    return { wasteContainers, getWasteContainer, getWasteContainersByZoneId, getWasteContainerByDeviceMeasurementId, fetchWasteContainers, $reset };
 });

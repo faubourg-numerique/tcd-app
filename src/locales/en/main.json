@@ -1,4 +1,16 @@
 {
+    "selectABuilding": "Select a building",
+    "building": "Building",
+    "room": "Room",
+    "selectARoom": "Select a room",
+    "heating": "Heating",
+    "ambiance": "Ambiance",
+    "date": "Date",
+    "voltage": "Voltage",
+    "lock": "Lock",
+    "targetTemperature": "Target temperature",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
     "actions": "Actions",
     "add": "Add",
     "addAnEvent": "Add an Event",
@@ -22,6 +34,7 @@
     "emails": "Emails",
     "endDate": "End Date",
     "endTime": "End Time",
+    "exportData": "Export data",
     "from": "From",
     "greaterThan": "Greater Than",
     "indoorAmbiance": "Indoor Ambiance",
@@ -39,6 +52,7 @@
     "operation": "Operation",
     "parameters": "Parameters",
     "recurrence": "Recurrence",
+    "refresh": "Refresh",
     "reminder": "Reminder",
     "roles": "Roles",
     "selectACity": "Select a City",
@@ -55,5 +69,6 @@
     "voluntaryContributionPoints": "Voluntary Contribution Points",
     "waterLevel": "Water Level",
     "watercourses": "Watercourses",
-    "zone": "Zone"
+    "zone": "Zone",
+    "fillingLevel": "Filling level"
 }

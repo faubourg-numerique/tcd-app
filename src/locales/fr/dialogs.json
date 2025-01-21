@@ -1,4 +1,5 @@
 {
+    "noData": "Aucune donnée.",
     "createSubscriptionSuccessText": "Cette alerte a été créée avec succès.",
     "createSubscriptionSuccessTitle": "Alerte créée !",
     "deleteOperationScheduleQuestionText": "Êtes-vous sûr de vouloir supprimer cet événement ?",
@@ -8,5 +9,9 @@
     "operationRunErrorTitle": "Échec de l'exécution de l'opération",
     "operationRunErrorText": "Une erreur s'est produite lors de l'exécution de l'opération.",
     "operationRunSuccessTitle": "Opération exécutée avec succès",
-    "operationRunSuccessText": "L'opération a été exécutée avec succès."
+    "operationRunSuccessText": "L'opération a été exécutée avec succès.",
+    "alertEmailsInputDescription": "Liste d'emails séparés par des virgules.",
+    "alertThrottlingInputDescription": "Délai, en jours, avant nouvel envoi d'email.",
+    "deleteAlertQuestionTitle": "Êtes-vous sûr de vouloir supprimer cette alerte ?",
+    "deleteAlertQuestionText": "Supprimer cette alerte ?"
 }

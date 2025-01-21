@@ -17,8 +17,8 @@ export const useThermostatStore = defineStore("thermostat", () => {
         return thermostat;
     }
 
-    function getThermostatsByZoneId(zoneId: string) {
-        return thermostats.filter((thermostat) => thermostat.hasZone === zoneId);
+    function getThermostatsByRoomId(roomId: string) {
+        return thermostats.filter((thermostat) => thermostat.hasRoom === roomId);
     }
 
     async function fetchThermostats() {
@@ -31,5 +31,5 @@ export const useThermostatStore = defineStore("thermostat", () => {
         thermostats.length = 0;
     }
 
-    return { thermostats, getThermostat, getThermostatsByZoneId, fetchThermostats, $reset };
+    return { thermostats, getThermostat, getThermostatsByRoomId, fetchThermostats, $reset };
 });

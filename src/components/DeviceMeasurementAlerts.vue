@@ -4,8 +4,15 @@ import swal from "sweetalert2";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
+import { useMainStore } from "@/stores/main-store";
+import { useAlertSettingsStore } from "@/stores/alert-settings-store";
+import { useCityStore } from "@/stores/city-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
+import { useFloodMonitoringStore } from "@/stores/flood-monitoring-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
+import { useWasteContainerStore } from "@/stores/waste-container-store";
+import { useZoneStore } from "@/stores/zone-store";
+import type { AlertSettings } from "@/types/AlertSettings";
 
 const props = defineProps({
     deviceMeasurementId: {
@@ -16,18 +23,40 @@ const props = defineProps({
 
 const { t } = useI18n();
 
+const mainStore = useMainStore();
+const alertSettingsStore = useAlertSettingsStore();
+const cityStore = useCityStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
+const floodMonitoringStore = useFloodMonitoringStore();
 const subscriptionStore = useSubscriptionStore();
+const wasteContainerStore = useWasteContainerStore();
+const zoneStore = useZoneStore();
 
 const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.deviceMeasurementId);
-const subscriptions = computed(() => subscriptionStore.getSubscriptionsByEntityId(deviceMeasurement.id));
+const alertSettings = computed(() => alertSettingsStore.getAlertSettingsByEntityId(deviceMeasurement.id));
+
+let entity;
+if (deviceMeasurement.measurementType === "waste-level") {
+    entity = wasteContainerStore.getWasteContainerByDeviceMeasurementId(deviceMeasurement.id);
+} else {
+    entity = floodMonitoringStore.getFloodMonitoringByDeviceMeasurementId(deviceMeasurement.id);
+}
+
+const zone = zoneStore.getZone(entity.hasZone);
+const city = cityStore.getCity(zone.hasCity);
+
+const watchedAttribute = deviceMeasurement.measurementType === "waste-level" ? "fillingLevel" : "currentLevel";
 
 const subscriptionFormModalElement = ref(null);
 let subscriptionFormModal: Modal | null = null;
 
-const subscriptionQueryCriteria = ref("<");
+const canReadAlerts = deviceMeasurement.measurementType === "waste-level" ? mainStore.hasRole(`${zone.role}AlertsRead`) : mainStore.hasRole(`${city.role}AlertsRead`);
+const canWriteAlerts = deviceMeasurement.measurementType === "waste-level" ? mainStore.hasRole(`${zone.role}AlertsWrite`) : mainStore.hasRole(`${city.role}AlertsWrite`);
+
+const subscriptionQueryCriteria = ref(">");
 const subscriptionQueryValue = ref(0);
 const subscriptionEmails = ref("");
+const subscriptionThrottlingDays = ref(0);
 
 const subscription = {
     subscriptionName: "",
@@ -41,7 +70,7 @@ const subscription = {
     q: "",
     throttling: 0,
     notification: {
-        attributes: ["distance", "name"],
+        attributes: [watchedAttribute, "name"],
         endpoint: {
             uri: "",
         },
@@ -54,11 +83,8 @@ function getEmailsFromUrl(url: string) {
     return emails?.split(",") ?? [];
 }
 
-function formatSeconds(seconds: number) {
-    const formattedHours = Math.floor(seconds / 3600);
-    const formattedMinutes = ("0" + Math.floor((seconds % 3600) / 60)).slice(-2);
-    const formattedSeconds = ("0" + (seconds % 60)).slice(-2);
-    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+function formatSecondsToDays(seconds: number) {
+    return Math.floor(seconds / (24 * 60 * 60));
 }
 
 function formatDate(date: string) {
@@ -66,7 +92,22 @@ function formatDate(date: string) {
 }
 
 async function createSubscription() {
-    await subscriptionStore.createSubscription(subscription);
+    subscription.subscriptionName = `${watchedAttribute} ${subscriptionQueryCriteria.value} ${subscriptionQueryValue.value} - ${deviceMeasurement.name}`;
+    subscription.q = `${watchedAttribute}${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
+    subscription.throttling = subscriptionThrottlingDays.value * 24 * 60 * 60;
+
+    const _subscription = await subscriptionStore.createSubscription(subscription);
+
+    const _alertSettings = {
+        criteriaType: subscriptionQueryCriteria.value === "<" ? "LT" : "GT",
+        criteriaValue: subscriptionQueryValue.value,
+        name: subscription.subscriptionName,
+        propertyName: watchedAttribute,
+        hasEntity: deviceMeasurement.id,
+        hasSubscription: _subscription.id
+    };
+    await alertSettingsStore.createAlertSettings(_alertSettings as AlertSettings);
+
     await swal.fire({
         icon: "success",
         title: t("dialogs.createSubscriptionSuccessTitle"),
@@ -78,26 +119,20 @@ async function createSubscription() {
     }
 }
 
-async function deleteSubscription(subscription: any) {
+async function deleteAlertSettings(_alertSettings: AlertSettings) {
     const result = await swal.fire({
         icon: "question",
-        title: t("dialogs.deleteSubscriptionQuestionTitle"),
-        text: t("dialogs.deleteSubscriptionQuestionText"),
+        title: t("dialogs.deleteAlertQuestionTitle"),
+        text: t("dialogs.deleteAlertQuestionText"),
         showCancelButton: true,
     });
 
     if (result.isConfirmed) {
-        await subscriptionStore.deleteSubscription(subscription);
+        const _subscription = subscriptionStore.getSubscription(_alertSettings.hasSubscription);
+        await alertSettingsStore.deleteAlertSettings(_alertSettings);
+        await subscriptionStore.deleteSubscription(_subscription);
     }
 }
-
-watch(subscriptionQueryCriteria, () => {
-    subscription.q = `distance${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
-});
-
-watch(subscriptionQueryValue, () => {
-    subscription.q = `distance${subscriptionQueryCriteria.value}${subscriptionQueryValue.value}`;
-});
 
 watch(subscriptionEmails, () => {
     subscription.notification.endpoint.uri = `${import.meta.env.VITE_ALERT_NOTIFICATION_URL}emails=${encodeURIComponent(subscriptionEmails.value)}`;
@@ -120,14 +155,10 @@ onMounted(() => {
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">{{ $t("main.name") }}</label>
-                        <input id="name" v-model="subscription.subscriptionName" type="text" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
                         <label for="query-criteria" class="form-label">{{ $t("main.criteria") }}</label>
                         <select id="query-criteria" v-model="subscriptionQueryCriteria" class="form-control" required>
-                            <option value=">">{{ $t("main.greaterThan") }}</option>
-                            <option value="<">{{ $t("main.lessThan") }}</option>
+                            <option v-if="!alertSettings.some((_alertSettings) => _alertSettings.criteriaType === 'GT')" value=">">{{ $t("main.greaterThan") }}</option>
+                            <option v-if="!alertSettings.some((_alertSettings) => _alertSettings.criteriaType === 'LT')" value="<">{{ $t("main.lessThan") }}</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -137,10 +168,12 @@ onMounted(() => {
                     <div class="mb-3">
                         <label for="emails" class="form-label">{{ $t("main.emails") }}</label>
                         <input id="emails" v-model="subscriptionEmails" type="text" class="form-control" required />
+                        <div class="form-text">{{ $t("dialogs.alertEmailsInputDescription") }}</div>
                     </div>
                     <div class="mb-3">
                         <label for="throttling" class="form-label">{{ $t("main.reminder") }}</label>
-                        <input id="throttling" v-model="subscription.throttling" type="number" class="form-control" min="1" step="1" required />
+                        <input id="throttling" v-model="subscriptionThrottlingDays" type="number" class="form-control" min="1" step="1" required />
+                        <div class="form-text">{{ $t("dialogs.alertThrottlingInputDescription") }}</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -150,14 +183,14 @@ onMounted(() => {
             </form>
         </div>
     </div>
-    <div class="container-fluid">
-        <h2 class="mt-4">
-            <span class="me-3">{{ $t("main.alerts") }}</span>
-            <button class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
+    <div v-if="canReadAlerts" class="mb-3">
+        <h2>
+            <span>{{ $t("main.alerts") }}</span>
+            <button v-if="canWriteAlerts && alertSettings.length < 2" class="btn btn-sm btn-link" @click="subscriptionFormModal && subscriptionFormModal.show()">
                 <FontAwesomeIcon :icon="['fas', 'plus']" />
             </button>
         </h2>
-        <div v-if="subscriptions.length" class="table-responsive">
+        <div v-if="alertSettings.length" class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
                 <thead>
                     <tr>
@@ -166,22 +199,20 @@ onMounted(() => {
                         <th>{{ $t("main.emails") }}</th>
                         <th>{{ $t("main.reminder") }}</th>
                         <th>{{ $t("main.lastAlert") }}</th>
-                        <th>{{ $t("main.actions") }}</th>
+                        <th v-if="canWriteAlerts">{{ $t("main.actions") }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="_subscription in subscriptions" :key="_subscription.id">
-                        <td>{{ _subscription.q }}</td>
-                        <td>{{ _subscription.status }}</td>
+                    <tr v-for="_alertSettings in alertSettings" :key="_alertSettings.id">
+                        <td>{{ subscriptionStore.getSubscription(_alertSettings.hasSubscription).q }}</td>
+                        <td>{{ subscriptionStore.getSubscription(_alertSettings.hasSubscription).status }}</td>
                         <td>
-                            <ul class="list-unstyled">
-                                <li v-for="(email, index) in getEmailsFromUrl(_subscription.notification.endpoint.uri)" :key="index">{{ email }}</li>
-                            </ul>
+                            <div v-for="(email, index) in getEmailsFromUrl(subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.endpoint.uri)" :key="index">{{ email }}</div>
                         </td>
-                        <td>{{ formatSeconds(_subscription.throttling ?? 0) }}</td>
-                        <td>{{ _subscription.notification.lastNotification ? formatDate(_subscription.notification.lastNotification) : "N/A" }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteSubscription(_subscription)">
+                        <td>{{ formatSecondsToDays(subscriptionStore.getSubscription(_alertSettings.hasSubscription).throttling ?? 0) }} J</td>
+                        <td>{{ subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.lastNotification ? formatDate(subscriptionStore.getSubscription(_alertSettings.hasSubscription).notification.lastNotification) : "N/A" }}</td>
+                        <td v-if="canWriteAlerts">
+                            <button class="btn btn-sm btn-outline-danger mx-auto" @click="deleteAlertSettings(_alertSettings)">
                                 {{ $t("main.delete") }}
                             </button>
                         </td>
