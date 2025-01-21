@@ -13,6 +13,7 @@ import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useFloodMonitoringStore } from "@/stores/flood-monitoring-store";
+import { useZoneStore } from "@/stores/zone-store";
 
 DataTable.use(DataTablesLib);
 
@@ -25,6 +26,7 @@ const alertSettingsStore = useAlertSettingsStore();
 const subscriptionStore = useSubscriptionStore();
 const floodMonitoringStore = useFloodMonitoringStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
+const zoneStore = useZoneStore();
 
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
@@ -38,6 +40,10 @@ const options = {
             render: function (x, y, data) {
                 return `<a href="#" data-device-measurement-id="${data.deviceMeasurementId}">${data.name}</a>`;
             }
+        },
+        {
+            data: "zone",
+            title: t("main.zone")
         },
         {
             data: "waterLevel",
@@ -65,6 +71,7 @@ const data = computed(() => {
         const row = {
             deviceMeasurementId: floodMonitoring.hasDeviceMeasurement,
             name: floodMonitoring.name,
+            zone: zoneStore.getZone(floodMonitoring.hasZone).name,
             waterLevel: `${deviceMeasurementStore.getDeviceMeasurement(floodMonitoring.hasDeviceMeasurement)?.currentLevel ?? "N/A"} mm`,
             minimumThreshold: (getAlertSettings(floodMonitoring.hasDeviceMeasurement, "GT").length ? `${getAlertSettings(floodMonitoring.hasDeviceMeasurement, "GT")[0].criteriaValue} mm` + (subscriptionStore.getSubscription(getAlertSettings(floodMonitoring.hasDeviceMeasurement, "GT")[0].hasSubscription).notification.lastNotification ? ` (${formatDate(subscriptionStore.getSubscription(getAlertSettings(floodMonitoring.hasDeviceMeasurement, "GT")[0].hasSubscription).notification.lastNotification)})` : "") : ""),
             maximumThreshold: (getAlertSettings(floodMonitoring.hasDeviceMeasurement, "LT").length ? `${getAlertSettings(floodMonitoring.hasDeviceMeasurement, "LT")[0].criteriaValue} mm` + (subscriptionStore.getSubscription(getAlertSettings(floodMonitoring.hasDeviceMeasurement, "LT")[0].hasSubscription).notification.lastNotification ? ` (${formatDate(subscriptionStore.getSubscription(getAlertSettings(floodMonitoring.hasDeviceMeasurement, "LT")[0].hasSubscription).notification.lastNotification)})` : "") : "")

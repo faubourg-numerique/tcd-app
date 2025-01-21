@@ -13,6 +13,7 @@ import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useSubscriptionStore } from "@/stores/subscription-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useWasteContainerStore } from "@/stores/waste-container-store";
+import { useZoneStore } from "@/stores/zone-store";
 
 DataTable.use(DataTablesLib);
 
@@ -25,6 +26,7 @@ const alertSettingsStore = useAlertSettingsStore();
 const subscriptionStore = useSubscriptionStore();
 const wasteContainerStore = useWasteContainerStore();
 const deviceMeasurementStore = useDeviceMeasurementStore();
+const zoneStore = useZoneStore();
 
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
@@ -42,6 +44,10 @@ const options = {
             render: function (x, y, data) {
                 return `<a href="#" data-device-measurement-id="${data.deviceMeasurementId}">${data.name}</a>`;
             }
+        },
+        {
+            data: "zone",
+            title: t("main.zone")
         },
         {
             data: "fillingLevel",
@@ -77,6 +83,7 @@ const data = computed(() => {
         const row = {
             deviceMeasurementId: wasteContainer.hasDeviceMeasurement,
             name: wasteContainer.name,
+            zone: zoneStore.getZone(wasteContainer.hasZone).name,
             fillingLevel: `${Math.floor(deviceMeasurementStore.getDeviceMeasurement(wasteContainer.hasDeviceMeasurement)?.fillingLevel) ?? "N/A"} %`,
             minimumThreshold: (getAlertSettings(wasteContainer.hasDeviceMeasurement, "GT").length ? `${getAlertSettings(wasteContainer.hasDeviceMeasurement, "GT")[0].criteriaValue} %` + (subscriptionStore.getSubscription(getAlertSettings(wasteContainer.hasDeviceMeasurement, "GT")[0].hasSubscription).notification.lastNotification ? ` (${formatDate(subscriptionStore.getSubscription(getAlertSettings(wasteContainer.hasDeviceMeasurement, "GT")[0].hasSubscription).notification.lastNotification)})` : "") : ""),
             maximumThreshold: (getAlertSettings(wasteContainer.hasDeviceMeasurement, "LT").length ? `${getAlertSettings(wasteContainer.hasDeviceMeasurement, "LT")[0].criteriaValue} %` + (subscriptionStore.getSubscription(getAlertSettings(wasteContainer.hasDeviceMeasurement, "LT")[0].hasSubscription).notification.lastNotification ? ` (${formatDate(subscriptionStore.getSubscription(getAlertSettings(wasteContainer.hasDeviceMeasurement, "LT")[0].hasSubscription).notification.lastNotification)})` : "") : "")
