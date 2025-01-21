@@ -50,8 +50,8 @@ const watchedAttribute = deviceMeasurement.measurementType === "waste-level" ? "
 const subscriptionFormModalElement = ref(null);
 let subscriptionFormModal: Modal | null = null;
 
-const canReadAlerts = mainStore.hasRole(`${city.role}AlertsRead`);
-const canWriteAlerts = mainStore.hasRole(`${city.role}AlertsWrite`);
+const canReadAlerts = deviceMeasurement.measurementType === "waste-level" ? mainStore.hasRole(`${zone.role}AlertsRead`) : mainStore.hasRole(`${city.role}AlertsRead`);
+const canWriteAlerts = deviceMeasurement.measurementType === "waste-level" ? mainStore.hasRole(`${zone.role}AlertsWrite`) : mainStore.hasRole(`${city.role}AlertsWrite`);
 
 const subscriptionQueryCriteria = ref(">");
 const subscriptionQueryValue = ref(0);
