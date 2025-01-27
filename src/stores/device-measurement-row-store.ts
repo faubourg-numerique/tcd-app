@@ -28,6 +28,19 @@ export const useDeviceMeasurementRowStore = defineStore("device-measurement-row"
         return response.data;
     }
 
+    async function fetchDeviceMeasurementRowsHourlyAverage(roomId: string, measurementType: string, fromDate: string, toDate: string): Promise<DeviceMeasurementRow[]> {
+        const config = {
+            params: {
+                roomId,
+                measurementType,
+                fromDate,
+                toDate
+            }
+        };
+        const response = await api.get("/device-measurement-rows/average/hourly", config);
+        return response.data;
+    }
+
     async function fetchHourlyDeviceMeasurementRows(roomId: string, measurementType: string, fromDate: string, toDate: string): Promise<DeviceMeasurementRow[]> {
             const config = {
                 params: {
@@ -44,6 +57,7 @@ export const useDeviceMeasurementRowStore = defineStore("device-measurement-row"
     return {
         fetchDeviceMeasurementRowsById,
         fetchDeviceMeasurementRows,
+        fetchDeviceMeasurementRowsHourlyAverage,
         fetchHourlyDeviceMeasurementRows
     };
 });

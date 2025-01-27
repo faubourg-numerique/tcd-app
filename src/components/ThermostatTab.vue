@@ -41,12 +41,38 @@ const deviceMeasurementChartData = computed(() => ({
 
 const deviceMeasurementChartOptions = computed(() => ({
     responsive: true,
-
+    interaction: {
+        mode: 'nearest',
+        intersect: false,
+    },
     scales: {
         x: {
-            type: "time",
+            type: 'time',
             time: {
-                unit: "day"
+                unit: 'hour',
+                displayFormats: {
+                    hour: 'dd/MM HH:mm'
+                }
+            },
+            title: {
+                display: true,
+                text: 'Date et heure'
+            }
+        },
+        sensortemperature: {
+            type: 'linear',
+            position: 'left',
+            title: {
+                display: true,
+                text: 'Température (°C)'
+            }
+        },
+        relativehumidity: {
+            type: 'linear',
+            position: 'right',
+            title: {
+                display: true,
+                text: 'Humidité (%)'
             }
         }
     }
@@ -72,58 +98,21 @@ onMounted(loadDeviceMeasurementChartData);
 async function loadDeviceMeasurementChartData() {
     datasets.length = 0;
 
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRowsHourlyAverage(
         props.roomId,
         "thermostat",
         fromDate.toISOString().split("T")[0],
         toDate.toISOString().split("T")[0]
     );
 
-    const deviceMeasurementRowById = deviceMeasurementRows.reduce((acc, row) => ((acc[row.id] = acc[row.id] || []).push(row), acc), {});
-
-    const dates = Array.from(
-        { length: Math.ceil((toDate.getTime() - fromDate.getTime()) / 3600000) },
-        (_, i) => new Date(fromDate.getTime() + i * 3600000)
-    );
-
-    const data = {};
-
-    for (const deviceMeasurementId of Object.keys(deviceMeasurementRowById)) {
-        data[deviceMeasurementId] = dates.map((date) => {
-            const targetTime = new Date(date).getTime();
-            return deviceMeasurementRows.reduce((closest, current) => {
-                const currentTime = current.datetime ? new Date(current.datetime).getTime() : Infinity;
-                const closestTime = closest.datetime ? new Date(closest.datetime).getTime() : Infinity;
-                return Math.abs(currentTime - targetTime) < Math.abs(closestTime - targetTime) ? current : closest;
-            }, { datetime: null });
-        });
-    }
-
-    const averageSensorTemperature = dates.map((date, index) => {
-        const temperaturesForDate = Object.keys(data).map(deviceMeasurementId => {
-            const deviceMeasurement = data[deviceMeasurementId][index];
-            return deviceMeasurement ? deviceMeasurement.sensortemperature : null;
-        }).filter((temp) => temp != null);
-
-        return temperaturesForDate.length > 0 ? temperaturesForDate.reduce((sum, temp) => sum + temp, 0) / temperaturesForDate.length : null;
-    });
-
-    const averageRelativeHumidity = dates.map((date, index) => {
-        const relativeHumiditiesForDate = Object.keys(data).map(deviceMeasurementId => {
-            const deviceMeasurement = data[deviceMeasurementId][index];
-            return deviceMeasurement ? deviceMeasurement.relativehumidity : null;
-        }).filter((temp) => temp != null);
-
-        return relativeHumiditiesForDate.length > 0 ? relativeHumiditiesForDate.reduce((sum, temp) => sum + temp, 0) / relativeHumiditiesForDate.length : null;
-    });
-
     datasets.push({
         label: "Moyenne de la température",
         borderColor: "#e74c3c",
         backgroundColor: "#c0392b",
-        data: dates.map((date, index) => ({
-            x: date,
-            y: averageSensorTemperature[index]
+        yAxisID: 'sensortemperature',
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.sensortemperature
         }))
     });
 
@@ -131,9 +120,10 @@ async function loadDeviceMeasurementChartData() {
         label: "Moyenne de l'humidité",
         borderColor: "#3498db",
         backgroundColor: "#2980b9",
-        data: dates.map((date, index) => ({
-            x: date,
-            y: averageRelativeHumidity[index]
+        yAxisID: 'relativehumidity',
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.relativehumidity
         }))
     });
 }
@@ -262,32 +252,28 @@ async function exportData() {
 
 <template>
     <div id="thermostat-device-measurement-rows-modal" class="modal fade" tabindex="-1">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center" v-if="deviceMeasurementRowsModalLoading">
+                        <div class="spinner-border"></div>
                     </div>
-                    <div class="modal-body">
-                        <div class="d-flex justify-content-center" v-if="deviceMeasurementRowsModalLoading">
-                            <div class="spinner-border"></div>
-                        </div>
-                        <template v-else>
-                            <Line
-                                :data="modalChartData"
-                                :options="modalChartOptions"
-                                class="w-100"
-                            />
-                        </template>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            {{ $t("main.close") }}
-                        </button>
-                    </div>
+                    <template v-else>
+                        <Line :data="modalChartData" :options="modalChartOptions" class="w-100" />
+                    </template>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ $t("main.close") }}
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
 
     <div v-if="deviceMeasurements.length" class="table-responsive bg-white p-4 rounded border border-danger mb-3">
