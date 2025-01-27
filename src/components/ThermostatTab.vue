@@ -98,6 +98,12 @@ onMounted(loadDeviceMeasurementChartData);
 async function loadDeviceMeasurementChartData() {
     datasets.length = 0;
 
+    const deviceMeasurements = deviceMeasurementStore.getDeviceMeasurementsByRoomIdAndMeasurementType(props.roomId, "thermostat");
+
+    if (!deviceMeasurements.length) {
+        return;
+    }
+
     const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRowsHourlyAverage(
         props.roomId,
         "thermostat",

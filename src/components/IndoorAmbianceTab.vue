@@ -72,58 +72,26 @@ onMounted(loadDeviceMeasurementChartData);
 async function loadDeviceMeasurementChartData() {
     datasets.length = 0;
 
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
+    const deviceMeasurements = deviceMeasurementStore.getDeviceMeasurementsByRoomIdAndMeasurementType(props.roomId, "indoor-ambiance");
+
+    if (!deviceMeasurements.length) {
+        return;
+    }
+
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRowsHourlyAverage(
         props.roomId,
         "indoor-ambiance",
         fromDate.toISOString().split("T")[0],
         toDate.toISOString().split("T")[0]
     );
 
-    const deviceMeasurementRowById = deviceMeasurementRows.reduce((acc, row) => ((acc[row.id] = acc[row.id] || []).push(row), acc), {});
-
-    const dates = Array.from(
-        { length: Math.ceil((toDate.getTime() - fromDate.getTime()) / 3600000) },
-        (_, i) => new Date(fromDate.getTime() + i * 3600000)
-    );
-
-    const data = {};
-
-    for (const deviceMeasurementId of Object.keys(deviceMeasurementRowById)) {
-        data[deviceMeasurementId] = dates.map((date) => {
-            const targetTime = new Date(date).getTime();
-            return deviceMeasurementRows.reduce((closest, current) => {
-                const currentTime = current.datetime ? new Date(current.datetime).getTime() : Infinity;
-                const closestTime = closest.datetime ? new Date(closest.datetime).getTime() : Infinity;
-                return Math.abs(currentTime - targetTime) < Math.abs(closestTime - targetTime) ? current : closest;
-            }, { datetime: null });
-        });
-    }
-
-    const averageTemperature = dates.map((date, index) => {
-        const temperaturesForDate = Object.keys(data).map(deviceMeasurementId => {
-            const deviceMeasurement = data[deviceMeasurementId][index];
-            return deviceMeasurement ? deviceMeasurement.temperature : null;
-        }).filter((temp) => temp != null);
-
-        return temperaturesForDate.length > 0 ? temperaturesForDate.reduce((sum, temp) => sum + temp, 0) / temperaturesForDate.length : null;
-    });
-
-    const averageHumidity = dates.map((date, index) => {
-        const humiditiesForDate = Object.keys(data).map(deviceMeasurementId => {
-            const deviceMeasurement = data[deviceMeasurementId][index];
-            return deviceMeasurement ? deviceMeasurement.humidity : null;
-        }).filter((temp) => temp != null);
-
-        return humiditiesForDate.length > 0 ? humiditiesForDate.reduce((sum, temp) => sum + temp, 0) / humiditiesForDate.length : null;
-    });
-
     datasets.push({
-        label: "Moyenne de la température",
-        borderColor: "#e74c3c",
-        backgroundColor: "#c0392b",
-        data: dates.map((date, index) => ({
-            x: date,
-            y: averageTemperature[index]
+        label: "Moyenne du CO2",
+        borderColor: "#34495e",
+        backgroundColor: "#2c3e50",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.co2
         }))
     });
 
@@ -131,9 +99,49 @@ async function loadDeviceMeasurementChartData() {
         label: "Moyenne de l'humidité",
         borderColor: "#3498db",
         backgroundColor: "#2980b9",
-        data: dates.map((date, index) => ({
-            x: date,
-            y: averageHumidity[index]
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.humidity
+        }))
+    });
+
+    datasets.push({
+        label: "Moyenne de la température",
+        borderColor: "#e74c3c",
+        backgroundColor: "#c0392b",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.temperature
+        }))
+    });
+
+    datasets.push({
+        label: "Moyenne de la luminosité",
+        borderColor: "#f1c40f",
+        backgroundColor: "#f39c12",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.luminosity
+        }))
+    });
+
+    datasets.push({
+        label: "Moyenne du bruit",
+        borderColor: "#f1c40f",
+        backgroundColor: "#f39c12",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.averagenoise
+        }))
+    });
+
+    datasets.push({
+        label: "Moyenne du taux d'occupation",
+        borderColor: "#e67e22",
+        backgroundColor: "#d35400",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.occupancyrate
         }))
     });
 }
