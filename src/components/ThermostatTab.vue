@@ -145,8 +145,6 @@ async function loadDeviceMeasurementChartData() {
     });
 }
 
-
-
 async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasurement) {
     deviceMeasurementRowsModalLoading.value = true;
     deviceMeasurementRowsModalName.value = deviceMeasurement.name;
@@ -265,6 +263,10 @@ async function exportData() {
     fileDownload(csv2, "device-measurement-thermostat-history-export.csv");
 }
 
+async function refresh() {
+    await deviceMeasurementStore.fetchDeviceMeasurements();
+    await loadDeviceMeasurementChartData();
+}
 </script>
 
 <template>
@@ -327,7 +329,7 @@ async function exportData() {
             </tbody>
         </table>
         <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
-        <button type="button" class="btn btn-primary me-3" @click="deviceMeasurementStore.fetchDeviceMeasurements()">{{ $t("main.refresh") }}</button>
+        <button type="button" class="btn btn-primary me-3" @click="refresh">{{ $t("main.refresh") }}</button>
         <button type="button" class="btn btn-primary" @click="exportData">{{ $t("main.exportData") }}</button>
     </div>
     <div v-else class="alert alert-info">{{ $t("dialogs.noData") }}</div>
