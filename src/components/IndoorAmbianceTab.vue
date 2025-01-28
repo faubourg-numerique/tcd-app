@@ -185,8 +185,6 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
 }
 
 async function exportData() {
-    await deviceMeasurementStore.fetchDeviceMeasurements();
-
     const deviceMeasurements = deviceMeasurementStore.getDeviceMeasurementsByRoomIdAndMeasurementType(props.roomId, "indoor-ambiance");
 
     if (!deviceMeasurements.length) {

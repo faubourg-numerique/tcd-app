@@ -227,8 +227,6 @@ const modalChartOptions = computed(() => ({
 }));
 
 async function exportData() {
-    await deviceMeasurementStore.fetchDeviceMeasurements();
-
     const deviceMeasurements = deviceMeasurementStore.getDeviceMeasurementsByRoomIdAndMeasurementType(props.roomId, "thermostat");
 
     if (!deviceMeasurements.length) {
