@@ -192,28 +192,20 @@ async function exportData() {
     }
 
     const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(props.roomId, "indoor-ambiance", fromDateString.value, toDateString.value);
-    const deviceMeasurementRowsCleaned: any[] = [];
 
-    const deviceMeasurementKeys = deviceMeasurements.flatMap((deviceMeasurement) =>
-        Object.keys(deviceMeasurement).map((key) => key.toLowerCase())
-    );
-
+    const rows = [];
     for (const deviceMeasurementRow of deviceMeasurementRows) {
         const row: any = {};
         for (const [key, value] of Object.entries(deviceMeasurementRow)) {
-            if (key === "datetime") {
-                row[key.toLowerCase()] = value;
-                continue;
-            }
-            if (deviceMeasurementKeys.includes(key.toLowerCase())) {
+            if (value !== null && value !== undefined) {
                 row[key.toLowerCase()] = value;
             }
         }
-        deviceMeasurementRowsCleaned.push(row);
+        rows.push(row);
     }
 
     const csv1 = json2csv(deviceMeasurements);
-    const csv2 = json2csv(deviceMeasurementRowsCleaned);
+    const csv2 = json2csv(rows);
 
     fileDownload(csv1, "device-measurement-indoor-ambiance-current-export.csv");
     fileDownload(csv2, "device-measurement-indoor-ambiance-history-export.csv");
