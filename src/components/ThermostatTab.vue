@@ -123,6 +123,17 @@ async function loadDeviceMeasurementChartData() {
     });
 
     datasets.push({
+        label: "Moyenne de la température cible",
+        borderColor: "#95a5a6",
+        backgroundColor: "#7f8c8d",
+        yAxisID: 'sensortemperature',
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.targettemperature
+        }))
+    });
+
+    datasets.push({
         label: "Moyenne de l'humidité",
         borderColor: "#3498db",
         backgroundColor: "#2980b9",
