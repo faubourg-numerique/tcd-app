@@ -70,5 +70,11 @@
     "waterLevel": "Niveau d'eau",
     "watercourses": "Cours d'eau",
     "zone": "Zone",
-    "fillingLevel": "Niveau de remplissage"
+    "fillingLevel": "Niveau de remplissage",
+    "co2": "CO2",
+    "covt": "COVT",
+    "luminosity": "Luminosité",
+    "averageNoise": "Bruit moyen",
+    "peakNoise": "Pic de bruit",
+    "occupancyRate": "Taux d'occupation"
 }

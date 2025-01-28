@@ -86,27 +86,7 @@ async function loadDeviceMeasurementChartData() {
     );
 
     datasets.push({
-        label: "Moyenne du CO2",
-        borderColor: "#34495e",
-        backgroundColor: "#2c3e50",
-        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
-            x: deviceMeasurementRow.datetime,
-            y: deviceMeasurementRow.co2
-        }))
-    });
-
-    datasets.push({
-        label: "Moyenne de l'humidité",
-        borderColor: "#3498db",
-        backgroundColor: "#2980b9",
-        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
-            x: deviceMeasurementRow.datetime,
-            y: deviceMeasurementRow.humidity
-        }))
-    });
-
-    datasets.push({
-        label: "Moyenne de la température",
+        label: "Température (°C)",
         borderColor: "#e74c3c",
         backgroundColor: "#c0392b",
         data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
@@ -116,7 +96,37 @@ async function loadDeviceMeasurementChartData() {
     });
 
     datasets.push({
-        label: "Moyenne de la luminosité",
+        label: "Humidité (%)",
+        borderColor: "#3498db",
+        backgroundColor: "#2980b9",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.humidity
+        }))
+    });
+
+    datasets.push({
+        label: "CO2 (ppm)",
+        borderColor: "#34495e",
+        backgroundColor: "#2c3e50",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.co2
+        }))
+    });
+
+    datasets.push({
+        label: "COVT (ug/m3)",
+        borderColor: "#1abc9c",
+        backgroundColor: "#16a085",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.covt
+        }))
+    });
+
+    datasets.push({
+        label: "Luminosité (lux)",
         borderColor: "#f1c40f",
         backgroundColor: "#f39c12",
         data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
@@ -126,9 +136,9 @@ async function loadDeviceMeasurementChartData() {
     });
 
     datasets.push({
-        label: "Moyenne du bruit",
-        borderColor: "#f1c40f",
-        backgroundColor: "#f39c12",
+        label: "Bruit moyen (dB)",
+        borderColor: "#bdc3c7",
+        backgroundColor: "#bdc3c7",
         data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
             x: deviceMeasurementRow.datetime,
             y: deviceMeasurementRow.averagenoise
@@ -136,7 +146,17 @@ async function loadDeviceMeasurementChartData() {
     });
 
     datasets.push({
-        label: "Moyenne du taux d'occupation",
+        label: "Pic de bruit (dB)",
+        borderColor: "#95a5a6",
+        backgroundColor: "#7f8c8d",
+        data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
+            x: deviceMeasurementRow.datetime,
+            y: deviceMeasurementRow.peaknoise
+        }))
+    });
+
+    datasets.push({
+        label: "Taux d'occupation (%)",
         borderColor: "#e67e22",
         backgroundColor: "#d35400",
         data: deviceMeasurementRows.map((deviceMeasurementRow) => ({
@@ -226,7 +246,12 @@ async function refresh() {
                                     <th class="text-center">{{ $t("main.date") }}</th>
                                     <th class="text-end">{{ $t("main.temperature") }}</th>
                                     <th class="text-end">{{ $t("main.humidity") }}</th>
-                                    <th class="text-end">{{ $t("main.voltage") }}</th>
+                                    <th class="text-end">{{ $t("main.co2") }}</th>
+                                    <th class="text-end">{{ $t("main.covt") }}</th>
+                                    <th class="text-end">{{ $t("main.luminosity") }}</th>
+                                    <th class="text-end">{{ $t("main.averageNoise") }}</th>
+                                    <th class="text-end">{{ $t("main.peakNoise") }}</th>
+                                    <th class="text-end">{{ $t("main.occupancyRate") }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -234,7 +259,12 @@ async function refresh() {
                                     <td class="text-center">{{ new Date(deviceMeasurementRow.datetime).toLocaleString() }}</td>
                                     <td class="text-end">{{ deviceMeasurementRow.temperature }} °C</td>
                                     <td class="text-end">{{ deviceMeasurementRow.humidity }} %</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.vdd ?? "?" }} mV</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.co2 }} ppm</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.covt }} ug/m3</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.luminosity }} lux</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.averagenoise }} dB</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.peaknoise }} dB</td>
+                                    <td class="text-end">{{ deviceMeasurementRow.occupancyrate }} %</td>
                                 </tr>
                             </tbody>
                         </table>

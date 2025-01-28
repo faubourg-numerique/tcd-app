@@ -70,5 +70,11 @@
     "waterLevel": "Water Level",
     "watercourses": "Watercourses",
     "zone": "Zone",
-    "fillingLevel": "Filling level"
+    "fillingLevel": "Filling level",
+    "co2": "CO2",
+    "covt": "COVT",
+    "luminosity": "Luminosity",
+    "averageNoise": "Average noise",
+    "peakNoise": "Peak noise",
+    "occupancyRate": "Occupancy rate"
 }
