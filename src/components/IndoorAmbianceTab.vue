@@ -52,19 +52,13 @@ const deviceMeasurementChartOptions = computed(() => ({
     }
 }));
 
-watch(fromDateString, async () => {
+async function loadData() {
     loadingData.value = true;
     fromDate.setTime(new Date(`${fromDateString.value}T00:00:00Z`).getTime());
-    await loadDeviceMeasurementChartData();
-    loadingData.value = false;
-});
-
-watch(toDateString, async () => {
-    loadingData.value = true;
     toDate.setTime(new Date(`${toDateString.value}T23:59:59Z`).getTime());
     await loadDeviceMeasurementChartData();
     loadingData.value = false;
-});
+}
 
 watch(() => props.roomId, loadDeviceMeasurementChartData);
 onMounted(loadDeviceMeasurementChartData);
@@ -274,6 +268,9 @@ async function refresh() {
             </div>
             <div class="col-12">
                 <input type="date" class="form-control" v-model="toDateString" :disabled="loadingData">
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" @click="loadData" :disabled="loadingData">Appliquer</button>
             </div>
         </div>
         <table class="table align-middle">
