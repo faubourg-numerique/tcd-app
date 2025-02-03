@@ -17,10 +17,8 @@ onMounted(() => {
 });
 
 watch(selectedCityId, (zoneId) => {
-    if (!selectedZoneId.value) {
-        const zones = zoneStore.getZonesByCityId(zoneId as string);
-        selectedZoneId.value = zones.length === 1 ? zones[0].id : null;
-    }
+    const zones = zoneStore.getZonesByCityId(zoneId as string);
+    selectedZoneId.value = zones.length === 1 ? zones[0].id : null;
 });
 </script>
 
