@@ -115,9 +115,9 @@ function resolveRoute(event) {
 
 <template>
     <div class="container">
+        <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
         <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-4" />
-        <template v-if="selectedCityId">
-            <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
+        <div v-if="selectedCityId" class="p-4 rounded border border-danger">
             <form class="row align-items-center d-flex flex-wrap">
                 <div class="col-auto">
                     <div class="form-check">
@@ -141,7 +141,7 @@ function resolveRoute(event) {
             <div class="table-responsive">
                 <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
             </div>
-            <div class="mb-5"></div>
-        </template>
+        </div>
+        <div class="mb-5"></div>
     </div>
 </template>

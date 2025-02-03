@@ -11,12 +11,16 @@ const selectedCityId = defineModel("selectedCityId");
 const selectedZoneId = defineModel("selectedZoneId");
 
 onMounted(() => {
-    selectedCityId.value = cityStore.cities.length === 1 ? cityStore.cities[0].id : null;
+    if (!selectedCityId.value) {
+        selectedCityId.value = cityStore.cities.length === 1 ? cityStore.cities[0].id : null;
+    }
 });
 
 watch(selectedCityId, (zoneId) => {
-    const zones = zoneStore.getZonesByCityId(zoneId as string);
-    selectedZoneId.value = zones.length === 1 ? zones[0].id : null;
+    if (!selectedZoneId.value) {
+        const zones = zoneStore.getZonesByCityId(zoneId as string);
+        selectedZoneId.value = zones.length === 1 ? zones[0].id : null;
+    }
 });
 </script>
 

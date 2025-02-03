@@ -319,5 +319,7 @@ onMounted(() => {
             </form>
         </div>
     </div>
-    <FullCalendar :options="options" />
+    <div class="p-4 rounded text-center border border-danger">
+        <FullCalendar :options="options" />
+    </div>
 </template>
