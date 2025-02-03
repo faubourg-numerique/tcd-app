@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
+import swal from "sweetalert2";
 import { useRoute, useRouter } from "vue-router";
 
 import api from "@/api";
@@ -50,6 +51,22 @@ async function main() {
     mainStore.username = response.data.username;
     mainStore.roles.push(...response.data.roles.map((role: { name: string }) => role.name));
     mainStore.isAuthorized = !mainStore.roles.every((role: string) => defaultRoles.includes(role));
+
+    const tokenExpirationDate = new Date(route.query.expires_at as string);
+    tokenExpirationDate.setMinutes(tokenExpirationDate.getMinutes() - 5);
+    const timeUntilSessionExpiration = tokenExpirationDate.getTime() - new Date().getTime();
+
+    setTimeout(() => {
+        swal.fire({
+            allowOutsideClick: false,
+            icon: "info",
+            title: "Session expirée",
+            text: "Votre session est expirée, veuillez vous reconnecter.",
+            didClose: () => {
+                window.location.href = "/";
+            }
+        });
+    }, timeUntilSessionExpiration);
 
     if (!mainStore.isAuthorized) {
         mainStore.isAuthenticated = true;
