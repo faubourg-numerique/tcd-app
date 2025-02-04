@@ -191,7 +191,7 @@ onMounted(() => {
             </button>
         </h2>
         <div v-if="alertSettings.length" class="table-responsive">
-            <table class="table table-striped table-bordered align-middle">
+            <table class="table table-striped table-bordered align-middle mb-0">
                 <thead>
                     <tr>
                         <th>{{ $t("main.criteria") }}</th>

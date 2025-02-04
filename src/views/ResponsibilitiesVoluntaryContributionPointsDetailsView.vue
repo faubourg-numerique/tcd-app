@@ -39,8 +39,8 @@ const city = cityStore.getCity(zone.hasCity);
                 <dt class="col-sm-3">{{ $t("main.fillingLevel") }}</dt>
                 <dd class="col-sm-9">{{ deviceMeasurement.fillingLevel ? Math.floor(deviceMeasurement.fillingLevel) : "N/A" }} %</dd>
             </dl>
-            <DeviceMeasurementAlerts :device-measurement-id="deviceMeasurement.id" />
             <DeviceMeasurementVisualizations :device-measurement-id="deviceMeasurement.id" />
+            <DeviceMeasurementAlerts :device-measurement-id="deviceMeasurement.id" />
         </div>
     </div>
 </template>

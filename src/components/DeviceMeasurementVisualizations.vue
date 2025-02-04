@@ -151,19 +151,21 @@ onMounted(loadDeviceMeasurementChartData);
 </script>
 
 <template>
-    <h2>{{ $t("main.visualization") }}</h2>
-    <div class="row row-cols-lg-auto g-3 align-items-center mb-3">
-        <div class="col-12">
-            <input type="date" class="form-control" v-model="fromDateString" :disabled="loadingData">
+    <div class="mb-3">
+        <h2 class="mb-3">{{ $t("main.visualization") }}</h2>
+        <div class="row row-cols-lg-auto g-3 align-items-center mb-3">
+            <div class="col-12">
+                <input type="date" class="form-control" v-model="fromDateString" :disabled="loadingData">
+            </div>
+            <div class="col-12">
+                <input type="date" class="form-control" v-model="toDateString" :disabled="loadingData">
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" @click="loadData" :disabled="loadingData">Appliquer</button>
+            </div>
         </div>
-        <div class="col-12">
-            <input type="date" class="form-control" v-model="toDateString" :disabled="loadingData">
-        </div>
-        <div class="col-12">
-            <button class="btn btn-primary" @click="loadData" :disabled="loadingData">Appliquer</button>
-        </div>
+        <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
+        <button type="button" class="btn btn-primary me-3" @click="loadDeviceMeasurementChartData">{{ $t("main.refresh") }}</button>
+        <button type="button" class="btn btn-primary" @click="exportData">{{ $t("main.exportData") }}</button>
     </div>
-    <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
-    <button type="button" class="btn btn-primary me-3" @click="loadDeviceMeasurementChartData">{{ $t("main.refresh") }}</button>
-    <button type="button" class="btn btn-primary" @click="exportData">{{ $t("main.exportData") }}</button>
 </template>
