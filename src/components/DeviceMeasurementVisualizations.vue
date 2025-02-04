@@ -152,7 +152,6 @@ onMounted(loadDeviceMeasurementChartData);
 
 <template>
     <div class="mb-3">
-        <h2 class="mb-3">{{ $t("main.visualization") }}</h2>
         <div class="row row-cols-lg-auto g-3 align-items-center mb-3">
             <div class="col-12">
                 <input type="date" class="form-control" v-model="fromDateString" :disabled="loadingData">

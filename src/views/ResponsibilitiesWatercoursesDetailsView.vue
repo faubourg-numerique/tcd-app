@@ -33,12 +33,8 @@ const city = cityStore.getCity(zone.hasCity);
             </RouterLink>
         </div>
         <div class="bg-light p-3 rounded shadow mb-5">
-            <dl class="row">
-                <dt class="col-sm-3">{{ $t("main.name") }}</dt>
-                <dd class="col-sm-9">{{ deviceMeasurement.name }}</dd>
-                <dt class="col-sm-3">{{ $t("main.waterLevel") }}</dt>
-                <dd class="col-sm-9">{{ deviceMeasurement.currentLevel ?? "N/A" }} mm</dd>
-            </dl>
+            <h2 class="mb-3">{{ deviceMeasurement.name }}</h2>
+            <h2 class="mb-3">Niveau d'eau actuel: {{ deviceMeasurement.currentLevel ?? 0 }}mm</h2>
             <DeviceMeasurementVisualizations :device-measurement-id="deviceMeasurement.id" />
             <DeviceMeasurementAlerts :device-measurement-id="deviceMeasurement.id" />
         </div>
