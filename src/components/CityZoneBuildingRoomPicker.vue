@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineModel, onMounted, watch } from "vue";
+import { computed, defineModel, onMounted, watch } from "vue";
 
 import { useCityStore } from "@/stores/city-store";
 import { useZoneStore } from "@/stores/zone-store";
@@ -15,6 +15,39 @@ const selectedCityId = defineModel("selectedCityId");
 const selectedZoneId = defineModel("selectedZoneId");
 const selectedBuildingId = defineModel("selectedBuildingId");
 const selectedRoomId = defineModel("selectedRoomId");
+
+const sortedCities = computed(() => {
+    const cities = [...cityStore.cities];
+    cities.sort((a, b) => a.name.localeCompare(b.name));
+    return cities;
+});
+
+const sortedZones = computed(() => {
+    if (!selectedCityId.value) {
+        return [];
+    }
+    const zones = [...zoneStore.getZonesByCityId(selectedCityId.value as string)];
+    zones.sort((a, b) => a.name.localeCompare(b.name));
+    return zones;
+});
+
+const sortedBuildings = computed(() => {
+    if (!selectedZoneId.value) {
+        return [];
+    }
+    const buildings = [...buildingStore.getBuildingsByZoneId(selectedZoneId.value as string)];
+    buildings.sort((a, b) => a.name.localeCompare(b.name));
+    return buildings;
+});
+
+const sortedRooms = computed(() => {
+    if (!selectedBuildingId.value) {
+        return [];
+    }
+    const rooms = [...roomStore.getRoomsByBuildingId(selectedBuildingId.value as string)];
+    rooms.sort((a, b) => a.name.localeCompare(b.name));
+    return rooms;
+});
 
 onMounted(() => {
     selectedCityId.value = cityStore.cities.length === 1 ? cityStore.cities[0].id : null;
@@ -44,7 +77,7 @@ watch(selectedBuildingId, (buildingId) => {
                     <label for="city-id" class="form-label">{{ $t("main.city") }}</label>
                     <select id="city-id" v-model="selectedCityId" class="form-select">
                         <option :value="null" disabled>{{ $t("main.selectACity") }}</option>
-                        <option v-for="city in cityStore.cities" :key="city.id" :value="city.id">{{ city.name }}</option>
+                        <option v-for="city in sortedCities" :key="city.id" :value="city.id">{{ city.name }}</option>
                     </select>
                 </div>
             </div>
@@ -53,7 +86,7 @@ watch(selectedBuildingId, (buildingId) => {
                     <label for="zone-id" class="form-label">{{ $t("main.zone") }}</label>
                     <select id="zone-id" v-model="selectedZoneId" class="form-select">
                         <option :value="null" disabled>{{ $t("main.selectAZone") }}</option>
-                        <option v-for="zone in zoneStore.getZonesByCityId(selectedCityId as string)" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
+                        <option v-for="zone in sortedZones" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
                     </select>
                 </div>
             </div>
@@ -62,8 +95,7 @@ watch(selectedBuildingId, (buildingId) => {
                     <label for="building-id" class="form-label">{{ $t("main.building") }}</label>
                     <select id="building-id" v-model="selectedBuildingId" class="form-select">
                         <option :value="null" disabled>{{ $t("main.selectABuilding") }}</option>
-                        <option v-for="building in buildingStore.getBuildingsByZoneId(selectedZoneId as string)"
-                            :key="building.id" :value="building.id">{{ building.name }}</option>
+                        <option v-for="building in sortedBuildings" :key="building.id" :value="building.id">{{ building.name }}</option>
                     </select>
                 </div>
             </div>
@@ -72,8 +104,7 @@ watch(selectedBuildingId, (buildingId) => {
                     <label for="room-id" class="form-label">{{ $t("main.room") }}</label>
                     <select id="room-id" v-model="selectedRoomId" class="form-select">
                         <option :value="null" disabled>{{ $t("main.selectARoom") }}</option>
-                        <option v-for="room in roomStore.getRoomsByBuildingId(selectedBuildingId as string)"
-                            :key="room.id" :value="room.id">{{ room.name }}</option>
+                        <option v-for="room in sortedRooms" :key="room.id" :value="room.id">{{ room.name }}</option>
                     </select>
                 </div>
             </div>
