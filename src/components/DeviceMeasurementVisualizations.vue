@@ -31,7 +31,8 @@ const deviceMeasurement = deviceMeasurementStore.getDeviceMeasurement(props.devi
 const loadingData = ref(false);
 
 const toDate = reactive(new Date());
-const fromDate = reactive(new Date(toDate.getTime() - (3 * 24 * 60 * 60 * 1000)));
+const fromDate = reactive(new Date());
+fromDate.setMonth(fromDate.getMonth() - 1);
 
 const toDateString: Ref<string> = ref(toDate.toLocaleDateString("en-CA"));
 const fromDateString: Ref<string> = ref(fromDate.toLocaleDateString("en-CA"));
