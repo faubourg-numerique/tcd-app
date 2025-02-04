@@ -52,6 +52,122 @@ const deviceMeasurementChartOptions = computed(() => ({
     }
 }));
 
+const modalChartData = computed(() => ({
+    datasets: [
+        {
+            label: "Température (°C)",
+            borderColor: "#e74c3c",
+            backgroundColor: "#c0392b",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.temperature
+            }))
+        },
+        {
+            label: "Humidité (%)",
+            borderColor: "#3498db",
+            backgroundColor: "#2980b9",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.humidity
+            }))
+        },
+        {
+            label: "CO2 (ppm)",
+            borderColor: "#34495e",
+            backgroundColor: "#2c3e50",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.co2
+            }))
+        },
+        {
+            label: "COVT (ug/m3)",
+            borderColor: "#1abc9c",
+            backgroundColor: "#16a085",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.covt
+            }))
+        },
+        {
+            label: "Luminosité (lux)",
+            borderColor: "#f1c40f",
+            backgroundColor: "#f39c12",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.luminosity
+            }))
+        },
+        {
+            label: "Bruit moyen (dB)",
+            borderColor: "#bdc3c7",
+            backgroundColor: "#bdc3c7",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.averagenoise
+            }))
+        },
+        {
+            label: "Pic de bruit (dB)",
+            borderColor: "#95a5a6",
+            backgroundColor: "#7f8c8d",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.peaknoise
+            }))
+        },
+        {
+            label: "Taux d'occupation (%)",
+            borderColor: "#e67e22",
+            backgroundColor: "#d35400",
+            data: deviceMeasurementRowsModalData.map(row => ({
+                x: new Date(row.hour),
+                y: row.occupancyrate
+            }))
+        }
+    ]
+}));
+
+const modalChartOptions = computed(() => ({
+    responsive: true,
+    interaction: {
+        mode: 'nearest',
+        intersect: false,
+    },
+    scales: {
+        x: {
+            type: 'time',
+            time: {
+                unit: 'hour',
+                displayFormats: {
+                    hour: 'dd/MM HH:mm'
+                }
+            },
+            title: {
+                display: true,
+                text: 'Date et heure'
+            }
+        },
+        temperature: {
+            type: 'linear',
+            position: 'left',
+            title: {
+                display: true,
+                text: 'Température (°C)'
+            }
+        },
+        humidity: {
+            type: 'linear',
+            position: 'right',
+            title: {
+                display: true,
+                text: 'Humidité (%)'
+            }
+        }
+    }
+}));
+
 async function loadData() {
     loadingData.value = true;
     fromDate.setTime(new Date(`${fromDateString.value}T00:00:00Z`).getTime());
@@ -165,7 +281,7 @@ async function loadDeviceMeasurementRowsModal(deviceMeasurement: DeviceMeasureme
     deviceMeasurementRowsModalName.value = deviceMeasurement.name;
     deviceMeasurementRowsModalData.length = 0;
 
-    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(
+    const deviceMeasurementRows = await deviceMeasurementRowStore.fetchHourlyDeviceMeasurementRows(
         props.roomId,
         "indoor-ambiance",
         fromDate.toISOString().split("T")[0],
@@ -216,7 +332,7 @@ async function refresh() {
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} ({{ deviceMeasurementRowsModalData.length }})</h1>
+                    <h1 class="modal-title fs-5">{{ deviceMeasurementRowsModalName }} </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -224,38 +340,13 @@ async function refresh() {
                         <div class="spinner-border"></div>
                     </div>
                     <template v-else>
-                        <table class="table align-middle" v-if="deviceMeasurementRowsModalData">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">{{ $t("main.date") }}</th>
-                                    <th class="text-end">{{ $t("main.temperature") }}</th>
-                                    <th class="text-end">{{ $t("main.humidity") }}</th>
-                                    <th class="text-end">{{ $t("main.co2") }}</th>
-                                    <th class="text-end">{{ $t("main.covt") }}</th>
-                                    <th class="text-end">{{ $t("main.luminosity") }}</th>
-                                    <th class="text-end">{{ $t("main.averageNoise") }}</th>
-                                    <th class="text-end">{{ $t("main.peakNoise") }}</th>
-                                    <th class="text-end">{{ $t("main.occupancyRate") }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(deviceMeasurementRow, index) in deviceMeasurementRowsModalData" :key="index">
-                                    <td class="text-center">{{ new Date(deviceMeasurementRow.datetime).toLocaleString() }}</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.temperature }} °C</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.humidity }} %</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.co2 }} ppm</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.covt }} ug/m3</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.luminosity }} lux</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.averagenoise }} dB</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.peaknoise }} dB</td>
-                                    <td class="text-end">{{ deviceMeasurementRow.occupancyrate }} %</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <Line :data="modalChartData" :options="modalChartOptions" class="w-100" />
                     </template>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ $t("main.close") }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ $t("main.close") }}
+                    </button>
                 </div>
             </div>
         </div>

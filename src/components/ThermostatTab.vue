@@ -166,7 +166,7 @@ const modalChartData = computed(() => ({
             yAxisID: 'temperature',
             data: deviceMeasurementRowsModalData.map(row => ({
                 x: new Date(row.hour),
-                y: row.avg_temp
+                y: row.sensortemperature
             }))
         },
         {
@@ -176,7 +176,7 @@ const modalChartData = computed(() => ({
             yAxisID: 'humidity',
             data: deviceMeasurementRowsModalData.map(row => ({
                 x: new Date(row.hour),
-                y: row.avg_humidity
+                y: row.relativehumidity
             }))
         }
     ]
