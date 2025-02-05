@@ -10,13 +10,40 @@ import IndoorAmbianceTab from "@/components/IndoorAmbianceTab.vue";
 
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
+import { useZoneStore } from "@/stores/zone-store";
 
 const route = useRoute();
+
+const zoneStore = useZoneStore();
 
 const selectedCityId: Ref<string | null> = ref((route.query.cityId as string) ?? null);
 const selectedZoneId: Ref<string | null> = ref((route.query.zoneId as string) ?? null);
 const selectedBuildingId: Ref<string | null> = ref((route.query.building as string) ?? null);
 const selectedRoomId: Ref<string | null> = ref((route.query.roomId as string) ?? null);
+
+const zone = computed(() => {
+    if (!selectedZoneId.value) {
+        return null;
+    }
+
+    return zoneStore.getZone(selectedZoneId.value);
+});
+
+const thermostatResponsibility = computed(() => {
+    if (!zone.value) {
+        return false;
+    }
+
+    return zone.value.responsibilities.includes("BUILDINGS_THERMOSTAT");
+});
+
+const indoorAmbianceResponsibility = computed(() => {
+    if (!zone.value) {
+        return false;
+    }
+
+    return zone.value.responsibilities.includes("BUILDINGS_INDOOR_AMBIANCE");
+});
 </script>
 
 <template>
@@ -28,19 +55,19 @@ const selectedRoomId: Ref<string | null> = ref((route.query.roomId as string) ??
             <!-- <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId" class="mb-3" /> -->
 
             <ul id="pills-tab" class="nav nav-pills mb-3">
-                <li class="nav-item">
-                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-thermostat">{{ $t("main.heating") }}</button>
+                <li class="nav-item" v-if="thermostatResponsibility">
+                    <button class="nav-link" :class="{ 'active': thermostatResponsibility }" data-bs-toggle="pill" data-bs-target="#pills-thermostat">{{ $t("main.heating") }}</button>
                 </li>
-                <li class="nav-item">
-                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-indoor-ambiance">{{ $t("main.ambiance") }}</button>
+                <li class="nav-item" v-if="indoorAmbianceResponsibility">
+                    <button class="nav-link" :class="{ 'active': !thermostatResponsibility }" data-bs-toggle="pill" data-bs-target="#pills-indoor-ambiance">{{ $t("main.ambiance") }}</button>
                 </li>
             </ul>
             <div class="tab-content">
-                <div id="pills-thermostat" class="tab-pane show active" tabindex="0">
+                <div id="pills-thermostat" class="tab-pane" :class="{ 'active': thermostatResponsibility, 'show': thermostatResponsibility }" tabindex="0" v-if="thermostatResponsibility">
                     <ThermostatTab :room-id="selectedRoomId"></ThermostatTab>
                     <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
                 </div>
-                <div id="pills-indoor-ambiance" class="tab-pane" tabindex="0">
+                <div id="pills-indoor-ambiance" class="tab-pane" :class="{ 'active': !thermostatResponsibility, 'show': !thermostatResponsibility }" tabindex="0" v-if="indoorAmbianceResponsibility">
                     <IndoorAmbianceTab :room-id="selectedRoomId"></IndoorAmbianceTab>
                 </div>
             </div>
