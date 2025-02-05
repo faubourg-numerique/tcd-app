@@ -6,6 +6,13 @@ import { useZoneStore } from "@/stores/zone-store";
 import { useBuildingStore } from "@/stores/building-store";
 import { useRoomStore } from "@/stores/room-store";
 
+const props = defineProps({
+    responsibilities: {
+        type: Array as () => string[],
+        required: true,
+    },
+});
+
 const cityStore = useCityStore();
 const zoneStore = useZoneStore();
 const buildingStore = useBuildingStore();
@@ -22,11 +29,12 @@ const sortedCities = computed(() => {
     return cities;
 });
 
-const sortedZones = computed(() => {
+const sortedFilteredZones = computed(() => {
     if (!selectedCityId.value) {
         return [];
     }
-    const zones = [...zoneStore.getZonesByCityId(selectedCityId.value as string)];
+    let zones = [...zoneStore.getZonesByCityId(selectedCityId.value as string)];
+    zones = zones.filter((zone) => zone.responsibilities.every((responsibility) => props.responsibilities.includes(responsibility)));
     zones.sort((a, b) => a.name.localeCompare(b.name));
     return zones;
 });
@@ -86,7 +94,7 @@ watch(selectedBuildingId, (buildingId) => {
                     <label for="zone-id" class="form-label">{{ $t("main.zone") }}</label>
                     <select id="zone-id" v-model="selectedZoneId" class="form-select">
                         <option :value="null" disabled>{{ $t("main.selectAZone") }}</option>
-                        <option v-for="zone in sortedZones" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
+                        <option v-for="zone in sortedFilteredZones" :key="zone.id" :value="zone.id">{{ zone.name }}</option>
                     </select>
                 </div>
             </div>

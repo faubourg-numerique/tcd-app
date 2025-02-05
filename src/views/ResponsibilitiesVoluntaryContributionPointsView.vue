@@ -116,7 +116,7 @@ function resolveRoute(event) {
 <template>
     <div class="container">
         <h1>{{ $t("main.voluntaryContributionPoints") }}</h1>
-        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-4" />
+        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" :responsibilities="['VOLUNTARY_CONTRIBUTION_POINTS']" class="mb-4" />
         <div v-if="selectedCityId" class="p-4 rounded border border-danger">
             <form class="row align-items-center d-flex flex-wrap">
                 <div class="col-auto">

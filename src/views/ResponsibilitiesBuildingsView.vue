@@ -22,7 +22,7 @@ const selectedRoomId: Ref<string | null> = ref((route.query.roomId as string) ??
 <template>
     <div class="container">
         <h1 class="mb-3">Bâtiments</h1>
-        <CityZoneBuildingRoomPicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" v-model:selected-building-id="selectedBuildingId" v-model:selected-room-id="selectedRoomId" class="mb-3" />
+        <CityZoneBuildingRoomPicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" v-model:selected-building-id="selectedBuildingId" v-model:selected-room-id="selectedRoomId" :responsibilities="['BUILDINGS_THERMOSTAT','BUILDINGS_INDOOR_AMBIANCE']" class="mb-3" />
 
         <template v-if="selectedCityId && selectedZoneId && selectedBuildingId && selectedRoomId">
             <!-- <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId" class="mb-3" /> -->

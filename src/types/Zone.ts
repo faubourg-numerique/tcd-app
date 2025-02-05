@@ -3,5 +3,6 @@ export type Zone = {
     location: [number, number][];
     name: string;
     role: string;
+    responsibilities: string[];
     hasCity: string;
 };

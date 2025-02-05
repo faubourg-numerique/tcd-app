@@ -104,7 +104,7 @@ function resolveRoute(event) {
 <template>
     <div class="container">
         <h1>{{ $t("main.watercourses") }}</h1>
-        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" class="mb-4" />
+        <CityZonePicker v-model:selected-city-id="selectedCityId" v-model:selected-zone-id="selectedZoneId" :responsibilities="['WATERCOURSES']" class="mb-4" />
         <template v-if="selectedCityId && selectedZoneId">
             <div class="table-responsive p-4 rounded border border-danger">
                 <DataTable :options="options" :data="data" class="table table-striped" @click="resolveRoute($event)"></DataTable>
