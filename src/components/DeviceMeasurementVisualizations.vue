@@ -11,6 +11,9 @@ import ChartAnnotation from "chartjs-plugin-annotation";
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
+import axios from "axios";
+import Swal from "sweetalert2"; 
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend);
 ChartJS.register(ChartAnnotation);
@@ -148,6 +151,120 @@ async function loadData() {
 }
 
 onMounted(loadDeviceMeasurementChartData);
+
+async function sendIdToGrist() {
+    const { value: formValues } = await Swal.fire({
+        title: "Configuration API Grist",
+        html: `
+            <input id="grist-api-key" class="swal2-input" placeholder="Clé API Grist">
+            <input id="grist-doc-id" class="swal2-input" placeholder="ID du document Grist">
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: "Envoyer",
+        preConfirm: () => {
+            return {
+                apiKey: document.getElementById("grist-api-key").value,
+                docId: document.getElementById("grist-doc-id").value
+            };
+        }
+    });
+
+    if (!formValues) return; // Si l'utilisateur annule
+
+    const { apiKey: GRIST_API_KEY, docId: GRIST_DOC_ID } = formValues;
+
+    const GRIST_API_URL_CURRENT = `https://docs.getgrist.com/api/docs/${GRIST_DOC_ID}/tables/Current/records`;
+    const GRIST_API_URL_HISTORY = `https://docs.getgrist.com/api/docs/${GRIST_DOC_ID}/tables/History/records`;
+
+    console.log("📌 ID envoyé :", props.deviceMeasurementId);
+
+    if (!deviceMeasurement) {
+        Swal.fire("Erreur", "❌ Aucune donnée de capteur trouvée.", "error");
+        return;
+    }
+
+    try {
+        // ✅ Envoyer les données actuelles dans le tableau "Current"
+        const responseCurrent = await axios.post(
+            GRIST_API_URL_CURRENT,
+            {
+                records: [
+                    {
+                        fields: {
+                            "idDevice": props.deviceMeasurementId,
+                            "distance": deviceMeasurement.distance ?? null,
+                            "humidity": deviceMeasurement.humidity ?? null,
+                            "measurementtype": deviceMeasurement.measurementType ?? null,
+                            "name": deviceMeasurement.name ?? null,
+                            "pressure": deviceMeasurement.pressure ?? null,
+                            "refDevice": deviceMeasurement.refDevice ?? null,
+                            "temperature": deviceMeasurement.temperature ?? null,
+                            "vdd": deviceMeasurement.vdd ?? null,
+                        },
+                    },
+                ],
+            },
+            {
+                headers: {
+                    "Authorization": `Bearer ${GRIST_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        console.log("✅ Réponse Grist (Current) :", responseCurrent.data);
+
+        // ✅ Récupérer les données historiques
+        const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRowsById(
+            deviceMeasurement.id,
+            fromDateString.value,
+            toDateString.value
+        );
+        console.log("📌 Données historiques :", deviceMeasurementRows);
+
+        if (deviceMeasurementRows.length > 0) {
+            const recordsHistory = deviceMeasurementRows.map(row => ({
+                fields: {
+                    "idDevice": props.deviceMeasurementId,
+                    "datetime": row.datetime,
+                    "distance": row.distance ?? null,
+                    "humidity": row.humidity ?? null,
+                    "measurementtype": deviceMeasurement.measurementType ?? null,
+                    "name": deviceMeasurement.name ?? null,
+                    "pressure": row.pressure ?? null,
+                    "refDevice": deviceMeasurement.refDevice ?? null,
+                    "temperature": row.temperature ?? null,
+                    "vdd": row.vdd ?? null,
+                    "currentlevel": deviceMeasurement.currentLevel ?? null,
+                }
+            }));
+            // ✅ Envoyer les données historiques dans le tableau "History"
+            const responseHistory = await axios.post(
+                GRIST_API_URL_HISTORY,
+                { records: recordsHistory },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${GRIST_API_KEY}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            console.log("✅ Réponse Grist (History) :", responseHistory.data);
+        } else {
+            console.warn("⚠ Aucune donnée historique à envoyer.");
+        }
+
+        Swal.fire("Succès", "✅ Données envoyées à Grist avec succès !", "success");
+    } catch (error) {
+        console.error("❌ Erreur en envoyant les données :", error.response?.data || error.message);
+        Swal.fire("Erreur", `❌ Erreur lors de l'envoi : ${error.response?.data?.error || error.message}`, "error");
+    }
+}
+
+
+
 </script>
 
 <template>
@@ -165,6 +282,9 @@ onMounted(loadDeviceMeasurementChartData);
         </div>
         <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
         <button type="button" class="btn btn-primary me-3" @click="loadDeviceMeasurementChartData">{{ $t("main.refresh") }}</button>
-        <button type="button" class="btn btn-primary" @click="exportData">{{ $t("main.exportData") }}</button>
+        <button type="button" class="btn btn-primary me-3" @click="exportData">{{ $t("main.exportData") }}</button>
+        <button type="button" class="btn btn-success" @click="sendIdToGrist"> {{ $t("main.EnvoieGrist") }}</button>
+
+
     </div>
 </template>
