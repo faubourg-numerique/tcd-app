@@ -76,5 +76,6 @@
     "luminosity": "Luminosité",
     "averageNoise": "Bruit moyen",
     "peakNoise": "Pic de bruit",
-    "occupancyRate": "Taux d'occupation"
+    "occupancyRate": "Taux d'occupation" ,
+    "EnvoieGrist" : "Envoyer à Grist"
 }
