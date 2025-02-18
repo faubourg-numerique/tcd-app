@@ -76,5 +76,6 @@
     "luminosity": "Luminosity",
     "averageNoise": "Average noise",
     "peakNoise": "Peak noise",
-    "occupancyRate": "Occupancy rate"
+    "occupancyRate": "Occupancy rate" ,
+    "EnvoieGrist": "Send to Grist"
 }

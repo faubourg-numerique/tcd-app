@@ -11,6 +11,12 @@ import ChartAnnotation from "chartjs-plugin-annotation";
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
+import Swal from "sweetalert2"; 
+import { useGristStore } from "@/stores/use-grist-store";
+const gristStore = useGristStore();
+
+
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend);
 ChartJS.register(ChartAnnotation);
@@ -148,6 +154,48 @@ async function loadData() {
 }
 
 onMounted(loadDeviceMeasurementChartData);
+
+async function sendIdToGrist() {
+    const { value: formValues } = await Swal.fire({
+        title: "Configuration API Grist",
+        html: `
+            <input id="grist-api-key" class="swal2-input" placeholder="Clé API Grist" type="password">
+            <input id="grist-doc-id" class="swal2-input" placeholder="ID du document Grist">
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: "Envoyer",
+        preConfirm: () => {
+            return {
+                apiKey: (document.getElementById("grist-api-key") as HTMLInputElement).value,
+                docId: (document.getElementById("grist-doc-id") as HTMLInputElement).value
+            };
+        }
+    });
+
+    if (!formValues) return; // Si l'utilisateur annule
+
+    // ✅ Met à jour toutes les valeurs dans le store
+    gristStore.apiKey = formValues.apiKey;
+    gristStore.docId = formValues.docId;
+    gristStore.deviceMeasurementId = props.deviceMeasurementId;
+
+    // ✅ Ajoute `fromDate` et `toDate` à partir des inputs
+    gristStore.fromDate = fromDateString.value;
+    gristStore.toDate = toDateString.value;
+
+    // ✅ Envoie les données à Grist via le store
+    try {
+        await gristStore.sendDataToBackend();
+        Swal.fire("Succès", "✅ Données envoyées à Grist avec succès !", "success");
+    } catch (error) {
+        console.error("❌ Erreur en envoyant les données :", error);
+        console.error("❌ Message d'erreur :", gristStore.error);
+        Swal.fire("Erreur", `❌ Erreur lors de l'envoi : ${error.message}`, "error");
+    }
+}
+
+
 </script>
 
 <template>
@@ -165,6 +213,9 @@ onMounted(loadDeviceMeasurementChartData);
         </div>
         <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
         <button type="button" class="btn btn-primary me-3" @click="loadDeviceMeasurementChartData">{{ $t("main.refresh") }}</button>
-        <button type="button" class="btn btn-primary" @click="exportData">{{ $t("main.exportData") }}</button>
+        <button type="button" class="btn btn-primary me-3" @click="exportData">{{ $t("main.exportData") }}</button>
+        <button type="button" class="btn btn-success" @click="sendIdToGrist"> {{ $t("main.EnvoieGrist") }}</button>
+
+
     </div>
 </template>
