@@ -1,77 +1,61 @@
 import { defineStore } from "pinia";
-import axios from "axios";
-import type { DeviceMeasurementRow } from "@/types/DeviceMeasurementRow";
-import type { DeviceMeasurement } from "@/types/DeviceMeasurement";
+import { ref, computed } from "vue";
+import api from "@/api";
 
-export const useGristStore = defineStore("grist", {
-  state: () => ({
-    apiKey: "",
-    docId: "",
-  }),
-  actions: {
-    async initializeGrist() {
-      this.apiKey = prompt("Veuillez entrer votre clé API Grist :") || "";
-      this.docId = prompt("Veuillez entrer votre ID de document Grist :") || "";
-    },
+export const useGristStore = defineStore("gristStore", () => {
+    // State
+    const deviceMeasurementId = ref(null);
+    const apiKey = ref(null);
+    const docId = ref(null);
+    const fromDate = ref(null);  
+    const toDate = ref(null);    
+    const loading = ref(false);
+    const error = ref(null);
+    const responseData = ref(null);  // ✅ Stocke la réponse ici
 
-    async sendDataToGrist(deviceMeasurement: DeviceMeasurement, deviceMeasurementRows: DeviceMeasurementRow[]) {
-      if (!this.apiKey || !this.docId) {
-        await this.initializeGrist();
-      }
-      
-      const GRIST_API_URL_CURRENT = `${import.meta.env.VITE_GRIST_API_URL}/docs/${this.docId}/tables/Current/records`;
-      const GRIST_API_URL_HISTORY = `${import.meta.env.VITE_GRIST_API_URL}/docs/${this.docId}/tables/History/records`;
-      
-      try {
-        // ✅ Envoi des données actuelles
-        await axios.post(GRIST_API_URL_CURRENT, {
-          records: [
-            {
-              fields: {
-                "idDevice": deviceMeasurement.id,
-                "distance": deviceMeasurement.distance ?? null,
-                "humidity": deviceMeasurement.humidity ?? null,
-                "measurementtype": deviceMeasurement.measurementType ?? null,
-                "name": deviceMeasurement.name ?? null,
-                "pressure": deviceMeasurement.pressure ?? null,
-                "refDevice": deviceMeasurement.refDevice ?? null,
-                "temperature": deviceMeasurement.temperature ?? null,
-                "vdd": deviceMeasurement.vdd ?? null,
-              },
-            },
-          ],
-        }, {
-          headers: { "Authorization": `Bearer ${this.apiKey}` }
-        });
+    // Vérifie si toutes les données sont prêtes à être envoyées
+    const canSend = computed(() => 
+        deviceMeasurementId.value && apiKey.value && docId.value && fromDate.value && toDate.value
+    );
 
-        // ✅ Envoi des données historiques si elles existent
-        if (deviceMeasurementRows.length > 0) {
-          const recordsHistory = deviceMeasurementRows.map(row => ({
-            fields: {
-              "idDevice": deviceMeasurement.id,
-              "datetime": row.datetime,
-              "distance": row.distance ?? null,
-              "humidity": row.humidity ?? null,
-              "measurementtype": deviceMeasurement.measurementType ?? null,
-              "name": deviceMeasurement.name ?? null,
-              "pressure": row.pressure ?? null,
-              "refDevice": deviceMeasurement.refDevice ?? null,
-              "temperature": row.temperature ?? null,
-              "vdd": row.vdd ?? null,
-              "currentlevel": deviceMeasurement.currentLevel ?? null,
-            }
-          }));
-          
-          await axios.post(GRIST_API_URL_HISTORY, { records: recordsHistory }, {
-            headers: { "Authorization": `Bearer ${this.apiKey}` }
-          });
+    // Action : Envoie les données au backend
+    async function sendDataToBackend() {
+        if (!canSend.value) {
+            console.warn("⚠️ Tous les champs ne sont pas remplis !");
+            return;
         }
 
-        alert("✅ Données envoyées à Grist avec succès !");
-      } catch (error) {
-        console.error("❌ Erreur en envoyant les données à Grist :", error);
-        alert(`❌ Erreur : ${error.response?.data?.error || error.message}`);
-      }
+        console.log("📤 Données envoyées :", {
+            deviceMeasurementId: deviceMeasurementId.value,
+            apiKey: apiKey.value,
+            docId: docId.value,
+            fromDate: fromDate.value,
+            toDate: toDate.value,
+        });
+
+        loading.value = true;
+        error.value = null;
+
+        try {
+            const response = await api.post("/send-to-grist", {
+                deviceMeasurementId: deviceMeasurementId.value,
+                apiKey: apiKey.value,
+                docId: docId.value,
+                fromDate: fromDate.value,  
+                toDate: toDate.value       
+            });
+
+            responseData.value = response.data;  // ✅ Stocke la réponse
+           
+        } catch (err) {
+            console.error("❌ Erreur d'envoi :", err.response?.data || err.message);
+            error.value = err.message;
+        } finally {
+            loading.value = false;
+        }
     }
-  }
+
+    return { 
+        deviceMeasurementId, apiKey, docId, fromDate, toDate, loading, error, canSend, sendDataToBackend, responseData 
+    };
 });

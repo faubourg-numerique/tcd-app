@@ -11,8 +11,11 @@ import ChartAnnotation from "chartjs-plugin-annotation";
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
-import axios from "axios";
 import Swal from "sweetalert2"; 
+import { useGristStore } from "@/stores/use-grist-store";
+const gristStore = useGristStore();
+
+
 
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend);
@@ -156,7 +159,7 @@ async function sendIdToGrist() {
     const { value: formValues } = await Swal.fire({
         title: "Configuration API Grist",
         html: `
-            <input id="grist-api-key" class="swal2-input" placeholder="Clé API Grist">
+            <input id="grist-api-key" class="swal2-input" placeholder="Clé API Grist" type="password">
             <input id="grist-doc-id" class="swal2-input" placeholder="ID du document Grist">
         `,
         focusConfirm: false,
@@ -164,105 +167,33 @@ async function sendIdToGrist() {
         confirmButtonText: "Envoyer",
         preConfirm: () => {
             return {
-                apiKey: document.getElementById("grist-api-key").value,
-                docId: document.getElementById("grist-doc-id").value
+                apiKey: (document.getElementById("grist-api-key") as HTMLInputElement).value,
+                docId: (document.getElementById("grist-doc-id") as HTMLInputElement).value
             };
         }
     });
 
     if (!formValues) return; // Si l'utilisateur annule
 
-    const { apiKey: GRIST_API_KEY, docId: GRIST_DOC_ID } = formValues;
+    // ✅ Met à jour toutes les valeurs dans le store
+    gristStore.apiKey = formValues.apiKey;
+    gristStore.docId = formValues.docId;
+    gristStore.deviceMeasurementId = props.deviceMeasurementId;
 
-    const GRIST_API_URL_CURRENT = `https://docs.getgrist.com/api/docs/${GRIST_DOC_ID}/tables/Current/records`;
-    const GRIST_API_URL_HISTORY = `https://docs.getgrist.com/api/docs/${GRIST_DOC_ID}/tables/History/records`;
+    // ✅ Ajoute `fromDate` et `toDate` à partir des inputs
+    gristStore.fromDate = fromDateString.value;
+    gristStore.toDate = toDateString.value;
 
-    console.log("📌 ID envoyé :", props.deviceMeasurementId);
-
-    if (!deviceMeasurement) {
-        Swal.fire("Erreur", "❌ Aucune donnée de capteur trouvée.", "error");
-        return;
-    }
-
+    // ✅ Envoie les données à Grist via le store
     try {
-        // ✅ Envoyer les données actuelles dans le tableau "Current"
-        const responseCurrent = await axios.post(
-            GRIST_API_URL_CURRENT,
-            {
-                records: [
-                    {
-                        fields: {
-                            "idDevice": props.deviceMeasurementId,
-                            "distance": deviceMeasurement.distance ?? null,
-                            "humidity": deviceMeasurement.humidity ?? null,
-                            "measurementtype": deviceMeasurement.measurementType ?? null,
-                            "name": deviceMeasurement.name ?? null,
-                            "pressure": deviceMeasurement.pressure ?? null,
-                            "refDevice": deviceMeasurement.refDevice ?? null,
-                            "temperature": deviceMeasurement.temperature ?? null,
-                            "vdd": deviceMeasurement.vdd ?? null,
-                        },
-                    },
-                ],
-            },
-            {
-                headers: {
-                    "Authorization": `Bearer ${GRIST_API_KEY}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        console.log("✅ Réponse Grist (Current) :", responseCurrent.data);
-
-        // ✅ Récupérer les données historiques
-        const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRowsById(
-            deviceMeasurement.id,
-            fromDateString.value,
-            toDateString.value
-        );
-        console.log("📌 Données historiques :", deviceMeasurementRows);
-
-        if (deviceMeasurementRows.length > 0) {
-            const recordsHistory = deviceMeasurementRows.map(row => ({
-                fields: {
-                    "idDevice": props.deviceMeasurementId,
-                    "datetime": row.datetime,
-                    "distance": row.distance ?? null,
-                    "humidity": row.humidity ?? null,
-                    "measurementtype": deviceMeasurement.measurementType ?? null,
-                    "name": deviceMeasurement.name ?? null,
-                    "pressure": row.pressure ?? null,
-                    "refDevice": deviceMeasurement.refDevice ?? null,
-                    "temperature": row.temperature ?? null,
-                    "vdd": row.vdd ?? null,
-                    "currentlevel": deviceMeasurement.currentLevel ?? null,
-                }
-            }));
-            // ✅ Envoyer les données historiques dans le tableau "History"
-            const responseHistory = await axios.post(
-                GRIST_API_URL_HISTORY,
-                { records: recordsHistory },
-                {
-                    headers: {
-                        "Authorization": `Bearer ${GRIST_API_KEY}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            console.log("✅ Réponse Grist (History) :", responseHistory.data);
-        } else {
-            console.warn("⚠ Aucune donnée historique à envoyer.");
-        }
-
+        await gristStore.sendDataToBackend();
         Swal.fire("Succès", "✅ Données envoyées à Grist avec succès !", "success");
     } catch (error) {
-        console.error("❌ Erreur en envoyant les données :", error.response?.data || error.message);
-        Swal.fire("Erreur", `❌ Erreur lors de l'envoi : ${error.response?.data?.error || error.message}`, "error");
+        console.error("❌ Erreur en envoyant les données :", error);
+        console.error("❌ Message d'erreur :", gristStore.error);
+        Swal.fire("Erreur", `❌ Erreur lors de l'envoi : ${error.message}`, "error");
     }
 }
-
 
 
 </script>
