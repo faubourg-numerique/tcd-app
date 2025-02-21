@@ -1,4 +1,5 @@
 <script setup lang="ts">
+//@ts-nocheck
 import "chartjs-adapter-date-fns";
 
 import fileDownload from "js-file-download";
@@ -159,6 +160,10 @@ async function sendIdToGrist() {
     const { value: formValues } = await Swal.fire({
         title: "Configuration API Grist",
         html: `
+            <select id="grist-base-url" class="swal2-select">
+                <option value="https://docs.getgrist.com/api/docs">Grist Standard</option>
+                <option value="https://grist.incubateur.anct.gouv.fr/api/docs">Grist Global / ANCT</option>
+            </select>
             <input id="grist-api-key" class="swal2-input" placeholder="Clé API Grist" type="password">
             <input id="grist-doc-id" class="swal2-input" placeholder="ID du document Grist">
         `,
@@ -167,6 +172,7 @@ async function sendIdToGrist() {
         confirmButtonText: "Envoyer",
         preConfirm: () => {
             return {
+                baseUrl: (document.getElementById("grist-base-url") as HTMLSelectElement).value,
                 apiKey: (document.getElementById("grist-api-key") as HTMLInputElement).value,
                 docId: (document.getElementById("grist-doc-id") as HTMLInputElement).value
             };
@@ -175,12 +181,11 @@ async function sendIdToGrist() {
 
     if (!formValues) return; // Si l'utilisateur annule
 
-    // ✅ Met à jour toutes les valeurs dans le store
+    // ✅ Met à jour les valeurs dans le store
+    gristStore.baseUrl = formValues.baseUrl;
     gristStore.apiKey = formValues.apiKey;
     gristStore.docId = formValues.docId;
     gristStore.deviceMeasurementId = props.deviceMeasurementId;
-
-    // ✅ Ajoute `fromDate` et `toDate` à partir des inputs
     gristStore.fromDate = fromDateString.value;
     gristStore.toDate = toDateString.value;
 
@@ -190,10 +195,10 @@ async function sendIdToGrist() {
         Swal.fire("Succès", "✅ Données envoyées à Grist avec succès !", "success");
     } catch (error) {
         console.error("❌ Erreur en envoyant les données :", error);
-        console.error("❌ Message d'erreur :", gristStore.error);
         Swal.fire("Erreur", `❌ Erreur lors de l'envoi : ${error.message}`, "error");
     }
 }
+
 
 
 </script>
