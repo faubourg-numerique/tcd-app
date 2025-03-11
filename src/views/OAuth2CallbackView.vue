@@ -46,54 +46,81 @@ async function main() {
 
     const defaultRoles = import.meta.env.VITE_DEFAULT_ROLES.split(",");
 
-    const response = await axios.get(`${import.meta.env.VITE_IDENTITY_MANAGER_URL}/user?access_token=${route.query.token}`);
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_IDENTITY_MANAGER_URL}/user?access_token=${route.query.token}`);
+        console.log("Données reçues de l'API Identity Manager :", response.data);
 
-    mainStore.username = response.data.username;
-    mainStore.roles.push(...response.data.roles.map((role: { name: string }) => role.name));
-    mainStore.isAuthorized = !mainStore.roles.every((role: string) => defaultRoles.includes(role));
-
-    const tokenExpirationDate = new Date(route.query.expires_at as string);
-    tokenExpirationDate.setMinutes(tokenExpirationDate.getMinutes() - 5);
-    const timeUntilSessionExpiration = tokenExpirationDate.getTime() - new Date().getTime();
-
-    setTimeout(() => {
-        swal.fire({
-            allowOutsideClick: false,
-            icon: "info",
-            title: "Session expirée",
-            text: "Votre session est expirée, veuillez vous reconnecter.",
-            didClose: () => {
-                window.location.href = "/";
-            }
+        // Stocker les informations utilisateur dans le store
+        mainStore.setUser({
+            username: response.data.username,
+            email: response.data.email,
+            given_name: response.data.given_name,
+            family_name: response.data.family_name,
+            roles: response.data.roles
         });
-    }, timeUntilSessionExpiration);
 
-    if (!mainStore.isAuthorized) {
+        // Vérifier l'autorisation
+        mainStore.isAuthorized = !mainStore.roles.every((role: string) => defaultRoles.includes(role));
+
+        // Gestion de l'expiration du token
+        const tokenExpirationDate = new Date(route.query.expires_at as string);
+        tokenExpirationDate.setMinutes(tokenExpirationDate.getMinutes() - 5);
+        const timeUntilSessionExpiration = tokenExpirationDate.getTime() - new Date().getTime();
+
+        setTimeout(() => {
+            swal.fire({
+                allowOutsideClick: false,
+                icon: "info",
+                title: "Session expirée",
+                text: "Votre session est expirée, veuillez vous reconnecter.",
+                didClose: () => {
+                    window.location.href = "/";
+                }
+            });
+        }, timeUntilSessionExpiration);
+
+        if (!mainStore.isAuthorized) {
+            mainStore.isAuthenticated = true;
+            router.push({ name: "unauthorized" });
+            return;
+        }
+
+        // Charger les données depuis les autres stores
+        await Promise.all([
+            alertSettingsStore.fetchAlertSettings(),
+            buildingStore.fetchBuildings(),
+            cityStore.fetchCities(),
+            deviceMeasurementStore.fetchDeviceMeasurements(),
+            floodMonitoringStore.fetchFloodMonitorings(),
+            indoorEnvironmentObservedStore.fetchIndoorEnvironmentObserveds(),
+            operationParametersStore.fetchOperationParameters(),
+            operationScheduleStore.fetchOperationSchedules(),
+            operationStore.fetchOperations(),
+            roomStore.fetchRooms(),
+            streetlightStore.fetchStreetlights(),
+            subscriptionStore.fetchSubscriptions(),
+            thermostatStore.fetchThermostats(),
+            wasteContainerStore.fetchWasteContainers(),
+            zoneStore.fetchZones(),
+        ]);
+
+        // Authentification réussie
         mainStore.isAuthenticated = true;
-        router.push({ name: "unauthorized" });
-        return;
+
+        // Redirection après connexion
+        router.push({ name: route.query.redirection ? route.query.redirection as string : "dashboard" });
+
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données utilisateur :", error);
+        swal.fire({
+            icon: "error",
+            title: "Erreur",
+            text: "Impossible de récupérer les informations utilisateur. Veuillez réessayer.",
+        });
+        window.location.href = "/";
     }
-
-    await alertSettingsStore.fetchAlertSettings();
-    await buildingStore.fetchBuildings();
-    await cityStore.fetchCities();
-    await deviceMeasurementStore.fetchDeviceMeasurements();
-    await floodMonitoringStore.fetchFloodMonitorings();
-    await indoorEnvironmentObservedStore.fetchIndoorEnvironmentObserveds();
-    await operationParametersStore.fetchOperationParameters();
-    await operationScheduleStore.fetchOperationSchedules();
-    await operationStore.fetchOperations();
-    await roomStore.fetchRooms();
-    await streetlightStore.fetchStreetlights();
-    await subscriptionStore.fetchSubscriptions();
-    await thermostatStore.fetchThermostats();
-    await wasteContainerStore.fetchWasteContainers();
-    await zoneStore.fetchZones();
-
-    mainStore.isAuthenticated = true;
-
-    router.push({ name: route.query.redirection ? route.query.redirection as string : "dashboard" });
 }
+
 
 main();
 </script>
