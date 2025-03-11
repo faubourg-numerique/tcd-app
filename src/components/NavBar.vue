@@ -39,12 +39,10 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown d-flex align-items-center">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><FontAwesomeIcon :icon="['fas', 'user']" class="me-2" />{{ mainStore.username }}</a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <RouterLink class="dropdown-item bi bi-graph-down" :to="{ name: 'user' }">{{ $t("main.informations") }}</RouterLink>
-                            </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"> <FontAwesomeIcon :icon="['fas', 'user']" class="me-2" />{{ mainStore.user.username }}</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><RouterLink class="dropdown-item" :to="{ name: 'user' }"> <FontAwesomeIcon :icon="['fas', 'info-circle']" class="me-2" />{{ $t("main.informations") }}</RouterLink></li>
                         </ul>
                     </li>
                     <li class="nav-item">
