@@ -2,6 +2,7 @@
 import { useMainStore } from "@/stores/main-store";
 import { useUserStore } from "@/stores/user-store";
 import { ref, computed, onMounted } from "vue";
+import Swal from "sweetalert2";
 
 const mainStore = useMainStore();
 const userStore = useUserStore();
@@ -16,12 +17,14 @@ const userEmail = computed(() => mainStore.user?.email || "Email non disponible"
 
 // Charger les préférences de l'utilisateur
 async function fetchUserPreferences() {
+    if (!mainStore.user?.email) return;
+
     try {
-        const userData = await userStore.getUsers();
+        const userData = await userStore.fetchUserPreferences(mainStore.user.email);
         if (userData) {
             user.value = {
-                gristApiKey: userData.gristApiKey?.value || "",
-                gristDocId: userData.gristDocId?.value || ""
+                gristApiKey: userData.gristApiKey || "Configurez votre clé API Grist",
+                gristDocId: userData.gristDocId || "Configurez votre ID de document Grist"
             };
         }
     } catch (error) {
@@ -29,19 +32,15 @@ async function fetchUserPreferences() {
     }
 }
 
-// Enregistrer les modifications
-async function savePreferences() {
-    try {
-        const updatedData = {
-            gristApiKey: { type: "Property", value: user.value.gristApiKey },
-            gristDocId: { type: "Property", value: user.value.gristDocId }
-        };
+// Mettre à jour les préférences
+async function updatePreferences() {
+    if (!mainStore.user?.email) return;
 
-        await userStore.updateUserPreferences(updatedData);
-        alert("Préférences mises à jour !");
+    try {
+        await userStore.updateUserPreferences(mainStore.user.email, user.value.gristApiKey, user.value.gristDocId);
+        Swal.fire({title: "Succès",text: "Préférences mises à jour avec succès !",icon: "success",confirmButtonText: "OK"});
     } catch (error) {
-        console.error("Erreur lors de la sauvegarde:", error);
-        alert("Erreur lors de la sauvegarde des préférences !");
+        console.error("Erreur lors de la mise à jour des préférences:", error);
     }
 }
 
@@ -54,17 +53,14 @@ onMounted(() => {
     <div class="container mt-5">
         <h3 class="mb-4">{{ $t("main.roles") }}</h3>
         <div class="d-flex flex-wrap justify-content-start gap-2">
-            <span v-for="(role, index) in mainStore.roles" :key="index" class="badge bg-danger text-wrap">
-                {{ role }}
-            </span>
+            <span v-for="(role, index) in mainStore.roles" :key="index" class="badge bg-danger text-wrap">{{ role }}</span>
         </div>
     </div>
 
-    <!-- Formulaire des préférences Grist -->
     <div class="container mt-5">
         <h3 class="mb-4">GRIST Préférences</h3>
 
-        <form @submit.prevent="savePreferences">
+        <form @submit.prevent="updatePreferences">
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" id="email" class="form-control" :value="userEmail" disabled />
@@ -80,7 +76,7 @@ onMounted(() => {
                 <input type="text" id="gristDocId" class="form-control" v-model="user.gristDocId" />
             </div>
 
-            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
         </form>
     </div>
 </template>
