@@ -263,7 +263,7 @@ async function refresh() {
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex justify-content-center" v-if="deviceMeasurementRowsModalLoading">
+                    <div v-if="deviceMeasurementRowsModalLoading" class="d-flex justify-content-center">
                         <div class="spinner-border"></div>
                     </div>
                     <template v-else>
@@ -283,13 +283,13 @@ async function refresh() {
     <div v-if="deviceMeasurements.length" class="table-responsive bg-white p-4 rounded border border-danger mb-3">
         <div class="row row-cols-lg-auto g-3 align-items-center mb-3">
             <div class="col-12">
-                <input type="date" class="form-control" v-model="fromDateString" :disabled="loadingData">
+                <input v-model="fromDateString" type="date" class="form-control" :disabled="loadingData">
             </div>
             <div class="col-12">
-                <input type="date" class="form-control" v-model="toDateString" :disabled="loadingData">
+                <input v-model="toDateString" type="date" class="form-control" :disabled="loadingData">
             </div>
             <div class="col-12">
-                <button class="btn btn-primary" @click="loadData" :disabled="loadingData">Appliquer</button>
+                <button class="btn btn-primary" :disabled="loadingData" @click="loadData">Appliquer</button>
             </div>
         </div>
         <table class="table align-middle">
