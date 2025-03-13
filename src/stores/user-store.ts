@@ -14,9 +14,9 @@ export const useUserStore = defineStore("user", () => {
         }
     }
 
-    async function updateUserPreferences(email: string, gristApiKey: string, gristDocId: string) {
+    async function updateUserPreferences(email: string, gristApiKey: string, gristDocId: string , gristBaseUrl:string) {
         try {
-            const response = await api.put("/users", { email, gristApiKey, gristDocId });
+            const response = await api.put("/users", { email, gristApiKey, gristDocId , gristBaseUrl });
             return response.data;
         } catch (error) {
             console.error("Erreur lors de la mise à jour des préférences:", error);
