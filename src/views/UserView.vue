@@ -75,6 +75,13 @@ onMounted(() => {
                 <label for="email" class="form-label">Email</label>
                 <input id="email" type="email" class="form-control" :value="userEmail" disabled />
             </div>
+            <div class="mb-3">
+                <label for="gristBaseUrl" class="form-label">Grist Base Url</label>
+                <select id="gristBaseUrl" v-model="user.gristBaseUrl" class="form-control">
+                    <option value="https://docs.getgrist.com/api/docs">Grist Standard</option>
+                    <option value="https://grist.incubateur.anct.gouv.fr/api/docs">Grist Global / ANCT</option>
+                </select>
+            </div>
 
             <div class="mb-3">
                 <label for="gristApiKey" class="form-label">Grist API Key</label>
@@ -84,14 +91,6 @@ onMounted(() => {
             <div class="mb-3">
                 <label for="gristDocId" class="form-label">Grist Doc ID</label>
                 <input id="gristDocId" v-model="user.gristDocId" type="text" class="form-control" />
-            </div>
-
-            <div class="mb-3">
-                <label for="gristBaseUrl" class="form-label">Grist Base Url</label>
-                <select id="gristBaseUrl" v-model="user.gristBaseUrl" class="form-control">
-                    <option value="https://docs.getgrist.com/api/docs">Grist Standard</option>
-                    <option value="https://grist.incubateur.anct.gouv.fr/api/docs">Grist Global / ANCT</option>
-                </select>
             </div>
 
             <button type="submit" class="btn btn-primary">Enregistrer</button>

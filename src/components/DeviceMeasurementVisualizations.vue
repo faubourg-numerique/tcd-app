@@ -1,23 +1,27 @@
 <script setup lang="ts">
 //@ts-nocheck
 import "chartjs-adapter-date-fns";
-
 import fileDownload from "js-file-download";
 import { json2csv } from "json-2-csv";
 import { reactive, ref, computed, watch, onMounted, type Reactive, type Ref } from "vue";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend, type ChartData, type ChartOptions, type ChartDataset } from "chart.js";
 import { Line } from "vue-chartjs";
 import ChartAnnotation from "chartjs-plugin-annotation";
-
 import { useAlertSettingsStore } from "@/stores/alert-settings-store";
 import { useDeviceMeasurementStore } from "@/stores/device-measurement-store";
 import { useDeviceMeasurementRowStore } from "@/stores/device-measurement-row-store";
 import Swal from "sweetalert2"; 
 import { useGristStore } from "@/stores/use-grist-store";
+import { useMainStore } from "@/stores/main-store";
+import { useUserStore } from "@/stores/user-store";
+
+const userPreferences = ref({
+    gristApiKey: "",
+    gristDocId: "",
+    gristBaseUrl: ""
+});
+
 const gristStore = useGristStore();
-
-
-
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Title, Tooltip, Legend);
 ChartJS.register(ChartAnnotation);
@@ -156,28 +160,90 @@ async function loadData() {
 
 onMounted(loadDeviceMeasurementChartData);
 
-async function sendIdToGrist() {
-    const { value: formValues } = await Swal.fire({
-        title: "Configuration API Grist",
-        html: `
-            <select id="grist-base-url" class="swal2-select">
-                <option value="https://docs.getgrist.com/api/docs">Grist Standard</option>
-                <option value="https://grist.incubateur.anct.gouv.fr/api/docs">Grist Global / ANCT</option>
-            </select>
-            <input id="grist-api-key" class="swal2-input" placeholder="Clé API Grist" type="password">
-            <input id="grist-doc-id" class="swal2-input" placeholder="ID du document Grist">
-        `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: "Envoyer",
-        preConfirm: () => {
-            return {
-                baseUrl: (document.getElementById("grist-base-url") as HTMLSelectElement).value,
-                apiKey: (document.getElementById("grist-api-key") as HTMLInputElement).value,
-                docId: (document.getElementById("grist-doc-id") as HTMLInputElement).value
+async function fetchUserPreferences() {
+    const userStore = useUserStore();
+    const mainStore = useMainStore();
+    if (!mainStore.user?.email) return;
+
+    try {
+        const userData = await userStore.fetchUserPreferences(mainStore.user.email);
+        if (userData) {
+            userPreferences.value = {
+                gristApiKey: userData.gristApiKey || "",
+                gristDocId: userData.gristDocId || "",
+                gristBaseUrl: userData.gristBaseUrl || "https://docs.getgrist.com/api/docs"
             };
         }
-    });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des préférences:", error);
+    }
+}
+
+
+async function sendIdToGrist() {
+    await fetchUserPreferences();
+
+    const { value: formValues } = await Swal.fire({
+    title: "Configuration API Grist",
+    html: `
+        <style>
+            .swal2-container .swal2-html-container {
+                width: 100%;
+            }
+            .swal2-container label {
+                display: block;
+                font-weight: 600;
+                margin: 10px 0 5px;
+                text-align: left;
+            }
+            .swal2-container select,
+            .swal2-container input {
+                width: 100%;
+                padding: 8px;
+                border-radius: 6px;
+                border: 1px solid #ccc;
+                font-size: 14px;
+            }
+            .swal2-container input[type="password"] {
+                font-size: 16px;
+            }
+            .swal2-container .swal2-actions {
+                margin-top: 20px;
+            }
+            .swal2-container .swal2-confirm {
+                background-color: #6c5ce7 !important;
+                border-radius: 6px;
+                padding: 8px 15px;
+            }
+            .swal2-container .swal2-cancel {
+                border-radius: 6px;
+                padding: 8px 15px;
+            }
+        </style>
+
+        <label for="grist-base-url">URL de base de l'API Grist</label>
+        <select id="grist-base-url">
+            <option value="https://docs.getgrist.com/api/docs" ${userPreferences.value.gristBaseUrl === "https://docs.getgrist.com/api/docs" ? "selected" : ""}>Grist Standard</option>
+            <option value="https://grist.incubateur.anct.gouv.fr/api/docs" ${userPreferences.value.gristBaseUrl === "https://grist.incubateur.anct.gouv.fr/api/docs" ? "selected" : ""}>Grist Global / ANCT</option>
+        </select>
+
+        <label for="grist-api-key">Clé API Grist</label>
+        <input id="grist-api-key" type="password" placeholder="Saisissez votre clé API Grist" value="${userPreferences.value.gristApiKey}">
+
+        <label for="grist-doc-id">ID du document Grist</label>
+        <input id="grist-doc-id" placeholder="Saisissez l'ID du document" value="${userPreferences.value.gristDocId}">
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: "Envoyer",
+    preConfirm: () => {
+        return {
+            baseUrl: (document.getElementById("grist-base-url") as HTMLSelectElement).value,
+            apiKey: (document.getElementById("grist-api-key") as HTMLInputElement).value,
+            docId: (document.getElementById("grist-doc-id") as HTMLInputElement).value
+        };
+    }
+});
 
     if (!formValues) return; // Si l'utilisateur annule
 
@@ -194,8 +260,8 @@ async function sendIdToGrist() {
         await gristStore.sendDataToBackend();
         Swal.fire("Succès", "✅ Données envoyées à Grist avec succès !", "success");
     } catch (error) {
-        console.error("❌ Erreur en envoyant les données :", error);
-        Swal.fire("Erreur", `❌ Erreur lors de l'envoi : ${error.message}`, "error");
+        console.error("Erreur lors de l'envoi des données à Grist:", error);
+        Swal.fire("Erreur", "❌ Échec de l'envoi des données à Grist.", "error");
     }
 }
 
