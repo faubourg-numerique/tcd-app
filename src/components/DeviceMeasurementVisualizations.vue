@@ -245,7 +245,7 @@ async function sendIdToGrist() {
     }
 });
 
-    if (!formValues) return; // Si l'utilisateur annule
+    if (!formValues) return; 
 
     // ✅ Met à jour les valeurs dans le store
     gristStore.baseUrl = formValues.baseUrl;
@@ -273,13 +273,13 @@ async function sendIdToGrist() {
     <div class="mb-3">
         <div class="row row-cols-lg-auto g-3 align-items-center mb-3">
             <div class="col-12">
-                <input type="date" class="form-control" v-model="fromDateString" :disabled="loadingData">
+                <input v-model="fromDateString" type="date" class="form-control" :disabled="loadingData">
             </div>
             <div class="col-12">
-                <input type="date" class="form-control" v-model="toDateString" :disabled="loadingData">
+                <input v-model="toDateString" type="date" class="form-control" :disabled="loadingData">
             </div>
             <div class="col-12">
-                <button class="btn btn-primary" @click="loadData" :disabled="loadingData">Appliquer</button>
+                <button class="btn btn-primary" :disabled="loadingData" @click="loadData">Appliquer</button>
             </div>
         </div>
         <Line :data="deviceMeasurementChartData" :options="deviceMeasurementChartOptions" class="mb-3" />
