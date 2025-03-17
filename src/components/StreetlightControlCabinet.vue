@@ -2,12 +2,12 @@
 import { computed, defineProps, onMounted } from "vue";
 import { useStreetlightControlCabinetStore } from "@/stores/streetlight-control-cabinet-store";
 import { C } from "node_modules/@fullcalendar/core/internal-common";
-
+import { useStreetlightStore } from "@/stores/streetlight-store";
 
 const props = defineProps<{ selectedZoneId: string | null }>(); 
 
 const cabinetStore = useStreetlightControlCabinetStore(); 
-
+const streetlightStore = useStreetlightStore();
 
 onMounted(() => {
   cabinetStore.fetchCabinets();
