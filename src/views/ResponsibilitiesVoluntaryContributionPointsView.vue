@@ -121,19 +121,19 @@ function resolveRoute(event) {
             <form class="row align-items-center d-flex flex-wrap">
                 <div class="col-auto">
                     <div class="form-check">
-                        <input id="filter-paper" class="form-check-input" type="checkbox" v-model="filterPaper">
+                        <input id="filter-paper" v-model="filterPaper" class="form-check-input" type="checkbox">
                         <label for="filter-paper" class="form-check-label">Carton</label>
                     </div>
                 </div>
                 <div class="col-auto">
                     <div class="form-check">
-                        <input id="filter-plastic" class="form-check-input" type="checkbox" v-model="filterPlastic">
+                        <input id="filter-plastic" v-model="filterPlastic" class="form-check-input" type="checkbox">
                         <label for="filter-plastic" class="form-check-label">Plastique</label>
                     </div>
                 </div>
                 <div class="col-auto">
                     <div class="form-check">
-                        <input id="filter-glass" class="form-check-input" type="checkbox" v-model="filterGlass">
+                        <input id="filter-glass" v-model="filterGlass" class="form-check-input" type="checkbox">
                         <label for="filter-glass" class="form-check-label">Verre</label>
                     </div>
                 </div>

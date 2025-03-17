@@ -228,47 +228,55 @@ watch(demoStore.wasteContainerFillingLevel, (wasteContainerFillingLevel) => {
             <p class="text-danger">Seuil d'alerte: {{ floodMonitoringCurrentLevelThreshold }}%</p>
             <div class="row row-cols-5">
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:e5debc5c-95a5-4b3a-81de-ddc568b0d289')"
-                        :disabled="waitingForAck || waitingForAlert">0%</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:e5debc5c-95a5-4b3a-81de-ddc568b0d289')">0%</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:3fc14568-5693-4d9b-8380-eee3eab0c8ce')"
-                        :disabled="waitingForAck || waitingForAlert">25%</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:3fc14568-5693-4d9b-8380-eee3eab0c8ce')">25%</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:93d0ac43-0c73-4851-9262-e37b444c9d12')"
-                        :disabled="waitingForAck || waitingForAlert">50%</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:93d0ac43-0c73-4851-9262-e37b444c9d12')">50%</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:b98d6233-7886-4a3d-89c4-580880b81eff')"
-                        :disabled="waitingForAck || waitingForAlert">75%</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:b98d6233-7886-4a3d-89c4-580880b81eff')">75%</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:f6ebdbc9-4f4e-4224-9430-d42454e695c9')"
-                        :disabled="waitingForAck || waitingForAlert">100%</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:f6ebdbc9-4f4e-4224-9430-d42454e695c9')">100%</button>
                 </div>
             </div>
         </div>
         <div class="mb-5">
-            <p class="h5 mb-3">💡 Éclairage<span v-if="defaultStreetlightEntityId in demoStore.streetlightPowerState"
+            <p class="h5 mb-3">💡 Éclairage<span
+v-if="defaultStreetlightEntityId in demoStore.streetlightPowerState"
                     class="fw-bold ms-3">{{ demoStore.streetlightPowerState[defaultStreetlightEntityId] === "on" ? "ON"
                         : "OFF"
                     }}</span></p>
             <div class="row row-cols-2">
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:209d923c-7cba-4e33-a9a3-e6271ea293cd')"
-                        :disabled="waitingForAck || waitingForAlert">Allumer</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:209d923c-7cba-4e33-a9a3-e6271ea293cd')">Allumer</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:9138a00b-4341-464a-962a-bce328b6729d')"
-                        :disabled="waitingForAck || waitingForAlert">Éteindre</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:9138a00b-4341-464a-962a-bce328b6729d')">Éteindre</button>
                 </div>
             </div>
         </div>
@@ -277,14 +285,16 @@ watch(demoStore.wasteContainerFillingLevel, (wasteContainerFillingLevel) => {
             <p class="text-danger">Seuil d'alerte: {{ Math.floor(wasteContainerFillingLevelThreshold * 100) }}%</p>
             <div class="row row-cols-2">
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:bbddea53-d46b-4a20-af95-ea16b64341de')"
-                        :disabled="waitingForAck || waitingForAlert">Sac poubelle</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:bbddea53-d46b-4a20-af95-ea16b64341de')">Sac poubelle</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:a0a0bce5-b328-4a4a-b077-6c343e5b1a2e')"
-                        :disabled="waitingForAck || waitingForAlert">Bouteille en verre</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:a0a0bce5-b328-4a4a-b077-6c343e5b1a2e')">Bouteille en verre</button>
                 </div>
             </div>
         </div>
@@ -295,37 +305,44 @@ watch(demoStore.wasteContainerFillingLevel, (wasteContainerFillingLevel) => {
             </p>
             <div class="row row-cols-5">
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:5f274063-2b25-4b3e-9141-a3762a712e18')"
-                        :disabled="waitingForAck || waitingForAlert">16°</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:5f274063-2b25-4b3e-9141-a3762a712e18')">16°</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:d66dae3d-ac99-40de-ba62-2bc7e93d1694')"
-                        :disabled="waitingForAck || waitingForAlert">18°</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:d66dae3d-ac99-40de-ba62-2bc7e93d1694')">18°</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:e2d73877-4cc1-4bcf-aa6e-313202ad6bfc')"
-                        :disabled="waitingForAck || waitingForAlert">20°</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:e2d73877-4cc1-4bcf-aa6e-313202ad6bfc')">20°</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:0abdecdc-4d27-49c7-83b3-4eeb79540c75')"
-                        :disabled="waitingForAck || waitingForAlert">22°</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:0abdecdc-4d27-49c7-83b3-4eeb79540c75')">22°</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-outline-primary w-100"
-                        @click="runOperation('urn:ngsi-ld:OperationParameters:e68ab292-cea8-4835-a6f2-c29dce25aa64')"
-                        :disabled="waitingForAck || waitingForAlert">24°</button>
+                    <button
+type="button" class="btn btn-outline-primary w-100"
+                        :disabled="waitingForAck || waitingForAlert"
+                        @click="runOperation('urn:ngsi-ld:OperationParameters:e68ab292-cea8-4835-a6f2-c29dce25aa64')">24°</button>
                 </div>
             </div>
         </div>
         <hr>
         <p class="h5 mb-3">Historique</p>
-        <Line :data="floodMonitoringCurrentLevelChartData" :options="floodMonitoringCurrentLevelChartOptions"
+        <Line
+:data="floodMonitoringCurrentLevelChartData" :options="floodMonitoringCurrentLevelChartOptions"
             class="mb-3" />
-        <Line :data="thermostatTargetTemperatureChartData" :options="thermostatTargetTemperatureChartOptions"
+        <Line
+:data="thermostatTargetTemperatureChartData" :options="thermostatTargetTemperatureChartOptions"
             class="mb-3" />
         <Line :data="wasteContainer1ChartData" :options="wasteContainer1ChartOptions" class="mb-3" />
         <Line :data="wasteContainer2ChartData" :options="wasteContainer2ChartOptions" class="mb-3" />

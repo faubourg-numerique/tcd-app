@@ -5,4 +5,5 @@ export type Streetlight = {
     powerState: string;
     wotServerUrl: string;
     hasZone: string;
+    refStreetlightControlCabinet: string;
 };

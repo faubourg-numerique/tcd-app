@@ -55,19 +55,19 @@ const indoorAmbianceResponsibility = computed(() => {
             <!-- <OperationParametersPicker v-model="selectedOperationParametersId" v-model:selected-operation-id="selectedOperationId" v-model:selected-operation-parameters-id="selectedOperationParametersId" :zone-id="selectedZoneId" class="mb-3" /> -->
 
             <ul id="pills-tab" class="nav nav-pills mb-3">
-                <li class="nav-item" v-if="thermostatResponsibility">
+                <li v-if="thermostatResponsibility" class="nav-item">
                     <button class="nav-link" :class="{ 'active': thermostatResponsibility }" data-bs-toggle="pill" data-bs-target="#pills-thermostat">{{ $t("main.heating") }}</button>
                 </li>
-                <li class="nav-item" v-if="indoorAmbianceResponsibility">
+                <li v-if="indoorAmbianceResponsibility" class="nav-item">
                     <button class="nav-link" :class="{ 'active': !thermostatResponsibility }" data-bs-toggle="pill" data-bs-target="#pills-indoor-ambiance">{{ $t("main.ambiance") }}</button>
                 </li>
             </ul>
             <div class="tab-content">
-                <div id="pills-thermostat" class="tab-pane" :class="{ 'active': thermostatResponsibility, 'show': thermostatResponsibility }" tabindex="0" v-if="thermostatResponsibility">
+                <div v-if="thermostatResponsibility" id="pills-thermostat" class="tab-pane" :class="{ 'active': thermostatResponsibility, 'show': thermostatResponsibility }" tabindex="0">
                     <ThermostatTab :room-id="selectedRoomId"></ThermostatTab>
                     <OperationScheduleCalendar :city-id="selectedCityId" :zone-id="selectedZoneId" />
                 </div>
-                <div id="pills-indoor-ambiance" class="tab-pane" :class="{ 'active': !thermostatResponsibility, 'show': !thermostatResponsibility }" tabindex="0" v-if="indoorAmbianceResponsibility">
+                <div v-if="indoorAmbianceResponsibility" id="pills-indoor-ambiance" class="tab-pane" :class="{ 'active': !thermostatResponsibility, 'show': !thermostatResponsibility }" tabindex="0">
                     <IndoorAmbianceTab :room-id="selectedRoomId"></IndoorAmbianceTab>
                 </div>
             </div>

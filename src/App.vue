@@ -7,7 +7,7 @@ const route = useRoute();
 </script>
 
 <template>
-    <header class="mb-5" v-if="route.name !== 'demo.somware'">
+    <header v-if="route.name !== 'demo.somware'" class="mb-5">
         <div class="wrapper">
             <NavBar />
         </div>
