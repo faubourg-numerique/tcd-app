@@ -48,9 +48,8 @@ async function main() {
 
     try {
         const response = await axios.get(`${import.meta.env.VITE_IDENTITY_MANAGER_URL}/user?access_token=${route.query.token}`);
-        console.log("Données reçues de l'API Identity Manager :", response.data);
 
-        // Stocker les informations utilisateur dans le store
+       
         mainStore.setUser({
             username: response.data.username,
             email: response.data.email,

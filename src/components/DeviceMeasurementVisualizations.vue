@@ -245,7 +245,7 @@ async function sendIdToGrist() {
     }
 });
 
-    if (!formValues) return; // Si l'utilisateur annule
+    if (!formValues) return; 
 
     // ✅ Met à jour les valeurs dans le store
     gristStore.baseUrl = formValues.baseUrl;
