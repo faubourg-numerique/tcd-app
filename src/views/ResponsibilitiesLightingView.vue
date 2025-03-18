@@ -2,8 +2,6 @@
 import { onMounted, ref, type Ref } from "vue";
 import { useRoute } from "vue-router";
 import { useStreetlightControlCabinetStore } from "@/stores/streetlight-control-cabinet-store";
-
-
 import CityZonePicker from "@/components/CityZonePicker.vue";
 import OperationParametersPicker from "@/components/OperationParametersPicker.vue";
 import OperationScheduleCalendar from "@/components/OperationScheduleCalendar.vue";
