@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 
@@ -12,6 +13,15 @@ const props = defineProps<{
 const dashboardMapZoom = parseInt(import.meta.env.VITE_DASHBOARD_MAP_ZOOM);
 const dashboardMapCenterLatitude = parseFloat(import.meta.env.VITE_DASHBOARD_MAP_CENTER_LATITUDE);
 const dashboardMapCenterLongitude = parseFloat(import.meta.env.VITE_DASHBOARD_MAP_CENTER_LONGITUDE);
+
+const streetlightIcons = {
+  on: new L.Icon({ iconSize: [16, 16], iconUrl: "/images/icons/on.svg" }),
+  off: new L.Icon({ iconSize: [16, 16], iconUrl: "/images/icons/off.svg" }),
+};
+
+const getStreetlightIcon = (powerState: keyof typeof streetlightIcons) => {
+  return streetlightIcons[powerState] || streetlightIcons.off;
+};
 </script>
 
 <template>
@@ -36,18 +46,21 @@ const dashboardMapCenterLongitude = parseFloat(import.meta.env.VITE_DASHBOARD_MA
       Aucun lampadaire associé.
     </p>
     <keep-alive>
-    <LMap style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 5px" :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false">
-      <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
-
-      <template v-for="streetlight in streetlights" :key="streetlight.id">
-        <LMarker v-if="streetlight.location" :lat-lng="[streetlight.location[1], streetlight.location[0]]">
-          <LPopup> 
-            <b>{{ streetlight.name }}</b><br />
-            État: {{ streetlight.powerState }}
-          </LPopup>
-        </LMarker>
-      </template>
-    </LMap>
+      <LMap
+        style="min-height: 60vh"
+        :zoom="dashboardMapZoom"
+        :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]"
+        :use-global-leaflet="false"
+      >
+        <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
+        <template v-for="streetlight in streetlights" :key="streetlight.id">
+          <LMarker
+            v-if="streetlight.location"
+            :lat-lng="[streetlight.location[1], streetlight.location[0]]"
+            :icon="getStreetlightIcon(streetlight.powerState as 'on' | 'off' )"
+          />
+        </template>
+      </LMap>
     </keep-alive>
   </div>
 </template>

@@ -32,22 +32,17 @@ const getStreetlightsForCabinet = (cabinetId: string) => {
   <div class="container bg-white p-4 rounded border border-danger">
     <h2 class="text-center">{{ $t("main.ArmoiresEclairage") }}</h2>
 
-    <div v-if="filteredCabinets.length > 0" id="cabinetAccordion" class="accordion">
-      <div v-for="(cabinet, index) in filteredCabinets" :key="cabinet.id" class="accordion-item">
-        <h2 :id="'heading' + index" class="accordion-header">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + index" aria-expanded="false" :aria-controls="'collapse' + index">
-            {{ cabinet.name }} (Zone: {{ cabinet.hasZone }})
-          </button>
-        </h2>
-
-        <div :id="'collapse' + index" class="accordion-collapse collapse" :aria-labelledby="'heading' + index" data-bs-parent="#cabinetAccordion">
-          <CabinetDetails :cabinet="cabinet" :streetlights="getStreetlightsForCabinet(cabinet.id)" />
+    <div v-if="filteredCabinets.length > 0">
+      <div v-for="cabinet in filteredCabinets" :key="cabinet.id">
+        <div>
+          <strong>{{ cabinet.name }}</strong> (Zone: {{ cabinet.hasZone }})
         </div>
+        <CabinetDetails :cabinet="cabinet" :streetlights="getStreetlightsForCabinet(cabinet.id)" />
       </div>
     </div>
 
     <p v-else class="text-muted text-center">
-       ({{ $t("main.Aucunearmoirepourcettezone") }})
+      ({{ $t("main.Aucunearmoirepourcettezone") }})
     </p>
   </div>
 </template>
