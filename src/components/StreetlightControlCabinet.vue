@@ -35,7 +35,7 @@ const getStreetlightsForCabinet = (cabinetId: string) => {
     <div v-if="filteredCabinets.length > 0">
       <div v-for="cabinet in filteredCabinets" :key="cabinet.id">
         <div>
-          <strong>{{ cabinet.name }}</strong> (Zone: {{ cabinet.hasZone }})
+          <strong>{{ cabinet.name }}</strong> 
         </div>
         <CabinetDetails :cabinet="cabinet" :streetlights="getStreetlightsForCabinet(cabinet.id)" />
       </div>
