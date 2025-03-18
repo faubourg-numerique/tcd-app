@@ -30,7 +30,7 @@ const getStreetlightsForCabinet = (cabinetId: string) => {
 
 <template>
   <div class="container bg-white p-4 rounded border border-danger">
-    <h2 class="text-center">Armoires d'Éclairage</h2>
+    <h2 class="text-center">{{ $t("main.ArmoiresEclairage") }}</h2>
 
     <div v-if="filteredCabinets.length > 0" id="cabinetAccordion" class="accordion">
       <div v-for="(cabinet, index) in filteredCabinets" :key="cabinet.id" class="accordion-item">
@@ -47,7 +47,7 @@ const getStreetlightsForCabinet = (cabinetId: string) => {
     </div>
 
     <p v-else class="text-muted text-center">
-      Aucune armoire trouvée pour cette zone.
+       ({{ $t("main.Aucunearmoirepourcettezone") }})
     </p>
   </div>
 </template>
