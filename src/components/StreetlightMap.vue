@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { computed, defineProps, onMounted } from "vue";
+import { computed, defineProps, onMounted, ref } from "vue";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
 import { useStreetlightStore } from "@/stores/streetlight-store";
 
+
 const props = defineProps<{ selectedZoneId: string | null }>();
+
 const streetlightStore = useStreetlightStore();
 
-onMounted(() => {
-  streetlightStore.fetchStreetlights();
-});
+const isLoading = ref(true);
 
+
+onMounted(async () => {
+  await streetlightStore.fetchStreetlights();
+  isLoading.value = false;
+});
 
 const filteredStreetlights = computed(() => {
   if (!props.selectedZoneId) return [];
@@ -20,16 +25,13 @@ const filteredStreetlights = computed(() => {
   );
 });
 
-
 const streetlightIcons = {
-  on: new L.Icon({ iconSize: [16, 16], iconUrl: "/images/icons/on.svg" }),
-  off: new L.Icon({ iconSize: [16, 16], iconUrl: "/images/icons/off.svg" }),
+  on: new L.Icon({ iconSize: [24, 24], iconUrl: "/images/icons/on.svg" }),
+  off: new L.Icon({ iconSize: [24, 24], iconUrl: "/images/icons/off.svg" }),
 };
-
 const getStreetlightIcon = (powerState: keyof typeof streetlightIcons) => {
   return streetlightIcons[powerState] || streetlightIcons.off;
 };
-
 
 const dashboardMapZoom = parseInt(import.meta.env.VITE_DASHBOARD_MAP_ZOOM);
 const dashboardMapCenterLatitude = parseFloat(import.meta.env.VITE_DASHBOARD_MAP_CENTER_LATITUDE);
@@ -42,22 +44,15 @@ const dashboardMapCenterLongitude = parseFloat(import.meta.env.VITE_DASHBOARD_MA
       <div class="col-12">
         <div class="card shadow-sm">
           <div class="card-body">
-            <h5 class="card-title text-center mb-4">Carte des Lampadaires</h5>
             <div class="map-container position-relative">
-              <LMap v-if="filteredStreetlights.length > 0" class="rounded" style="min-height: 60vh; width: 100%" :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false">
-                <LTileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  layer-type="base"
-                  name="OpenStreetMap"
-                />
-                <LMarker
-                  v-for="streetlight in filteredStreetlights"
-                  :key="streetlight.id"
-                  :lat-lng="[streetlight.location[1], streetlight.location[0]]"
-                  :icon="getStreetlightIcon(streetlight.powerState as 'on' | 'off')"
-                />
+              <p v-if="isLoading" class="text-muted text-center mt-3">Chargement des lampadaires...</p>
+                <LMap v-else class="rounded" style="min-height: 60vh; width: 100%" :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false">
+                <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" />
+                <LMarker v-for="streetlight in filteredStreetlights" :key="streetlight.id" :lat-lng="streetlight.location ? [streetlight.location[1], streetlight.location[0]] : [0, 0]" :icon="getStreetlightIcon(streetlight.powerState as 'on' | 'off')" />
               </LMap>
-              <p v-else class="text-muted text-center mt-3">Aucun lampadaire dans cette zone.</p>
+              <p v-if="!isLoading && filteredStreetlights.length === 0" class="text-muted text-center mt-3">
+                Aucun lampadaire dans cette zone.
+              </p>
             </div>
           </div>
         </div>
