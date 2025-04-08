@@ -51,7 +51,6 @@ onMounted(() => {
 
       <div v-if="showWeekType" class="card mt-3">
         <div class="card-body">
-          <h5 class="card-title">Semaine type</h5>
           <p class="card-text"><WeekType :zone="selectedZoneId" /></p>
         </div>
       </div>

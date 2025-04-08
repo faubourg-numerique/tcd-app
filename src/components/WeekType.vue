@@ -4,46 +4,63 @@ import { useOperationScheduleStore } from "@/stores/operation-schedule-store";
 import { useOperationStore } from "@/stores/operation-store";
 import { useOperationParametersStore } from "@/stores/operation-parameters-store";
 import { defineProps } from "vue";
+import swal from "sweetalert2";
+import { useI18n } from "vue-i18n" ; 
 
-// 📌 Stores
+const { t } = useI18n();
 const operationScheduleStore = useOperationScheduleStore();
 const operationStore = useOperationStore();
 const operationParametersStore = useOperationParametersStore();
 
-// 📌 Props pour récupérer la zone sélectionnée
 const props = defineProps<{ zone: string }>();
-
-// 📌 Liste des jours de la semaine
 const daysOfWeek = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
-// 📌 Stockage des horaires par jour
 const schedule = ref(
-  daysOfWeek.map((day) => ({ day, startTime: "", endTime: "" }))
+  daysOfWeek.map((day) => ({ 
+    day, 
+    startTime: "", 
+    endTime: "",
+    scheduleId: ""
+  }))
 );
 
-// 📌 Chargement des données existantes
+const isLoading = ref(false);
+const isSaving = ref(false);
+const viewType = ref("week");
+
 onMounted(async () => {
+  isLoading.value = true;
   await Promise.all([
     operationScheduleStore.fetchOperationSchedules(),
     operationStore.fetchOperations(),
     operationParametersStore.fetchOperationParameters(),
   ]);
-
-
-  const existingSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zone);
-  if (existingSchedules.length > 0) {
-    existingSchedules.forEach((op) => {
-    op.byDay.forEach((dayIndex: number) => {
-    const correctedIndex = dayIndex - 1;
-      if (schedule.value[correctedIndex]) {
-        schedule.value[correctedIndex].startTime = op.startTime || "";
-        schedule.value[correctedIndex].endTime = op.endTime || "";
-      }
-    });
-    });
-  }
+  loadExistingSchedules();
+  isLoading.value = false;
 });
 
+const loadExistingSchedules = () => {
+  const existingSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zone);
+  schedule.value = daysOfWeek.map((day) => ({ 
+    day, 
+    startTime: "", 
+    endTime: "",
+    scheduleId: ""
+  }));
+  
+  if (existingSchedules.length > 0) {
+    existingSchedules.forEach((op) => {
+      op.byDay.forEach((dayIndex: number) => {
+        const correctedIndex = dayIndex - 1;
+        if (schedule.value[correctedIndex]) {
+          schedule.value[correctedIndex].startTime = op.startTime?.replace('Z', '') || "";
+          schedule.value[correctedIndex].endTime = op.endTime?.replace('Z', '') || "";
+          schedule.value[correctedIndex].scheduleId = op.id;
+        }
+      });
+    });
+  }
+};
 
 const operation = computed(() => {
   const operations = operationStore.getOperationsByZoneId(props.zone);
@@ -56,7 +73,13 @@ const operationParameters = computed(() => {
   return parameters.length > 0 ? parameters[0].id : null;
 });
 
+const hasChanges = computed(() => {
+  return schedule.value.some(entry => entry.startTime && entry.endTime);
+});
+
 const saveSchedule = async () => {
+  if (isSaving.value) return;
+  
   const today = new Date();
   const startDate = today.toISOString().split("T")[0];
   const endDate = new Date(today.getFullYear(), 11, 31).toISOString().split("T")[0];
@@ -65,12 +88,13 @@ const saveSchedule = async () => {
     .map((entry, index) => {
       if (entry.startTime && entry.endTime) {
         return {
-          byDay: [index +1], // un seul jour à la fois
+          id: entry.scheduleId || "",
+          byDay: [index + 1],
           duration: calculateDuration(entry.startTime, entry.endTime),
           startDate,
           endDate,
-          startTime: entry.startTime,
-          endTime: entry.endTime,
+          startTime: entry.startTime + (entry.startTime.includes(':00') ? 'Z' : ':00Z'),
+          endTime: entry.endTime + (entry.endTime.includes(':00') ? 'Z' : ':00Z'),
           name: `Semaine type - ${entry.day}`,
           hasOperation: operation.value || "",
           hasOperationParameters: operationParameters.value || "",
@@ -80,17 +104,62 @@ const saveSchedule = async () => {
       return null;
     })
     .filter(Boolean); 
+    
   if (schedulesToSave.length === 0) {
-    alert("Veuillez remplir au moins un jour avec une heure de début et de fin.");
+    const result = await swal.fire({
+        icon: "success",
+        text: t("dialogs.operationRunSuccessTitle")
+    });
+    if (!result.isConfirmed) {
+        return;
+    }
     return;
   }
 
-  // Enregistrement des horaires un par un
+  isSaving.value = true;
+  
   for (const sched of schedulesToSave) {
-    await operationScheduleStore.createOperationSchedule(sched);
+    if (sched.id) {
+      await operationScheduleStore.updateOperationSchedule(sched);
+    } else {
+      const result = await operationScheduleStore.createOperationSchedule(sched);
+      const dayIndex = sched.byDay[0] - 1;
+      if (schedule.value[dayIndex]) {
+        schedule.value[dayIndex].scheduleId = result.id;
+      }
+    }
   }
+  
+  alert("Horaires enregistrés avec succès !");
+  loadExistingSchedules();
+  isSaving.value = false;
+};
 
-  alert("Horaires enregistrés !");
+const clearAllSchedules = async () => {
+  const result = await swal.fire({
+        icon: "question",
+        title: t("dialogs.deleteOperationScheduleQuestionTitle"),
+        text: t("dialogs.deleteOperationScheduleQuestionText"),
+        showCancelButton: true,
+    });
+
+    if (!result.isConfirmed) {
+        return;
+    }
+  isSaving.value = true;
+  const existingSchedules = operationScheduleStore.getOperationSchedulesByZoneId(props.zone);
+  
+  for (const schedule of existingSchedules) {
+    await operationScheduleStore.deleteOperationSchedule(schedule);
+  }
+  
+  loadExistingSchedules();
+  alert("Tous les horaires ont été supprimés.");
+  isSaving.value = false;
+};
+
+const changeView = (type: string) => {
+  viewType.value = type;
 };
 
 function calculateDuration(startTime: string, endTime: string) {
@@ -102,7 +171,6 @@ function calculateDuration(startTime: string, endTime: string) {
   let start = startHour * 60 + startMin;
   let end = endHour * 60 + endMin;
 
-
   if (end <= start) {
     end += 24 * 60;
   }
@@ -113,50 +181,55 @@ function calculateDuration(startTime: string, endTime: string) {
 
   return `${hours}:${minutes}:00`;
 }
-
 </script>
 
 <template>
-  <div class="week-type-container">
-    <div class="buttons">
-      <button class="btn btn-primary">Semaine type</button>
-      <button class="btn btn-outline-primary">Événements</button>
+  <div class="mt-4">
+    <div class="d-flex gap-2 mb-3">
+      <button class="btn btn-primary" @click="changeView('week')" :class="{'fw-bold': viewType === 'week'}">Semaine type</button>
+      <button class="btn btn-outline-primary" @click="changeView('events')" :class="{'fw-bold': viewType === 'events'}">Événements</button>
     </div>
 
-    <table class="table mt-3">
-      <thead class="table-dark">
-        <tr>
-          <th>Jour</th>
-          <th>Allumage</th>
-          <th>Extinction</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(entry, index) in schedule" :key="index">
-          <td>{{ entry.day }}</td>
-          <td><input type="time" class="form-control" v-model="entry.startTime" /></td>
-          <td><input type="time" class="form-control" v-model="entry.endTime" /></td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-if="viewType === 'week'">
+      <div v-if="isLoading" class="text-center my-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2">Chargement des données...</p>
+      </div>
+      
+      <table class="table mt-3" v-else>
+        <thead class="table-dark">
+          <tr>
+            <th>Jour</th>
+            <th>Allumage</th>
+            <th>Extinction</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(entry, index) in schedule" :key="index" :class="{'table-light': entry.startTime && entry.endTime}">
+            <td>{{ entry.day }}</td>
+            <td><input type="time" class="form-control" v-model="entry.startTime" /></td>
+            <td><input type="time" class="form-control" v-model="entry.endTime" /></td>
+          </tr>
+        </tbody>
+      </table>
 
-    <button class="btn btn-success" @click="saveSchedule">Enregistrer</button>
+      <div class="d-flex justify-content-between mt-3">
+        <button class="btn btn-danger" @click="clearAllSchedules" :disabled="isLoading || isSaving">
+          Supprimer tous les horaires
+        </button>
+        <button class="btn btn-success" @click="saveSchedule" :disabled="isLoading || isSaving">
+          <span v-if="isSaving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSaving ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
+    
+    <div v-else class="mt-4">
+      <div class="alert alert-info">
+        La gestion des événements ponctuels sera développée prochainement.
+      </div>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.week-type-container {
-  margin-top: 20px;
-}
-
-.buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.table th,
-.table td {
-  text-align: center;
-  vertical-align: middle;
-}
-</style>
