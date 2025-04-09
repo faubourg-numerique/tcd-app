@@ -58,7 +58,7 @@ const showModal = ref(false);
               Aucun lampadaire associé.
             </p>
 
-            <keep-alive>
+            <!-- <keep-alive>
               <LMap style="min-height: 60vh" :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false" >
                 <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap"  />
                 <template v-for="streetlight in streetlights" :key="streetlight.id">
@@ -69,7 +69,7 @@ const showModal = ref(false);
                   />
                 </template>
               </LMap>
-            </keep-alive>
+            </keep-alive> -->
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="showModal = false">Fermer</button>

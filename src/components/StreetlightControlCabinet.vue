@@ -1,81 +1,53 @@
 <script setup lang="ts">
-import { defineProps, ref } from "vue";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import { computed, defineProps, onMounted } from "vue";
+import { useStreetlightControlCabinetStore } from "@/stores/streetlight-control-cabinet-store";
+import { useStreetlightStore } from "@/stores/streetlight-store";
+import CabinetDetails from "@/components/StreetlightControlCabinetDetails.vue";
 
-import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
+const props = defineProps<{ selectedZoneId: string | null }>();
 
-const props = defineProps<{
-  cabinet: { id: string; name: string };
-  streetlights: { id: string; name: string; powerState: string; location: number[] }[];
-}>();
+const cabinetStore = useStreetlightControlCabinetStore();
+const streetlightStore = useStreetlightStore();
 
-const dashboardMapZoom = parseInt(import.meta.env.VITE_DASHBOARD_MAP_ZOOM);
-const dashboardMapCenterLatitude = parseFloat(import.meta.env.VITE_DASHBOARD_MAP_CENTER_LATITUDE);
-const dashboardMapCenterLongitude = parseFloat(import.meta.env.VITE_DASHBOARD_MAP_CENTER_LONGITUDE);
+onMounted(() => {
+  cabinetStore.fetchCabinets();
+  streetlightStore.fetchStreetlights();
+});
 
-const streetlightIcons = {
-  on: new L.Icon({ iconSize: [16, 16], iconUrl: "/images/icons/on.svg" }),
-  off: new L.Icon({ iconSize: [16, 16], iconUrl: "/images/icons/off.svg" }),
+const filteredCabinets = computed(() => {
+  if (!props.selectedZoneId) return [];
+  return cabinetStore.cabinets.filter(
+    (cabinet) => cabinet.hasZone === props.selectedZoneId
+  );
+});
+
+const getStreetlightsForCabinet = (cabinetId: string) => {
+  return streetlightStore.streetlights.filter(
+    (streetlight) => streetlight.refStreetlightControlCabinet === cabinetId
+  );
 };
-
-const getStreetlightIcon = (powerState: keyof typeof streetlightIcons) => {
-  return streetlightIcons[powerState] || streetlightIcons.off;
-};
-
-const showModal = ref(false);
 </script>
 
 <template>
-  <div>
-    <button class="btn btn-primary" @click="showModal = true">Afficher les détails</button>
+  <div class="container bg-white p-4 rounded border border-danger">
+    <h2 class="text-center">{{ $t("main.ArmoiresEclairage") }}</h2>
 
-    <div v-if="showModal" class="modal fade" tabindex="-1" :class="{ show: showModal }" style="display: block;">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Détails du Cabinet</h5>
-            <button type="button" class="btn-close" @click="showModal = false"></button>
-          </div>
-          <div class="modal-body">
-            <h5>Liste des Lampadaires</h5>
-            <table class="table table-bordered table-striped mt-2">
-              <thead class="table-danger">
-                <tr>
-                  <th scope="col">Nom</th>
-                  <th scope="col">État</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="streetlight in streetlights" :key="streetlight.id">
-                  <td>{{ streetlight.name }}</td>
-                  <td>{{ streetlight.powerState }}</td>
-                </tr>
-              </tbody>
-            </table>
+    <div v-if="filteredCabinets.length > 0" id="cabinetAccordion" class="accordion">
+      <div v-for="(cabinet, index) in filteredCabinets" :key="cabinet.id" class="accordion-item">
+        <h2 :id="'heading' + index" class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse' + index" aria-expanded="false" :aria-controls="'collapse' + index">
+            {{ cabinet.name }} 
+          </button>
+        </h2>
 
-            <p v-if="streetlights.length === 0" class="text-muted text-center">
-              Aucun lampadaire associé.
-            </p>
-
-            <keep-alive>
-              <LMap style="min-height: 60vh" :zoom="dashboardMapZoom" :center="[dashboardMapCenterLatitude, dashboardMapCenterLongitude]" :use-global-leaflet="false" >
-                <LTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap"  />
-                <template v-for="streetlight in streetlights" :key="streetlight.id">
-                  <LMarker
-                    v-if="streetlight.location"
-                    :lat-lng="[streetlight.location[1], streetlight.location[0]]"
-                    :icon="getStreetlightIcon(streetlight.powerState as 'on' | 'off')"
-                  />
-                </template>
-              </LMap>
-            </keep-alive>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="showModal = false">Fermer</button>
-          </div>
+        <div :id="'collapse' + index" class="accordion-collapse collapse" :aria-labelledby="'heading' + index" data-bs-parent="#cabinetAccordion">
+          <CabinetDetails :cabinet="cabinet" :streetlights="getStreetlightsForCabinet(cabinet.id)" />
         </div>
       </div>
     </div>
+
+    <p v-else class="text-muted text-center">
+       ({{ $t("main.Aucunearmoirepourcettezone") }})
+    </p>
   </div>
 </template>

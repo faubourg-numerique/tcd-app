@@ -194,11 +194,7 @@ function calculateDuration(startTime: string, endTime: string) {
 
 <template>
   <div class="mt-4">
-    <div class="d-flex gap-2 mb-3">
-      <button class="btn btn-primary" @click="changeView('week')" :class="{'fw-bold': viewType === 'week'}">Semaine type</button>
-      <button class="btn btn-outline-primary" @click="changeView('events')" :class="{'fw-bold': viewType === 'events'}">Événements</button>
-    </div>
-
+    
     <div v-if="viewType === 'week'">
       <div v-if="isLoading" class="text-center my-4">
         <div class="spinner-border text-primary" role="status">
@@ -236,9 +232,7 @@ function calculateDuration(startTime: string, endTime: string) {
     </div>
     
     <div v-else class="mt-4">
-      <div class="alert alert-info">
-        La gestion des événements ponctuels sera développée prochainement.
-      </div>
+      
     </div>
   </div>
 </template>
