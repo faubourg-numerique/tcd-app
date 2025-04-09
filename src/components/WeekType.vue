@@ -134,7 +134,13 @@ const saveSchedule = async () => {
     }
   }
   
-  alert("Horaires enregistrés avec succès !");
+  const result = await swal.fire({
+        icon: "success",
+        text: t("dialogs.operationRunSuccessTitle")
+    });
+    if (!result.isConfirmed) {
+        return;
+    }
   loadExistingSchedules();
   isSaving.value = false;
 };
@@ -158,7 +164,6 @@ const clearAllSchedules = async () => {
   }
   
   loadExistingSchedules();
-  alert("Tous les horaires ont été supprimés.");
   isSaving.value = false;
 };
 
