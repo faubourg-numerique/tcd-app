@@ -76,13 +76,17 @@ const operationParameters = computed(() => {
 const hasChanges = computed(() => {
   return schedule.value.some(entry => entry.startTime && entry.endTime);
 });
-
+function formatToHHMMSS(time: string): string {
+  if (time.split(":").length === 3) return time;
+  return time + ":00";
+  }
 const saveSchedule = async () => {
   if (isSaving.value) return;
   
   const today = new Date();
   const startDate = today.toISOString().split("T")[0];
   const endDate = new Date(today.getFullYear(), 11, 31).toISOString().split("T")[0];
+  
 
   const schedulesToSave = schedule.value
     .map((entry, index) => {
@@ -93,8 +97,8 @@ const saveSchedule = async () => {
           duration: calculateDuration(entry.startTime, entry.endTime),
           startDate,
           endDate,
-          startTime: entry.startTime + (entry.startTime.includes(':00') ? 'Z' : ':00Z'),
-          endTime: entry.endTime + (entry.endTime.includes(':00') ? 'Z' : ':00Z'),
+          startTime: formatToHHMMSS(entry.startTime),
+          endTime: formatToHHMMSS(entry.endTime),
           name: `Semaine type - ${entry.day}`,
           hasOperation: operation.value || "",
           hasOperationParameters: operationParameters.value || "",
