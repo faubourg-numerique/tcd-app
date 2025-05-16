@@ -7,7 +7,7 @@ const route = useRoute();
 </script>
 
 <template>
-    <header v-if="route.name !== 'demo.somware'" class="mb-5">
+    <header v-if="route.name !== 'demo.somware' && route.name !== 'eLecDashboard'" class="mb-5">
         <div class="wrapper">
             <NavBar />
         </div>

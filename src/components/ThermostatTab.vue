@@ -229,7 +229,7 @@ async function exportData() {
     }
 
     const deviceMeasurementRows = await deviceMeasurementRowStore.fetchDeviceMeasurementRows(props.roomId, "thermostat", fromDateString.value, toDateString.value);
-
+    console.log(deviceMeasurementRows);
     const rows = [];
     for (const deviceMeasurementRow of deviceMeasurementRows) {
         const row: any = {};

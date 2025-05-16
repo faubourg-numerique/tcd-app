@@ -44,6 +44,7 @@ const indoorAmbianceResponsibility = computed(() => {
 
     return zone.value.responsibilities.includes("BUILDINGS_INDOOR_AMBIANCE");
 });
+
 </script>
 
 <template>

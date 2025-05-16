@@ -7,4 +7,5 @@ export type Thermostat = {
     hasDeviceCommand: string;
     hasDeviceMeasurement: string;
     hasRoom: string;
+    currentPowerConsumption : number;
 };

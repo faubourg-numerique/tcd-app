@@ -22,6 +22,9 @@ const logoutUrl = `${import.meta.env.VITE_IDENTITY_MANAGER_URL}/auth/external_lo
                     <li class="nav-item">
                         <RouterLink class="nav-link" :to="{ name: 'dashboard' }">{{ $t("main.dashboard") }}</RouterLink>
                     </li>
+                    <li class="nav-item">
+                        <RouterLink class="nav-link" :to="{ name: 'eLecDashboard' }">E-LEC</RouterLink>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">{{ $t("main.myResponsibilities") }}</a>
                         <ul class="dropdown-menu">

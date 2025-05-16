@@ -6,4 +6,5 @@ export type Streetlight = {
     wotServerUrl: string;
     hasZone: string;
     refStreetlightControlCabinet: string;
+    currentPowerConsumption : number;
 };
